@@ -1,0 +1,29 @@
+body {
+  background-color: #242424;
+	font-family: "Helvetica Neue";
+  color: #eee;  
+}
+
+svg {
+  border: 1px dotted #ddd;
+}
+
+.node circle {
+  cursor: pointer;
+  stroke-width: 1.5px;
+	fill-opacity: 0.8;
+	stroke-opacity: 0.5;
+  fill: blue;
+}
+
+.node text {
+  fill: #fff;
+  fill-opacity: 0.95;
+  text-rendering: geometricPrecision;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
