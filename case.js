@@ -24,13 +24,22 @@ graph.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 function update(source) {
 
   // Compute the new tree layout.
-  var nodes = tree.nodes(root).reverse(),
-      links = tree.links(nodes);
+  var nodes = tree.nodes(root).reverse();
+  nodes.forEach(function swapXAndY(d) {
+    var oldX = d.x;
+    var oldX0 = d.x0;
+    d.x = d.y;
+    d.x0 = d.y0;
+    d.y = oldX;
+    d.y0 = oldX0;
+  });
+
+  var links = tree.links(nodes);
 
   // Normalize for fixed-depth.
-  nodes.forEach(function(d) { d.y = d.depth * 180; });
+  nodes.forEach(function(d) { d.x = d.depth * 180; });
 
-  // Update the nodes…
+  // Update the nodes.
   var node = graph.selectAll('g.node')
       .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
@@ -88,8 +97,8 @@ function update(source) {
       });
 
   // Transition links to their new position.
-  link.transition()
-      .duration(duration)
+  link//.transition()
+      // .duration(duration)
       .attr('d', diagonal);
 
   // Transition exiting nodes to the parent's new position.
