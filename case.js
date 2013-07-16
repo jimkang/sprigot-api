@@ -3,7 +3,7 @@ var board = d3.select('svg#svgBoard');
 var graph = board.select('g#graphRoot')
   .attr('transform', 'translate(' + 200 + ',' + 200 + ')');
 
-var margin = {top: 20, right: 120, bottom: 20, left: 120},
+var margin = {top: 20, right: 10, bottom: 20, left: 10},
     width = board.node().clientWidth - margin.right - margin.left,
     height = board.node().clientHeight - margin.top - margin.bottom;
     
@@ -144,6 +144,9 @@ function click(d) {
     d._children = null;
   }
   update(d);
+
+  // Fill in the side pane with the text.
+  d3.select('#textpane').text(d.text);
 }
 
 
