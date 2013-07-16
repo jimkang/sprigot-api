@@ -62,6 +62,21 @@ function update(source) {
       .text(function(d) { return d.name; })
       .style('fill-opacity', 1e-6);
 
+  // // Capitalization matters when it comes to the foreignObject tag!
+  // nodeEnter.append('foreignObject').attr({
+  //   y: function(d) { return d.children || d._children ? -10 : 10; },
+  //   dx: '.35em',
+  //   width: function(d) { return d.rect.width - 40; },
+  //   height: function(d) { return d.rect.height - 40; }
+  // })
+  // .append('xhtml:body').attr({
+  //   // xmlns: "http://www.w3.org/1999/xhtml"
+  // })
+  // .append('p').text(
+  //   function setUpText(d) {
+  //     return d.text;
+  // });
+
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
       .duration(duration)
