@@ -8,20 +8,24 @@
 </head>
 
 <body>
-  <div id="outer">
-    <svg id="svgBoard" width="100%" height="95%">
+  <section>
+    <div id="boardContainer">
+      <svg id="svgBoard" width="100%" height="96%">
 
-    <defs id="svgDefs">
-    </defs>
-    
-    <g id="background">
-      <!-- <rect width="100%" height="100%" fill="url(#level0Gradient)" /> -->
-    </g>
+        <defs id="svgDefs">
+        </defs>
+      
+        <g id="background">
+          <rect width="100%" height="100%" fill="url(#level0Gradient)" />
+        </g>
         <g id="graphRoot">
         </g>
       </svg>
-  </div>
+    </div>
 
+    <div id="textpane">
+    </div>
+  </section>
   
   <script src="lib/jquery.js"></script>
   <script src="lib/underscore.js"></script>
