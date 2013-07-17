@@ -137,14 +137,39 @@ function update(source) {
   });
 }
 
+function translateYFromSel(sel) {
+  return sel.attr('transform').split(',')[1].split('.')[0];
+}
+
+function translateXFromSel(sel) {
+  return sel.attr('transform').split(',')[0].split('.')[0].split('(')[1];
+}
+
+
 // Toggle children on click.
 function click(d) {
   if (d.children) {
     d._children = d.children;
     d.children = null;
-  } else {
+  } 
+  else {
     d.children = d._children;
     d._children = null;
+    var clickedNode = this;
+
+    // The new nodes are going to be at the same y that this node was at, and 
+    // this node is going to move up. So, pan to the old x and y, where the 
+    // new nodes will be.
+    var clickedEl = d3.select(clickedNode);
+    var y = parseInt(translateYFromSel(clickedEl));
+    var x = parseInt(translateXFromSel(clickedEl));
+
+    BoardZoomer.panToCenterOnRect({
+      x: x,
+      y: y,
+      width: 1,
+      height: 1
+    });
   }
   update(d);
 
