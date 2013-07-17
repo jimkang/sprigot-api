@@ -77,9 +77,8 @@ var BoardZoomer = {
     BoardZoomer.lockZoom();
   },
   panToCenterOnRect: function(rect) {
-    console.log("Centering to rect:", rect);
-    var boardWidth = parseInt(BoardZoomer.boardSelection.attr('width'));
-    var boardHeight = parseInt(BoardZoomer.boardSelection.attr('height'));
+    var boardWidth = parseInt(BoardZoomer.boardSelection.node().clientWidth);
+    var boardHeight = parseInt(BoardZoomer.boardSelection.node().clientHeight);
 
     BoardZoomer.tweenToNewZoom(1, 
       [(-rect.x - rect.width/2 + boardWidth/2), 
