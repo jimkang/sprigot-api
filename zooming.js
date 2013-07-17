@@ -8,7 +8,8 @@ var BoardZoomer = {
 	setUpZoomOnBoard: function(boardSel, rootGroupSel) {
 		// Make x and y scaling functions that just returns whatever is passed into 
 		// them (same domain and range).
-		var width = 768, height = 1024;
+		var width = boardSel.node().clientWidth;
+		var height = boardSel.node().clientHeight;
 
 		var x = d3.scale.linear()
 	    .domain([0, width])

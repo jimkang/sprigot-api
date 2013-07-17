@@ -162,6 +162,9 @@ function collapse(d) {
   }
 }
 
+BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
+  d3.select('g#graphRoot'));
+
 root.children.forEach(collapse);
 update(root);
 
