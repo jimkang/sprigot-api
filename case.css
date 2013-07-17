@@ -28,12 +28,16 @@ svg {
   stroke-width: 1.5px;
 }
 
-#textpane {
+.pane {
+  width: 50%;
   min-width: 200px;
 }
 
+#textpane {
+}
+
 #boardContainer {
-  min-width: 200px;  
+  min-width: 200px;
 }
 
 section {
