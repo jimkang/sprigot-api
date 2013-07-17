@@ -48,7 +48,10 @@ function update(source) {
   // Enter any new nodes at the parent's previous position.
   var nodeEnter = node.enter().append('g')
       .attr('class', 'node')
-      .attr('transform', function(d) { return 'translate(' + source.y0 + ',' + source.x0 + ')'; })
+      .attr('transform', function(d) { 
+        return 'translate(' + source.y0 + ',' + source.x0 + ')'; 
+      })
+      .attr('id', function(d) { return d.id; })
       .on('click', click);
 
   nodeEnter.append('circle')
