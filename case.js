@@ -59,11 +59,16 @@ function update(source) {
       .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
 
   nodeEnter.append('text')
-      .attr('x', function(d) { return d.children || d._children ? -10 : 10; })
-      .attr('dy', '.35em')
-      .attr('text-anchor', function(d) { return d.children || d._children ? 'end' : 'start'; })
-      .text(function(d) { return d.name; })
-      .style('fill-opacity', 1e-6);
+    .attr('x', function(d) { 
+      return d.children || d._children ? '0.3em' : '-0.3em'; 
+    })
+    .attr('y', '-1em')
+    .attr('dy', '.35em')
+    .attr('text-anchor', function(d) { 
+      return d.children || d._children ? 'start' : 'end'; 
+    })
+    .text(function(d) { return d.name; })
+    .style('fill-opacity', 1e-6);
 
   // // Capitalization matters when it comes to the foreignObject tag!
   // nodeEnter.append('foreignObject').attr({
