@@ -76,13 +76,16 @@ var BoardZoomer = {
 
     BoardZoomer.lockZoom();
   },
-  panToCenterOnRect: function(rect) {
+  panToCenterOnRect: function(rect, duration) {
+    if (!duration) {
+      duration = 300;
+    }
     var boardWidth = parseInt(BoardZoomer.boardSelection.node().clientWidth);
     var boardHeight = parseInt(BoardZoomer.boardSelection.node().clientHeight);
 
     BoardZoomer.tweenToNewZoom(1, 
       [(-rect.x - rect.width/2 + boardWidth/2), 
-      (-rect.y - rect.height/2 + boardHeight/2)], 300);
+      (-rect.y - rect.height/2 + boardHeight/2)], duration);
   },  
 
   zoomToFitAll: function(elementArray, padding, boardSize, tweenTime) {
