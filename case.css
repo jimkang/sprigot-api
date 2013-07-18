@@ -2,11 +2,14 @@ body {
   background-color: #242424;
 	font-family: 'Futura', 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 20px;
-  color: #eee;  
+  color: #eee;
 }
 
 svg {
-  border: 1px dotted #ddd;
+  border: 1px dotted rgba(224, 235, 255, 0.1);
+  -webkit-border-radius: 0.4em;
+  -moz-border-radius: 0.4em;
+  border-radius: 0.4em;
 }
 
 .node circle {
@@ -30,7 +33,7 @@ svg {
 }
 
 .pane {
-  width: 50%;
+  width: 48%;
   min-width: 200px;
 }
 
@@ -38,12 +41,16 @@ svg {
   font-family: Georgia, 'Book Antiqua';
   background-color: #ffe;
   color: #433;
+  margin-left: 8px;
+  -webkit-border-radius: 0.4em;
+  -moz-border-radius: 0.4em;
+  border-radius: 0.4em;
 }
 
 .textcontent {
   font-weight: normal;  
   font-size: 20px;
-  padding-left: 1.3em;
+  padding-left: 1.2em;
   padding-right: 1em;
   padding-top: 1em;
   padding-bottom: 1em;
