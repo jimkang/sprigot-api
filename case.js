@@ -4,12 +4,12 @@ var graph = board.select('g#graphRoot')
   .attr('transform', 'translate(' + 200 + ',' + 200 + ')');
 
 var margin = {top: 20, right: 10, bottom: 20, left: 10},
-    width = board.node().clientWidth - margin.right - margin.left,
-    height = board.node().clientHeight - margin.top - margin.bottom;
+  width = board.node().clientWidth - margin.right - margin.left,
+  height = board.node().clientHeight - margin.top - margin.bottom;
     
 var i = 0,
-    duration = 750,
-    root;
+  duration = 750,
+  root;
 
 // The tree generates a left-to-right tree, and we want a top-to-bottom tree, 
 // so we flip x and y when we talk to it.
@@ -17,7 +17,7 @@ var tree = d3.layout.tree();
 tree.nodeSize([160, 160]);
 
 var diagonal = d3.svg.diagonal()
-    .projection(function(d) { return [d.y, d.x]; });
+  .projection(function(d) { return [d.y, d.x]; });
 
 graph.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
