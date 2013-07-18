@@ -150,6 +150,18 @@ function translateXFromSel(sel) {
   return sel.attr('transform').split(',')[0].split('.')[0].split('(')[1];
 }
 
+function panToElement(focusElementSel) {
+  var y = parseInt(translateYFromSel(focusElementSel));
+  var x = parseInt(translateXFromSel(focusElementSel));
+
+  BoardZoomer.panToCenterOnRect({
+    x: x,
+    y: y,
+    width: 1,
+    height: 1
+  },
+  750);
+}
 
 // Toggle children on click.
 function click(d) {
@@ -166,15 +178,7 @@ function click(d) {
     // this node is going to move up. So, pan to the old x and y, where the 
     // new nodes will be.
     var clickedEl = d3.select(clickedNode);
-    var y = parseInt(translateYFromSel(clickedEl));
-    var x = parseInt(translateXFromSel(clickedEl));
-
-    BoardZoomer.panToCenterOnRect({
-      x: x,
-      y: y,
-      width: 1,
-      height: 1
-    });
+    panToElement(clickedEl);
   }
   update(d);
 
@@ -199,5 +203,12 @@ BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'),
   d3.select('g#graphRoot'));
 
 root.children.forEach(collapse);
+collapse(root);
 update(root);
+
+setTimeout(function initialPan() {
+  panToElement(d3.select('#' + root.id));
+},
+800);
+
 
