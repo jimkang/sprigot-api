@@ -13,8 +13,8 @@ var i = 0,
 
 // The tree generates a left-to-right tree, and we want a top-to-bottom tree, 
 // so we flip x and y when we talk to it.
-var tree = d3.layout.tree()
-    .size([width, height]);
+var tree = d3.layout.tree();
+tree.nodeSize([160, 160]);
 
 var diagonal = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
