@@ -70,7 +70,7 @@ function update(source) {
     .attr('text-anchor', function(d) { 
       return d.children || d._children ? 'start' : 'end'; 
     })
-    .text(function(d) { return d.name; })
+    .text(function(d) { return d.title; })
     .style('fill-opacity', 1e-6);
 
   // Transition nodes to their new position.
@@ -175,7 +175,7 @@ function click(d) {
   update(d);
 
   // Fill in the side pane with the text.
-  d3.select('#textpane .textcontent').html(d.text);
+  d3.select('#textpane .textcontent').html(d.body);
   d3.select('#textpane .textcontent').style('display', 'block');
 }
 
