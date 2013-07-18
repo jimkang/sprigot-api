@@ -43,20 +43,20 @@ function update(source) {
 
   // Update the nodes.
   var node = graph.selectAll('g.node')
-      .data(nodes, function(d) { return d.id || (d.id = ++i); });
+    .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
   // Enter any new nodes at the parent's previous position.
   var nodeEnter = node.enter().append('g')
-      .attr('class', 'node')
-      .attr('transform', function(d) { 
-        return 'translate(' + source.y0 + ',' + source.x0 + ')'; 
-      })
-      .attr('id', function(d) { return d.id; })
-      .on('click', click);
+    .attr('class', 'node')
+    .attr('transform', function(d) { 
+      return 'translate(' + source.y0 + ',' + source.x0 + ')'; 
+    })
+    .attr('id', function(d) { return d.id; })
+    .on('click', click);
 
   nodeEnter.append('circle')
-      .attr('r', 1e-6)
-      .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
+    .attr('r', 1e-6)
+    .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
 
   nodeEnter.append('text')
     .attr('x', function(d) { 
@@ -87,53 +87,53 @@ function update(source) {
 
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
-      .duration(duration)
-      .attr('transform', function(d) { return 'translate(' + d.y + ',' + d.x + ')'; });
+    .duration(duration)
+    .attr('transform', function(d) { return 'translate(' + d.y + ',' + d.x + ')'; });
 
   nodeUpdate.select('circle')
-      .attr('r', 4.5)
-      .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
+    .attr('r', 4.5)
+    .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
 
   nodeUpdate.select('text')
-      .style('fill-opacity', 1);
+    .style('fill-opacity', 1);
 
   // Transition exiting nodes to the parent's new position.
   var nodeExit = node.exit().transition()
-      .duration(duration)
-      .attr('transform', function(d) { return 'translate(' + source.y + ',' + source.x + ')'; })
-      .remove();
+    .duration(duration)
+    .attr('transform', function(d) { return 'translate(' + source.y + ',' + source.x + ')'; })
+    .remove();
 
   nodeExit.select('circle')
-      .attr('r', 1e-6);
+    .attr('r', 1e-6);
 
   nodeExit.select('text')
-      .style('fill-opacity', 1e-6);
+    .style('fill-opacity', 1e-6);
 
   // Update the links…
   var link = graph.selectAll('path.link')
-      .data(links, function(d) { return d.target.id; });
+    .data(links, function(d) { return d.target.id; });
 
   // Enter any new links at the parent's previous position.
   link.enter().insert('path', 'g')
-      .attr('class', 'link')
-      .attr('d', function(d) {
-        var o = {x: source.x0, y: source.y0};
-        return diagonal({source: o, target: o});
-      });
+    .attr('class', 'link')
+    .attr('d', function(d) {
+      var o = {x: source.x0, y: source.y0};
+      return diagonal({source: o, target: o});
+    });
 
   // Transition links to their new position.
   link//.transition()
-      // .duration(duration)
-      .attr('d', diagonal);
+    // .duration(duration)
+    .attr('d', diagonal);
 
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
-      .duration(duration)
-      .attr('d', function(d) {
-        var o = {x: source.x, y: source.y};
-        return diagonal({source: o, target: o});
-      })
-      .remove();
+    .duration(duration)
+    .attr('d', function(d) {
+      var o = {x: source.x, y: source.y};
+      return diagonal({source: o, target: o});
+    })
+    .remove();
 
   // Stash the old positions for transition.
   nodes.forEach(function(d) {
