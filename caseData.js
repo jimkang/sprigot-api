@@ -1,31 +1,43 @@
 var caseDataSource = {
-  id: 'discovery',
-  name: 'Discovery',
-  text: 'Last September, I discovered that a friend of mine, \'A\', had been arrested.',
+  id: 'notonline',
+  name: 'Not online.',
+  text: 'A friend of mine, \'N\', had not been online in quite some time. He hadn\'t responded to texts or calls, either. I assumed that he had gone on vacation somewhere. At some point, I saw in Messages that our last chat had been almost a month ago.',
   children: [
     {
-      id: 'thecase',
-      name: 'The Case',
-      text: 'He was charged with stuff. They had a tip about plant growing equipment in a derelict storage space.',
+      id: 'awkwardness',
+      name: 'Awkward asking',
+      text: 'Not knowing anyone else that knew him that also did not primarily communicate with him online, I considered calling his family. That would be awkward, though, as I had not talked to them in decades. I imagine similar uncertainty and awkwardness happens to people in missing persons situations. If you go to great lengths to find someone, and it turns out they\'re not missing, you look like a fool. But if they are, and you delay in action, you are endangering them. I\'ve gone through micro versions of this the few times I haven\'t been able to get in touch with my wife for a few hours.'
+    },
+    {
+      id: 'googling',
+      name: 'Google: No need to talk!',
+      text: 'I tried Googling N\'s name with the area he lived in. And there it was.',
       children: [
         {
-          id: 'charges',
-          name: 'Charges',
-          text: 'He was charged with the manufacture of a controlled substance.',
-        },
-        {
-          id: 'feds',
-          name: 'The Feds',
-          text: 'The feds watched him for nine months.',
+          id: 'thecase',
+          name: 'The Case',
+          text: 'He was charged with stuff. They had a tip about plant growing equipment in a derelict storage space.',
           children: [
             {
-              id: 'money',
-              name: 'Money',
-              text: 'How much did that cost?',
+              id: 'charges',
+              name: 'Charges',
+              text: 'He was charged with the manufacture of a controlled substance.',
+            },
+            {
+              id: 'feds',
+              name: 'The Feds',
+              text: 'The feds watched him for nine months.',
               children: [
                 {
-                  name: 'What else could have been done with that money?',
-                  text: 'Feed four families for a year?'
+                  id: 'money',
+                  name: 'Money',
+                  text: 'How much did that cost?',
+                  children: [
+                    {
+                      name: 'What else could have been done with that money?',
+                      text: 'Feed four families for a year?'
+                    }
+                  ]
                 }
               ]
             }
