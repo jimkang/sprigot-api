@@ -3,6 +3,11 @@ body {
 	font-family: 'Futura', 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 20px;
   color: #eee;
+
+  background: -webkit-linear-gradient(top, #123, #012);
+  background: -moz-linear-gradient(top, #024, #012);
+  background: -ms-linear-gradient(top, #024, #012);
+  background: -o-linear-gradient(top, #024, #012);
 }
 
 svg {
@@ -40,7 +45,7 @@ svg {
 #textpane {
   font-family: Georgia, 'Book Antiqua';
   background-color: #ffe;
-  color: #433;
+  color: #403838;
   margin-left: 8px;
   -webkit-border-radius: 0.4em;
   -moz-border-radius: 0.4em;
@@ -86,14 +91,4 @@ section {
   margin: 0;
   height: 100%;
   width: 100% /* needed for Firefox */   
-}
-
-.gradientTop {
-  stop-color: #024;
-  stop-opacity: 0.2;
-}
-
-.gradientBottom {
-  stop-color: #012;
-  stop-opacity: 0.5;
 }
