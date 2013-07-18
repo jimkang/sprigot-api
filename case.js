@@ -175,7 +175,7 @@ function click(d) {
   update(d);
 
   // Fill in the side pane with the text.
-  d3.select('#textpane .textcontent').text(d.text);
+  d3.select('#textpane .textcontent').html(d.text);
   d3.select('#textpane .textcontent').style('display', 'block');
 }
 

@@ -6,7 +6,7 @@ var caseDataSource = {
     {
       id: 'awkwardness',
       name: 'Awkward asking',
-      text: 'Not knowing anyone else that knew him that also did not primarily communicate with him online, I considered calling his family. That would be awkward, though, as I had not talked to them in decades. I imagine similar uncertainty and awkwardness happens to people in missing persons situations. If you go to great lengths to find someone, and it turns out they\'re not missing, you look like a fool. But if they are, and you delay in action, you are endangering them. I\'ve gone through micro versions of this the few times I haven\'t been able to get in touch with my wife for a few hours.'
+      text: '<p>Not knowing anyone else that knew him that also did not primarily communicate with him online, I considered calling his family. That would be awkward, though, as I had not talked to them in decades.</p><p>I imagine similar uncertainty and awkwardness happens to people in missing persons situations. If you go to great lengths to find someone, and it turns out they\'re not missing, you look like a fool.</p><p>But if they are, and you delay in action, you are endangering them. I\'ve gone through micro versions of this the few times I haven\'t been able to get in touch with my wife for a few hours.</p>'
     },
     {
       id: 'googling',
