@@ -56,7 +56,10 @@ function update(source) {
 
   nodeEnter.append('circle')
     .attr('r', 1e-6)
-    .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
+    .style('fill', function(d) { 
+      return d._children ? 'lightsteelblue' : '#fff'; 
+    })
+    .style('fill-opacity', 0.7);
 
   nodeEnter.append('text')
     .attr('x', function(d) { 
@@ -70,29 +73,17 @@ function update(source) {
     .text(function(d) { return d.name; })
     .style('fill-opacity', 1e-6);
 
-  // // Capitalization matters when it comes to the foreignObject tag!
-  // nodeEnter.append('foreignObject').attr({
-  //   y: function(d) { return d.children || d._children ? -10 : 10; },
-  //   dx: '.35em',
-  //   width: function(d) { return d.rect.width - 40; },
-  //   height: function(d) { return d.rect.height - 40; }
-  // })
-  // .append('xhtml:body').attr({
-  //   // xmlns: "http://www.w3.org/1999/xhtml"
-  // })
-  // .append('p').text(
-  //   function setUpText(d) {
-  //     return d.text;
-  // });
-
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
     .duration(duration)
     .attr('transform', function(d) { return 'translate(' + d.y + ',' + d.x + ')'; });
 
   nodeUpdate.select('circle')
-    .attr('r', 4.5)
-    .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
+    .attr('r', 8)
+    .style('fill', function(d) { 
+      return d.visited ? 'lightsteelblue' : '#08a'; 
+      // return d._children ? 'lightsteelblue' : '#fff'; 
+    });
 
   nodeUpdate.select('text')
     .style('fill-opacity', 1);
@@ -180,10 +171,12 @@ function click(d) {
     var clickedEl = d3.select(clickedNode);
     panToElement(clickedEl);
   }
+  d.visited = true;
   update(d);
 
   // Fill in the side pane with the text.
-  d3.select('#textpane').text(d.text);
+  d3.select('#textpane .textcontent').text(d.text);
+  d3.select('#textpane .textcontent').style('display', 'block');
 }
 
 
@@ -205,6 +198,8 @@ BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'),
 root.children.forEach(collapse);
 collapse(root);
 update(root);
+
+d3.select('#textpane .textcontent').style('display', 'none');
 
 setTimeout(function initialPan() {
   panToElement(d3.select('#' + root.id));
