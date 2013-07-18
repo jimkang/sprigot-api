@@ -59,7 +59,8 @@ function update(source) {
     .style('fill', function(d) { 
       return d._children ? 'lightsteelblue' : '#fff'; 
     })
-    .style('fill-opacity', 0.7);
+    .style('fill-opacity', 0.7)
+    .style('stroke', 'rgba(0, 64, 192, 0.7)');
 
   nodeEnter.append('text')
     .attr('x', function(d) { 
@@ -83,6 +84,9 @@ function update(source) {
     .style('fill', function(d) { 
       return d.visited ? 'lightsteelblue' : '#08a'; 
       // return d._children ? 'lightsteelblue' : '#fff'; 
+    })
+    .style('stroke-width', function(d) { 
+      return d._children ? '1.4em' : 0;
     });
 
   nodeUpdate.select('text')
