@@ -29,6 +29,11 @@ var caseDataSource = {
               body: "<p>Most of the reporting was simply printing whatever the police wanted to say, as well as reaction quotes from the neighbors. Not incredibly useful. However, they did post the criminal complaint, which had a wealth of reliable information.</p><p>N's charged was Manufacturing a Schedule I Controlled Substance, in violation of Title 21 United States Code, Sections 841(a)(1) and 841(b)(l)(B). It says that if the violation involves<blockquote>100 kilograms or more of a mixture or substance containing a detectable amount of marihuana, or 100 or more marihuana plants regardless of weight</blockquote><blockquote>...such person shall be sentenced to a term of imprisonment which may not be less than 5 years and not more than 40 years...</blockquote>The local media had reported an estimated 500 plants, so he was likely well above 100. An affidavit was attached to the complaint. It went through the smooth moves the DEA conducted to build a case for a warrant.</p>",
               children: [
                 {
+                  id: "mandatoryminimum",
+                  title: "Mandatory minimum",
+                  body: "<p>A minimum of five years in prison for growing marijuana is insane.</p><p>First, the principle of the mandatory minimum is stupid. Judges are highly trained and selected at great effort. Mandatory minimum laws toss that highly honed judgery aside for a few lines of <a href=\"https://en.wikipedia.org/wiki/Conditional_(computer_programming)#If.E2.80.93then.28.E2.80.93else.29\">if-then-else code</a>.</p><p>There's an organization called ALEC, the American Legislative Exchange Council, that writes \"model bills\" for legislators. Its corporate sponsors include Corrections Corporation of America (CCA). One of ALEC's model bills was mandatory minimum sentences. <a href=\"http://americanradioworks.publicradio.org/features/corrections/laws1.html\">Much more here.</a></p><p>And then there is the sheer ridiculousness of being imprisoned for FIVE YEARS for growing weed. In fact, any jail time at all is ridiculous. There is zero jail time for making and selling your own alcohol.</p>"
+                },
+                {
                   id: "investigation",
                   title: "Investigation",
                   body: "According to the criminal complaint, ",
