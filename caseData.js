@@ -26,7 +26,7 @@ var caseDataSource = {
             {
               id: "charge",
               title: "The charge",
-              body: "<p>Most of the reporting was simply printing whatever the police wanted to say, as well as reaction quotes from the neighbors. Not incredibly useful. However, they did post the criminal complaint, which had a wealth of reliable information.</p><p>N's charge was Manufacturing a Schedule I Controlled Substance, in violation of Title 21 United States Code, Sections 841(a)(1) and 841(b)(l)(B). It says that if the violation involves<blockquote>100 kilograms or more of a mixture or substance containing a detectable amount of marihuana, or 100 or more marihuana plants regardless of weight</blockquote><blockquote>...such person shall be sentenced to a term of imprisonment which may not be less than 5 years and not more than 40 years...</blockquote>The local media had reported an estimated 500 plants, so he was likely well above 100. An affidavit was attached to the complaint. It went through the smooth moves the DEA conducted to build a case for a warrant.</p>",
+              body: "<p>Most of the reporting was simply printing whatever the police wanted to say, as well as reaction quotes from the neighbors. Not incredibly useful. However, they did post the criminal complaint, which had a wealth of reliable information.</p><p>N's charge was Manufacturing a Schedule I Controlled Substance, in violation of Title 21 United States Code, Sections 841(a)(1) and 841(b)(l)(B). It says that if the violation involves<blockquote>100 kilograms or more of a mixture or substance containing a detectable amount of marihuana, or 100 or more marihuana plants regardless of weight</blockquote><blockquote>...such person shall be sentenced to a term of imprisonment which may not be less than 5 years and not more than 40 years...</blockquote>The charge was for over 500 plants, so he was well above 100. An affidavit was attached to the complaint. It went through the smooth moves the DEA conducted to build a case for a warrant.</p>",
               children: [
                 {
                   id: "mandatoryminimum",
@@ -54,27 +54,28 @@ var caseDataSource = {
                           body: "<p>I was disgusted by Facebook's role in this, both as a tool and as a company. I never want to accidentally end up a link in a chain that fucks up good people for no reason. So, I decided to nuke all of my content there. I had already stopped posting to it a little while ago, but I had left my stuff up.</p><p>I know it's likely that nothing is truly deleted there – just marked as deleted. Still, I want to make it hard as I can for entities tapping into Facebook and for Facebook itself to exploit any information I may have offered.</p><p>I wrote a set of Python scripts that used their Graph API to delete whatever I could. Their API is wonky, but I persisted until I got it. I know it wasn't entirely rational, and not a platonically optimal use of my time, but it felt right.</p>"
                         }
                       ]
-                    }
-                  ]
-                },
-                {
-                  id: "feds",
-                  title: "The Feds",
-                  body: "The feds watched him for nine months.",
-                  children: [
+                    },
                     {
-                      id: "money",
-                      title: "Money",
-                      body: "How much did that cost?",
+                      id: "concernedcitizen",
+                      title: "Concerned citizen",
+                      body: "A year and a half after the storage facility incident, a 'concerned citizen' called to complain about one of his neighbors, who happened to be N. He complained that N's house smelled weird. His other complaints were that N was never outside, and no lights were ever on inside his house, except for possibly some screens.</p><p>They had not connected this complaint to the storage locker, yet, <i>this complaint was enough</i> for them to start investigating the property.",
                       children: [
                         {
-                          title: "What else could have been done with that money?",
-                          body: "Feed four families for a year?"
+                          id: "garbageandmail",
+                          title: "Garbage, mail, and bills",
+                          body: "<p>Law enforcement started by looking through property records and his garbage and mail, which I guess is legal, as long as they don't open the mail. Through the mail, they were able to connect N to a person we'll call, Z, Jr., who is related to the aforementioned Z, Sr.</p><p>Then, they started <i>three months</i> of surveillance. Eventually, they got N's electric bills which were high and characteristic of the cost of operating lots of indoor growing lamps.</p><p>That, along with another chat with Concerned Citizen, plus the connections to the Zs, got them their warrant.</p>",
+                          children: [
+                            {
+                              id: "nothingtohide",
+                              title: "Nothing to hide?",
+                              body: "<p>Let's consider for a moment, the implications of the police digging through the garbage and mail of everyone that is reported to be weird and unlike the other people in the neighborhood. Let's say you think that marijuana is the scourge of mankind, even. Supposing that, they struck gold in this case.</p><p>But what if there were something about you that caught the eye of your neighborhood busybody? Would it be fair for the police and some agency to start digging through your garbage because someone made a specious complaint about you? If so, should we then all live our lives as though someone might start going through our garbage and mail?</p><p>If your answer is \"I have nothing to hide\", maybe you should start with telling me where you live, and we can see if you have nothing to hide?</p><p>(I'm mostly just kidding, as I don't have time to provide you with personal Stasi service, but I hope that for a moment, you thought I wasn't.)</p>",
+                            }
+                          ]
                         }
                       ]
                     }
                   ]
-                }
+                }                
               ]
             },
             {
