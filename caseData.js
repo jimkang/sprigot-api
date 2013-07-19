@@ -16,7 +16,7 @@ var caseDataSource = {
         {
           id: "localnews",
           title: "Local news web sites",
-          body: "<p>There were several hits on local news web sites, as well as web sites that aggregated and copied content from local news web sites. They all said the same thing, but I clicked on all of them.</p><p>He had been arrested by the DEA and was being held in jail for the manufacture of marijuana with the intent to distribute.</p><p>They had pictures of him being lead from his home by law enforcement. My friend C found video footage of N being walked out and big weed plants being brought out of the house, trophy-style. It was surreal.</p>",
+          body: "<p>There were several hits on local news web sites, as well as web sites that aggregated and copied content from local news web sites. They all said the same thing, but I clicked on all of them.</p><p>He had been arrested by the DEA and was being held in jail for the manufacture of marijuana with the intent to distribute.</p><p>They had pictures of him being led from his home by law enforcement. My friend C found video footage of N being walked out and big weed plants being brought out of the house, trophy-style. It was surreal.</p>",
           children: [
             {
               id: "dopeonthetable",
@@ -26,7 +26,7 @@ var caseDataSource = {
             {
               id: "charge",
               title: "The charge",
-              body: "<p>Most of the reporting was simply printing whatever the police wanted to say, as well as reaction quotes from the neighbors. Not incredibly useful. However, they did post the criminal complaint, which had a wealth of reliable information.</p><p>N's charged was Manufacturing a Schedule I Controlled Substance, in violation of Title 21 United States Code, Sections 841(a)(1) and 841(b)(l)(B). It says that if the violation involves<blockquote>100 kilograms or more of a mixture or substance containing a detectable amount of marihuana, or 100 or more marihuana plants regardless of weight</blockquote><blockquote>...such person shall be sentenced to a term of imprisonment which may not be less than 5 years and not more than 40 years...</blockquote>The local media had reported an estimated 500 plants, so he was likely well above 100. An affidavit was attached to the complaint. It went through the smooth moves the DEA conducted to build a case for a warrant.</p>",
+              body: "<p>Most of the reporting was simply printing whatever the police wanted to say, as well as reaction quotes from the neighbors. Not incredibly useful. However, they did post the criminal complaint, which had a wealth of reliable information.</p><p>N's charge was Manufacturing a Schedule I Controlled Substance, in violation of Title 21 United States Code, Sections 841(a)(1) and 841(b)(l)(B). It says that if the violation involves<blockquote>100 kilograms or more of a mixture or substance containing a detectable amount of marihuana, or 100 or more marihuana plants regardless of weight</blockquote><blockquote>...such person shall be sentenced to a term of imprisonment which may not be less than 5 years and not more than 40 years...</blockquote>The local media had reported an estimated 500 plants, so he was likely well above 100. An affidavit was attached to the complaint. It went through the smooth moves the DEA conducted to build a case for a warrant.</p>",
               children: [
                 {
                   id: "mandatoryminimum",
@@ -36,7 +36,26 @@ var caseDataSource = {
                 {
                   id: "investigation",
                   title: "Investigation",
-                  body: "According to the criminal complaint, ",
+                  body: "<p>According to the affidavit, the DEA started the case about two years before the arrest. The manager of a storage facility (which I looked up and appears to be sheds behind a private home) busted into storage units because of unpaid rent and found a bunch of indoor marijuana growing equipment - grow lamps, plastic swimming pools, pots, etc.</p><p>They traced the renters to a business, and one of the owners of that business had a Facebook account. That Facebook account had pictures of the guy with pot plants.</p><p>They also traced the license plate of a van that came to pick the equipment up a few days later to someone we'll call Z, Sr. No connection to N, at this point.</p>",
+                  children: [
+                    {
+                      id: "wall",
+                      title: "Someone's wall",
+                      body: "<p>There's a lot that bothers me about this Facebook connection. First, how incredibly stupid of this idiotic fool to post pictures of himself with pot plants, knowing what he's got in his storage unit, to Facebook. Even if you limit access to immediate friends, what's to stop them from talking? And if you are not concerned with your own freedom, what about that of your associates?</p><p>More importantly, how did law enforcement get into his Facebook pictures? I think it's possible, but highly unlikely that those photos were completely public. Did they get a subpoena? There's no mention of it in the affidavit, which you'd think there'd be.</p>",
+                      children: [
+                        {
+                          id: "facebook",
+                          title: "Facebook and you",
+                          body: "<p>There's a <a href=\"http://blog.thephoenix.com/BLOGS/phlog/archive/2012/04/06/when-police-subpoena-your-facebook-information-heres-what-facebook-sends-cops.aspx\">Boston Phoenix post</a> on what Facebook gives law enforcement when they subpoena accounts. In that case, they handed over \"text printouts of Markoff's wall posts, photos he uploaded as well as photos he was tagged in, a comprehensive list of friends with their Facebook IDs, and a long table of login and IP data.\" Facebook went above and beyond, returning not only IPs and timestamps but also the URLs requested.</p><p>I find it disturbing that these Facebook demands require only the authorization of the district attorney, unlike a wiretap, which requires a judge's approval and specifics on what you're trying to capture. Yet the information that Facebook hands over is far more comprehensive and invasive.</p>"
+                        },
+                        {
+                          id: "nukeit",
+                          title: "Nuking my content",
+                          body: "<p>I was disgusted by Facebook's role in this, both as a tool and as a company. I never want to accidentally end up a link in a chain that fucks up good people for no reason. So, I decided to nuke all of my content there. I had already stopped posting to it a little while ago, but I had left my stuff up.</p><p>I know it's likely that nothing is truly deleted there – just marked as deleted. Still, I want to make it hard as I can for entities tapping into Facebook and for Facebook itself to exploit any information I may have offered.</p><p>I wrote a set of Python scripts that used their Graph API to delete whatever I could. Their API is wonky, but I persisted until I got it. I know it wasn't entirely rational, and not a platonically optimal use of my time, but it felt right.</p>"
+                        }
+                      ]
+                    }
+                  ]
                 },
                 {
                   id: "feds",
