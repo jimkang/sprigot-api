@@ -68,8 +68,9 @@ function update(source) {
     })
     .attr('y', '-1em')
     .attr('dy', '.35em')
-    .attr('text-anchor', function(d) { 
-      return d.children || d._children ? 'start' : 'end'; 
+    .attr('text-anchor', function(d) {
+      // Remember: swapXAndY().
+      return (d.y > 0) ? 'start' : 'end'; 
     })
     .text(function(d) { return d.title; })
     .style('fill-opacity', 1e-6);
