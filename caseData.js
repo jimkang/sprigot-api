@@ -1,6 +1,6 @@
 var caseDataSource = {
   id: "notonline",
-  title: "Not online",
+  title: "He's not online",
   body: "<p>A friend of mine, 'N', had not been online in quite some time. He hadn't responded to texts or calls, either. I assumed that he had gone on vacation to some place where his phone was no good.</p><p>At some point, I saw in Messages that our last chat had been almost a month ago.</p>",
   children: [
     {
@@ -31,7 +31,26 @@ var caseDataSource = {
                 {
                   id: "mandatoryminimum",
                   title: "Mandatory minimum",
-                  body: "<p>A minimum of five years in prison for growing marijuana is insane.</p><p>First, the principle of the mandatory minimum is stupid. Judges are highly trained and selected at great effort. Mandatory minimum laws toss that highly honed judgery aside for a few lines of <a href=\"https://en.wikipedia.org/wiki/Conditional_(computer_programming)#If.E2.80.93then.28.E2.80.93else.29\">if-then-else code</a>.</p><p>There's an organization called ALEC, the American Legislative Exchange Council, that writes \"model bills\" for legislators. Its corporate sponsors include Corrections Corporation of America (CCA). One of ALEC's model bills was mandatory minimum sentences. <a href=\"http://americanradioworks.publicradio.org/features/corrections/laws1.html\">Much more here.</a></p><p>And then there is the sheer ridiculousness of being imprisoned for FIVE YEARS for growing weed. In fact, any jail time at all is ridiculous. There is zero jail time for making and selling your own alcohol.</p>"
+                  body: "<p>A minimum of five years in prison for growing marijuana is insane.</p><p>First, the principle of the mandatory minimum is stupid. Judges are highly trained and selected at great effort. Mandatory minimum laws toss that highly honed judgery aside for a few lines of <a href=\"https://en.wikipedia.org/wiki/Conditional_(computer_programming)#If.E2.80.93then.28.E2.80.93else.29\">if-then-else code</a>.</p><p>There's an organization called ALEC, the American Legislative Exchange Council, that writes \"model bills\" for legislators. Its corporate sponsors include Corrections Corporation of America (CCA). One of ALEC's model bills was mandatory minimum sentences. <a href=\"http://americanradioworks.publicradio.org/features/corrections/laws1.html\">Much more here.</a></p><p>And then there is the sheer ridiculousness of being imprisoned for FIVE YEARS for growing weed. In fact, any jail time at all is ridiculous. There is zero jail time for making and selling your own alcohol.</p>",
+                  children: [
+                    {
+                      id: "fiveyears",
+                      title: "Five years",
+                      body: "<p>Just how big five years in prison could be never sunk in before this. If N was sentenced to five years in prison, he'd be 35 going in and 40 coming out. Can you imagine missing ages 35 to 40? How informed and different are you as a result of </p></p><p>When I thought about it further, I realized that there was no five-year span in anyone's life that it would be OK to miss. Anything before the age of 18 is crucial to your development, socially, mentally, and possibly even physically. Your early twenties are when you learn to be an adult. My late twenties, personally, are when I started to be able to relax. My early thirties were the beginning of my relationship with the person I would later marry.</p><p>I can come up with a justification like the ones above for any five-year period. About the only time I could come up with that would not be a big deal is perhaps at the end of one's life after suffering a brain injury that made it hard to take in the outside world anyway.</p>",
+                      children: [
+                        {
+                          id: "transformativeeffects",
+                          title: "Transformation",
+                          body: "<p>My wife pointed out to me that, after five years, especially after five years of prison, you can be changed entirely. In addition to the gross punitive effects of the deprivation of freedom and privacy for that long, there is an alteration of a person as a result of that environment that lasts past a prisoner's release date. I don't want to occur to N.</p>"
+                        },
+                        {
+                          id: "safetyvalve",
+                          title: "Safety valve",
+                          body: "<p>Fortunately, there's a 'safety valve' law that allows for prosecutors to accept deals for less than the minimum. However, getting a plea bargain is unlikely without a lawyer, and the start position for the bargaining is set at five years, which as discussed, is enormous, especially for a situation involving no violence, coercion, or theft.</p><p>N was telling me that an effect of the mandatory minimum is that bigger time, rich, and violent drug dealers benefit from the bar being set initially at five years. Whereas small time drug dealers with no money for private lawyers often get the five years.</p>"
+                        }
+                      ]
+                    }
+                  ]
                 },
                 {
                   id: "investigation",
@@ -81,7 +100,7 @@ var caseDataSource = {
                                     {
                                       id: "transcript",
                                       title: "Transcripts",
-                                      body: "<p>While I was waiting for a reply and wondering if any would come at all, I felt information-starved. So, I tried to fish out more details by getting the transcript of his arraignment.</p><p>Unlike some kind of modern service, courts don't just post their transcripts on their web site. Instead, there's a little cottage industry of stenographers that go to hearings, transcribes them, then sells them for $100, if you're the first buyer. $30 if you're the second or later buyers</p><p>I seesawed on it, and ultimately decided to skip it, as I guessed that very little additional detail was likely to spring from an arraignment.</p>"
+                                      body: "<p>While I was waiting for a reply and wondering if any would come at all, I felt information-starved. So, I tried to fish out more details by getting the transcript of his arraignment.</p><p>Unlike some kind of modern service, courts don't just post their transcripts on their web site. Instead, there's a little cottage industry of stenographers that go to hearings, transcribes them, then sells them for $100, if you're the first buyer. $30 if you're the second or later buyers.</p><p>I seesawed on it, and ultimately decided to skip it, as I guessed that very little additional detail was likely to spring from an arraignment.</p>"
                                     }
                                   ]
                                 }
