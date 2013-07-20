@@ -211,4 +211,16 @@ setTimeout(function initialPan() {
 },
 800);
 
+/* Persistence */
+
+function reconstituteSourceNode(treedNode) {
+  var sourceNode = _.pick(treedNode, 'id', 'title', 'body');
+  if (treedNode.children) {
+    sourceNode.children = _.map(treedNode.children, reconstituteSourceNode);
+  }
+  else if (treedNode._children) {
+    sourceNode.children = _.map(treedNode._children, reconstituteSourceNode);
+  }
+  return sourceNode;
+}
 
