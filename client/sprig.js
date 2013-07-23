@@ -1,4 +1,3 @@
-
 var board = d3.select('svg#svgBoard');
 var graph = board.select('g#graphRoot')
   .attr('transform', 'translate(' + 200 + ',' + 200 + ')');
@@ -10,6 +9,10 @@ var margin = {top: 20, right: 10, bottom: 20, left: 10},
 var i = 0,
   duration = 750,
   root;
+
+var settings = {
+  serverURL: 'http://127.0.0.1:3000'
+};
 
 // The tree generates a left-to-right tree, and we want a top-to-bottom tree, 
 // so we flip x and y when we talk to it.
@@ -185,10 +188,6 @@ function click(d) {
 }
 
 
-root = caseDataSource;
-root.x0 = height / 2;
-root.y0 = 0;
-
 function collapse(d) {
   if (d.children) {
     d._children = d.children;
@@ -200,16 +199,7 @@ function collapse(d) {
 BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
   d3.select('g#graphRoot'));
 
-root.children.forEach(collapse);
-collapse(root);
-update(root);
-
 d3.select('#textpane .textcontent').style('display', 'none');
-
-setTimeout(function initialPan() {
-  panToElement(d3.select('#' + root.id));
-},
-800);
 
 /* Persistence */
 
@@ -223,4 +213,41 @@ function reconstituteSourceNode(treedNode) {
   }
   return sourceNode;
 }
+
+/* Initialize */
+
+var sprigRequest = {
+  id: 'caseSprigReq1',
+  opname: 'getSprig',
+  params: {
+    sprigId: 'sprig1'
+  }
+};
+
+var xhr = new XMLHttpRequest();
+xhr.open('POST', settings.serverURL);
+xhr.setRequestHeader('Content-Type', 'application/json');
+xhr.setRequestHeader('accept', 'application/json');
+
+xhr.onload = function gotSprig() {
+  if (this.status === 200) {
+    root = JSON.parse(this.responseText);
+    root.x0 = height / 2;
+    root.y0 = 0;
+
+    root.children.forEach(collapse);
+    collapse(root);
+    update(root);
+
+    setTimeout(function initialPan() {
+      panToElement(d3.select('#' + root.id));
+    },
+    800);
+  }
+  else {
+    console.log('Error while getting sprig.');
+  }
+};
+
+xhr.send(JSON.stringify([sprigRequest]));
 
