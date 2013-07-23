@@ -10,9 +10,19 @@ if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() === 'dev') {
 
 
 http.createServer(function takeRequest(req, res) {
-  if ('content-type' in req.headers && req.method === 'POST' &&
+  debugger;
+  var headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE',
+    'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+  };
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200, headers);
+    res.end('OK');
+  }
+  else if ('content-type' in req.headers && req.method === 'POST' &&
     req.headers['content-type'].toLowerCase() === 'application/json') {
-      debugger;
       var body = '';
 
       req.on('data', function (data) {
@@ -28,7 +38,8 @@ http.createServer(function takeRequest(req, res) {
             case 'getSprig':
               // debugger;
               if (op.params.sprigId === 'sprig1') {
-                res.writeHead(200, {'Content-Type': 'text/json'});
+                headers['Content-Type'] = 'text/json';
+                res.writeHead(200, headers);
                 res.end(JSON.stringify(caseDataSource));
                 responded = true;
               }
