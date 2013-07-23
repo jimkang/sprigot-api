@@ -83,6 +83,7 @@ describe('A visitor', function getASprig() {
       method: 'POST',
       jsonParams: [
         {
+          id: 'sprig3req',
           opname: 'getSprig',
           params: {
             sprigId: 'sprig3'
@@ -103,6 +104,7 @@ describe('A visitor', function getASprig() {
       method: 'POST',
       jsonParams: [
         {
+          id: 'sprig1req',
           opname: 'getSprig',
           params: {
             sprigId: 'sprig1'
