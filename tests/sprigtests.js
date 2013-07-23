@@ -1,6 +1,7 @@
 var assert = require('assert');
 var _ = require('underscore');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var caseDataSource = require('../client/caseData');
 
 /* Utils */
 
@@ -74,24 +75,47 @@ var session = {
 /* The tests */
 
 /* Actor: Visitor */
+
 describe('A visitor', function getASprig() {
-  it('should be able to get a sprig', function getSprig() {
+  it('should not get a sprig using the wrong id', function getSprig(testDone) {
     utils.sendJSONRequest({
       url: settings.baseURL,
       method: 'POST',
       jsonParams: [
         {
-          getSprig: {
-            sprigId: 'asdf'
+          opname: 'getSprig',
+          params: {
+            sprigId: 'sprig3'
           }
         }
       ],
       done: function doneGettingSprig(error, xhr) {
         debugger;
-        assert.equal(xhr.responseText, 'Hello World\n');
+        assert.equal(xhr.responseText, '[{"error": "whut"}]');
+        testDone();
+      }
+    });
+  });
+
+  it('should get a sprig', function getSprig(testDone) {
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: [
+        {
+          opname: 'getSprig',
+          params: {
+            sprigId: 'sprig1'
+          }
+        }
+      ],
+      done: function doneGettingSprig(error, xhr) {
+        assert.equal(xhr.responseText, JSON.stringify(caseDataSource));
+        testDone();
       }
     });
 
   });
+
 });
 

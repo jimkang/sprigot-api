@@ -142,3 +142,5 @@ var caseDataSource = {
     }
   ]
 };
+
+module.exports = caseDataSource;
