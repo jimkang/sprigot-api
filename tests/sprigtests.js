@@ -116,7 +116,36 @@ describe('A visitor', function getASprig() {
         testDone();
       }
     });
+  });
 
+  it('should post a sprig', function postSprig(testDone) {
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: [
+        {
+          id: 'sprig2req',
+          opname: 'postSprig',
+          params: {
+            sprigId: 'sprig2',
+            sprigContents: caseDataSource
+          }
+        }
+      ],
+      done: function donePostingSprig(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        assert.deepEqual(response, [
+          {
+            id: 'sprig2req',
+            status: 'posted',
+            info: {
+              sprigId: 'sprig2'
+            }
+          }
+        ]);
+        testDone();
+      }
+    });
   });
 
 });

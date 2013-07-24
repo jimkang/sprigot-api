@@ -10,6 +10,7 @@
     "xmlhttprequest": "~1.6.0"
   },
   "dependencies": {
-    "underscore": "~1.5.1"
+    "underscore": "~1.5.1",
+    "level": "~0.10.0"
   }
 }
