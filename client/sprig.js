@@ -217,8 +217,7 @@ function reconstituteSourceNode(treedNode) {
 /* Initialize */
 
 var sprigRequest = {
-  id: 'caseSprigReq1',
-  opname: 'getSprig',
+  op: 'getSprig',
   params: {
     sprigId: 'sprig1'
   }
@@ -230,24 +229,30 @@ xhr.setRequestHeader('Content-Type', 'application/json');
 xhr.setRequestHeader('accept', 'application/json');
 
 xhr.onload = function gotSprig() {
+  var retrieved = false;
+
   if (this.status === 200) {
-    root = JSON.parse(this.responseText);
-    root.x0 = height / 2;
-    root.y0 = 0;
+    var response = JSON.parse(this.responseText);
+    if ('req1' in response && response.req1.status === 'Found') {
+      retrieved = true;
+      root = response.req1.result;
+      root.x0 = height / 2;
+      root.y0 = 0;
 
-    root.children.forEach(collapse);
-    collapse(root);
-    update(root);
+      root.children.forEach(collapse);
+      collapse(root);
+      update(root);
 
-    setTimeout(function initialPan() {
-      panToElement(d3.select('#' + root.id));
-    },
-    800);
+      setTimeout(function initialPan() {
+        panToElement(d3.select('#' + root.id));
+      },
+      800);
+    }
   }
-  else {
+  if (!retrieved) {
     console.log('Error while getting sprig.');
   }
 };
 
-xhr.send(JSON.stringify([sprigRequest]));
+xhr.send(JSON.stringify({req1: sprigRequest}));
 
