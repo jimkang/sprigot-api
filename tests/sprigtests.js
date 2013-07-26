@@ -148,5 +148,52 @@ describe('A visitor', function getASprig() {
     });
   });
 
+  it('should post a sprig, and also get a sprig', function postAndGetSprig(testDone) {
+    var testSprigContents = {
+      id: 'one',
+      title: 'One',
+      body: 'First, there was one.',
+      children: [
+        {
+          id: 'two',
+          title: 'Two',
+          body: 'Then, there were two.'
+        }
+      ]
+    };
+
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        sprig1req: {
+          op: 'postSprig',
+          params: {
+            sprigId: 'sprig10',
+            sprigContents: testSprigContents
+          }
+        },
+        sprig2req: {
+          op: 'getSprig',
+          params: {
+            sprigId: 'sprig1'
+          }
+        }
+      },
+      done: function donePostingAndGettingSprig(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        console.log(response);
+        assert.deepEqual(response.sprig1req, {
+          status: 'posted',
+          result: {
+            sprigId: 'sprig10'
+          }
+        });
+        assert.deepEqual(response.sprig2req.result, caseDataSource);        
+        testDone();
+      }
+    });
+  });
+
 });
 
