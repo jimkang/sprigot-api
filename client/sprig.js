@@ -256,3 +256,12 @@ xhr.onload = function gotSprig() {
 
 xhr.send(JSON.stringify({req1: sprigRequest}));
 
+var textpaneSel = d3.select('#textpane');
+textpaneSel.on('dblclick', function doubleClicked() {
+  var editable = textpaneSel.attr('contenteditable');
+  if (typeof editable === 'string') {
+    editable = (editable !== 'false');
+  }
+  textpaneSel.attr('contenteditable', !editable);
+});
+
