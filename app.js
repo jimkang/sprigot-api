@@ -76,7 +76,7 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
     var jobKey = jobKeys[i];
     var job = jobs[jobKey];
     switch (job.op) {
-      case 'getSprig':
+      case 'getSprig':        
         if (job.params.sprigId === 'sprig1') {
           jobComplete('Found', jobKey, caseDataSource);
         }
@@ -86,14 +86,16 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
         break;
       case 'postSprig':
         if (job.params.sprigId) {
+          var savedJobKey = jobKey;
+          var savedJob = job;
           db.put(job.params.sprigId, job.params.sprigContents, 
             function putDbDone(error) {
               if (error) {
-                jobComplete('Database error', jobKey, error);
+                jobComplete('Database error', savedJobKey, error);
               }
               else {
-                jobComplete('posted', jobKey, {
-                  sprigId: 'sprig2'
+                jobComplete('posted', savedJobKey, {
+                  sprigId: savedJob.params.sprigId
                 });
               }
             }
