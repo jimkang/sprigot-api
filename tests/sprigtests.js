@@ -81,18 +81,22 @@ describe('A visitor', function getASprig() {
     utils.sendJSONRequest({
       url: settings.baseURL,
       method: 'POST',
-      jsonParams: [
-        {
-          id: 'sprig3req',
-          opname: 'getSprig',
+      jsonParams: {
+        sprig3req: {
+          op: 'getSprig',
           params: {
             sprigId: 'sprig3'
           }
         }
-      ],
+      },
       done: function doneGettingSprig(error, xhr) {
-        debugger;
-        assert.equal(xhr.responseText, '[{"error": "whut"}]');
+        var response = JSON.parse(xhr.responseText);
+        assert.deepEqual(response, {
+          "sprig3req": {
+            "status":"Not found",
+            "result":null
+          }
+        });
         testDone();
       }
     });
@@ -102,17 +106,17 @@ describe('A visitor', function getASprig() {
     utils.sendJSONRequest({
       url: settings.baseURL,
       method: 'POST',
-      jsonParams: [
-        {
-          id: 'sprig1req',
-          opname: 'getSprig',
+      jsonParams: {
+        sprig1req: {
+          op: 'getSprig',
           params: {
             sprigId: 'sprig1'
           }
         }
-      ],
+      },
       done: function doneGettingSprig(error, xhr) {
-        assert.equal(xhr.responseText, JSON.stringify(caseDataSource));
+        var response = JSON.parse(xhr.responseText);
+        assert.deepEqual(response.sprig1req.result, caseDataSource);
         testDone();
       }
     });
@@ -122,27 +126,23 @@ describe('A visitor', function getASprig() {
     utils.sendJSONRequest({
       url: settings.baseURL,
       method: 'POST',
-      jsonParams: [
-        {
-          id: 'sprig2req',
-          opname: 'postSprig',
+      jsonParams: {
+        sprig2req: {
+          op: 'postSprig',
           params: {
             sprigId: 'sprig2',
             sprigContents: caseDataSource
           }
         }
-      ],
+      },
       done: function donePostingSprig(error, xhr) {
         var response = JSON.parse(xhr.responseText);
-        assert.deepEqual(response, [
-          {
-            id: 'sprig2req',
-            status: 'posted',
-            info: {
-              sprigId: 'sprig2'
-            }
+        assert.deepEqual(response.sprig2req, {
+          status: 'posted',
+          result: {
+            sprigId: 'sprig2'
           }
-        ]);
+        });
         testDone();
       }
     });

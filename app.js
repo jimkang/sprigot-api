@@ -1,6 +1,7 @@
 var http = require('http');
 var url = require('url');
 var levelup = require('level');
+var _ = require('underscore');
 
 var caseDataSource = require('./client/caseData');
 var port = 80;
@@ -32,16 +33,7 @@ http.createServer(function takeRequest(req, res) {
     });
 
     req.on('end', function doneReadingData() {
-      respondToRequestWithBody(req, body, res, headers, 
-        function done(error, result) {
-          if (error) {
-            reportError(error);
-          }
-          else if (!result) {
-            respondThatReqWasNotUnderstood(res);
-          }
-        }
-      );
+      respondToRequestWithBody(req, body, res, headers);
     });
   }
   else {
@@ -51,72 +43,71 @@ http.createServer(function takeRequest(req, res) {
 .listen(port, '127.0.0.1');
 
 
-// done's result param will be true if it responded.
-function respondToRequestWithBody(req, body, res, headersThusFar, done) {  
-  var ops = JSON.parse(body);
+function respondToRequestWithBody(req, body, res, baseHeaders) {  
+  var jobs = JSON.parse(body);
   var responded = false;
-  // TODO: Batch together responses to each op. Require hash instead of 
-  // array as top level wrapper. Require unique ids for each op.
-  // Or should I? Maybe just order results in the order of the requests?
-  // The requests aren't going to finish in order, though.
-  ops.forEach(function runOp(op) {
-    switch (op.opname) {
+  var jobKeys = _.keys(jobs);
+  var jobCount = jobKeys.length;
+  var jobsDone = 0;
+  var responses = {};
+
+  var headers = _.clone(baseHeaders);
+  headers['Content-Type'] = 'text/json';
+  debugger;
+
+  function jobComplete(status, jobKey, result) {
+    debugger;
+    responses[jobKey] = {
+      status: status,
+      result: result
+    };
+
+    jobsDone = jobsDone + 1;
+    if (jobsDone >= jobCount) {
+      res.writeHead(200, headers);
+      res.end(JSON.stringify(responses));
+    }
+  }
+  
+  // We'll get a response for each, then write them out when we have them all.
+  // Promises? Generator? Fibers? Nah, just do 'em sequentially. If any job
+  // takes particularly long, write a response now, then start doing it async.
+  for (var i = 0; i < jobCount; ++i) {
+    var jobKey = jobKeys[i];
+    var job = jobs[jobKey];
+    switch (job.op) {
       case 'getSprig':
-        if (op.params.sprigId === 'sprig1') {
-          headersThusFar['Content-Type'] = 'text/json';
-          res.writeHead(200, headersThusFar);
-          res.end(JSON.stringify(caseDataSource));
-          done(null, true);
+        if (job.params.sprigId === 'sprig1') {
+          jobComplete('Found', jobKey, caseDataSource);
         }
         else {
-          done(null, false);
+          jobComplete('Not found', jobKey, null);
         }
         break;
-      case 'postSprig': 
-        if (op.params.sprigId) {
-          db.put(op.params.sprigId, op.params.sprigContents, 
+      case 'postSprig':
+        if (job.params.sprigId) {
+          db.put(job.params.sprigId, job.params.sprigContents, 
             function putDbDone(error) {
               if (error) {
-                done(error, false);
+                jobComplete('Database error', jobKey, error);
               }
               else {
-                res.writeHead(200, headersThusFar);
-                res.end(JSON.stringify([
-                  {
-                    id: op.id,
-                    status: 'posted',
-                    info: {
-                      sprigId: 'sprig2'
-                    }                    
-                  }
-                ]));
-                done(null, true);
+                jobComplete('posted', jobKey, {
+                  sprigId: 'sprig2'
+                });
               }
             }
           );
         }
         else {
-          done(null, false);
+          jobComplete('Not understood', jobKey, null);
         }
-        break;            
-      default:
         break;
-        done(null, false);
+      default:
+        jobComplete('Not understood', jobKey, null);
+        break;
     }
-
-  });
-}
-
-function respondThatReqWasNotUnderstood(res) {
-  debugger;
-  res.writeHead(404, {'Content-Type': 'text/json'});
-  res.end('[{"error": "whut"}]');
-}
-
-function reportError(error, res) {
-  res.writeHead(500, {'Content-Type': 'text/plain'});
-  res.end('Internal server error: ' + error);
+  };
 }
 
 console.log('Server running at http://127.0.0.1:' + port);
-
