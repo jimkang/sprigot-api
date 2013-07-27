@@ -61,6 +61,10 @@ svg {
   padding-bottom: 1em;
 }
 
+.editing {
+  border: 4px red dashed;
+}
+
 #boardContainer {
   min-width: 200px;
 }

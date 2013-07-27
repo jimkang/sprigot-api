@@ -199,7 +199,45 @@ function collapse(d) {
 BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
   d3.select('g#graphRoot'));
 
+/* Editing */
+
 d3.select('#textpane .textcontent').style('display', 'none');
+
+var textcontentSel = d3.select('#textpane .textcontent');
+
+function toggleEditable() {
+  var editable = textcontentSel.attr('contenteditable');
+  if (typeof editable === 'string') {
+    editable = (editable !== 'false');
+  }
+  var newEditable = !editable;
+  textcontentSel.attr('contenteditable', newEditable)
+    .classed('editing', newEditable);
+}
+
+function save() {
+  toggleEditable();
+}
+
+textcontentSel.on('dblclick', function textcontentDoubleClicked() {
+  d3.event.stopPropagation();
+  toggleEditable();
+});
+
+function stopEditing() {
+  textcontentSel.attr('contenteditable', false)
+    .classed('editing', false);
+}
+
+d3.select(document).on('click', stopEditing);
+
+d3.select(document).on('keyup', function processKeyUp() {
+  // Esc
+  if (d3.event.keyCode === 27) {
+    d3.event.stopPropagation();
+    stopEditing();
+  }
+});
 
 /* Persistence */
 
@@ -255,13 +293,3 @@ xhr.onload = function gotSprig() {
 };
 
 xhr.send(JSON.stringify({req1: sprigRequest}));
-
-var textpaneSel = d3.select('#textpane');
-textpaneSel.on('dblclick', function doubleClicked() {
-  var editable = textpaneSel.attr('contenteditable');
-  if (typeof editable === 'string') {
-    editable = (editable !== 'false');
-  }
-  textpaneSel.attr('contenteditable', !editable);
-});
-
