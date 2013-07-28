@@ -84,7 +84,7 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
           jobComplete('Not found', jobKey, null);
         }
         break;
-      case 'postSprig':
+      case 'saveSprig':
         if (job.params.sprigId) {
           var savedJobKey = jobKey;
           var savedJob = job;

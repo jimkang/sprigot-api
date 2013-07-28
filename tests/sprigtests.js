@@ -128,7 +128,7 @@ describe('A visitor', function getASprig() {
       method: 'POST',
       jsonParams: {
         sprig2req: {
-          op: 'postSprig',
+          op: 'saveSprig',
           params: {
             sprigId: 'sprig2',
             sprigContents: caseDataSource
@@ -167,7 +167,7 @@ describe('A visitor', function getASprig() {
       method: 'POST',
       jsonParams: {
         sprig1req: {
-          op: 'postSprig',
+          op: 'saveSprig',
           params: {
             sprigId: 'sprig10',
             sprigContents: testSprigContents
