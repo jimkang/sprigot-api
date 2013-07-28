@@ -79,29 +79,17 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
     var job = jobs[jobKey];
     switch (job.op) {
       case 'getSprig':        
-        if (job.params.sprigId === 'sprig1') {
-          jobComplete('Found', jobKey, caseDataSource);
+        if (job.params.sprigId) {
+          getSprigFromDb(job.params.sprigId, jobKey, jobComplete);
         }
         else {
-          jobComplete('Not found', jobKey, null);
+          jobComplete('Not understood', jobKey, null);
         }
         break;
       case 'saveSprig':
         if (job.params.sprigId) {
-          var savedJobKey = jobKey;
-          var savedJob = job;
-          db.put(job.params.sprigId, job.params.sprigContents, 
-            function putDbDone(error) {
-              if (error) {
-                jobComplete('Database error', savedJobKey, error);
-              }
-              else {
-                jobComplete('posted', savedJobKey, {
-                  sprigId: savedJob.params.sprigId
-                });
-              }
-            }
-          );
+          saveSprigToDb(job.params.sprigId, job.params.sprigContents, jobKey,
+            jobComplete);
         }
         else {
           jobComplete('Not understood', jobKey, null);
@@ -112,6 +100,36 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
         break;
     }
   };
+}
+
+function getSprigFromDb(sprigId, jobKey, jobComplete) {
+  db.get(sprigId, function getFromDbDone(error, value) {
+    if (error) {
+      if (error.name === 'NotFoundError') {
+        jobComplete('Not found', jobKey, []);
+      }
+      else {
+        jobComplete('Database error', jobKey, error);
+      }
+    }
+    else {
+      jobComplete('got', jobKey, value);
+    }
+  });
+}
+
+function saveSprigToDb(sprigId, sprigContents, jobKey, jobComplete) {
+  db.put(sprigId, sprigContents, function putDbDone(error) {
+    debugger;
+    if (error) {
+      jobComplete('Database error', jobKey, error);
+    }
+    else {
+      jobComplete('posted', jobKey, {
+        sprigId: sprigId
+      });
+    }
+  });  
 }
 
 console.log('Server running at http://127.0.0.1:' + port);

@@ -2,6 +2,7 @@ var assert = require('assert');
 var _ = require('underscore');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var caseDataSource = require('../client/caseData');
+var sprigTree = require('../client/sprig-tree_relations')
 
 /* Utils */
 
@@ -76,6 +77,8 @@ var session = {
 
 /* Actor: Visitor */
 
+var rootSprig = sprigTree.serializeTreedNode(caseDataSource);
+
 describe('A visitor', function getASprig() {
   it('should not get a sprig using the wrong id', function getSprig(testDone) {
     utils.sendJSONRequest({
@@ -91,10 +94,31 @@ describe('A visitor', function getASprig() {
       },
       done: function doneGettingSprig(error, xhr) {
         var response = JSON.parse(xhr.responseText);
-        assert.deepEqual(response, {
-          "sprig3req": {
-            "status":"Not found",
-            "result":null
+        assert.equal(response.sprig3req.status, 'Not found');
+        testDone();
+      }
+    });
+  });
+
+  it('should post a sprig', function postSprig(testDone) {
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        sprig2req: {
+          op: 'saveSprig',
+          params: {
+            sprigId: 'sprig2',
+            sprigContents: rootSprig
+          }
+        }
+      },
+      done: function donePostingSprig(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        assert.deepEqual(response.sprig2req, {
+          status: 'posted',
+          result: {
+            sprigId: 'sprig2'
           }
         });
         testDone();
@@ -110,39 +134,14 @@ describe('A visitor', function getASprig() {
         sprig1req: {
           op: 'getSprig',
           params: {
-            sprigId: 'sprig1'
+            sprigId: 'sprig2',
+            childDepth: 0
           }
         }
       },
       done: function doneGettingSprig(error, xhr) {
         var response = JSON.parse(xhr.responseText);
-        assert.deepEqual(response.sprig1req.result, caseDataSource);
-        testDone();
-      }
-    });
-  });
-
-  it('should post a sprig', function postSprig(testDone) {
-    utils.sendJSONRequest({
-      url: settings.baseURL,
-      method: 'POST',
-      jsonParams: {
-        sprig2req: {
-          op: 'saveSprig',
-          params: {
-            sprigId: 'sprig2',
-            sprigContents: caseDataSource
-          }
-        }
-      },
-      done: function donePostingSprig(error, xhr) {
-        var response = JSON.parse(xhr.responseText);
-        assert.deepEqual(response.sprig2req, {
-          status: 'posted',
-          result: {
-            sprigId: 'sprig2'
-          }
-        });
+        assert.deepEqual(response.sprig1req.result, rootSprig);
         testDone();
       }
     });
@@ -176,7 +175,7 @@ describe('A visitor', function getASprig() {
         sprig2req: {
           op: 'getSprig',
           params: {
-            sprigId: 'sprig1'
+            sprigId: 'sprig2'
           }
         }
       },
@@ -189,7 +188,7 @@ describe('A visitor', function getASprig() {
             sprigId: 'sprig10'
           }
         });
-        assert.deepEqual(response.sprig2req.result, caseDataSource);        
+        assert.deepEqual(response.sprig2req.result, rootSprig);        
         testDone();
       }
     });
