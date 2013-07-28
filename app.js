@@ -10,7 +10,9 @@ if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() === 'dev') {
   port = 3000;
 }
 
-var db = levelup('./db/sprigot.db');
+var db = levelup('./db/sprigot.db', {
+  valueEncoding: 'json'
+});
 
 http.createServer(function takeRequest(req, res) {
   var headers = {
