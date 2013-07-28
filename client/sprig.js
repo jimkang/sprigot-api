@@ -1,5 +1,3 @@
-sprigToTree = require('./sprig-tree_relations');
-
 var board = d3.select('svg#svgBoard');
 var graph = board.select('g#graphRoot')
   .attr('transform', 'translate(' + 200 + ',' + 200 + ')');
@@ -287,18 +285,7 @@ xhr.onload = function gotSprig() {
     var response = JSON.parse(this.responseText);
     if ('req1' in response && response.req1.status === 'Found') {
       retrieved = true;
-      root = response.req1.result;
-      root.x0 = height / 2;
-      root.y0 = 0;
-
-      root.children.forEach(collapse);
-      collapse(root);
-      update(root);
-
-      setTimeout(function initialPan() {
-        panToElement(d3.select('#' + root.id));
-      },
-      800);
+      initGraphWithNodeTree(response.req1.result);
     }
   }
   if (!retrieved) {
@@ -306,4 +293,23 @@ xhr.onload = function gotSprig() {
   }
 };
 
-xhr.send(JSON.stringify({req1: sprigRequest}));
+// xhr.send(JSON.stringify({req1: sprigRequest}));
+
+function initGraphWithNodeTree(nodeTree) {
+  root = nodeTree;
+  root.x0 = height / 2;
+  root.y0 = 0;
+
+  root.children.forEach(collapse);
+  collapse(root);
+  update(root);
+
+  setTimeout(function initialPan() {
+    panToElement(d3.select('#' + root.id));
+  },
+  800);  
+}
+
+// Temporarily load static data.
+initGraphWithNodeTree(caseDataSource);
+

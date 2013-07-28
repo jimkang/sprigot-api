@@ -1,6 +1,12 @@
-var _ = require('underscore');
+if (typeof module === 'object') {
+  // Node
+  var _ = require('underscore');
+}
+else {
+  // Browser
+  module = {exports: {}};
+}
 
-module.exports.reconstituteSourceNode = 
 function reconstituteSourceNode(treedNode) {
   var sourceNode = _.pick(treedNode, 'id', 'title', 'body');
   if (treedNode.children) {
@@ -12,7 +18,6 @@ function reconstituteSourceNode(treedNode) {
   return sourceNode;
 }
 
-module.exports.serializeTreedNode = 
 function serializeTreedNode(treedNode) {
   var serialized = _.pick(treedNode, 'id', 'title', 'body');
   var childSource = treedNode.children;
@@ -23,4 +28,7 @@ function serializeTreedNode(treedNode) {
 
   return serialized;
 }
+
+module.exports.reconstituteSourceNode = reconstituteSourceNode;
+module.exports.serializeTreedNode = serializeTreedNode;
 
