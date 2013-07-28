@@ -162,6 +162,9 @@ function panToElement(focusElementSel) {
   750);
 }
 
+var textcontent = d3.select('#textpane .textcontent')
+
+
 // Toggle children on click.
 function click(d) {
   if (d.children) {
@@ -183,8 +186,9 @@ function click(d) {
   update(d);
 
   // Fill in the side pane with the text.
-  d3.select('#textpane .textcontent').html(d.body);
-  d3.select('#textpane .textcontent').style('display', 'block');
+  textcontent.html(d.body);
+  textcontent.style('display', 'block');
+  textcontent.datum(d);
 }
 
 
@@ -203,39 +207,58 @@ BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'),
 
 d3.select('#textpane .textcontent').style('display', 'none');
 
-var textcontentSel = d3.select('#textpane .textcontent');
-
-function toggleEditable() {
-  var editable = textcontentSel.attr('contenteditable');
-  if (typeof editable === 'string') {
-    editable = (editable !== 'false');
-  }
-  var newEditable = !editable;
-  textcontentSel.attr('contenteditable', newEditable)
-    .classed('editing', newEditable);
-}
+var textcontent = d3.select('#textpane .textcontent');
 
 function save() {
   toggleEditable();
 }
 
-textcontentSel.on('dblclick', function textcontentDoubleClicked() {
-  d3.event.stopPropagation();
-  toggleEditable();
-});
+function changeEditMode(editable) {
+  textcontent.attr('contenteditable', editable)
+    .classed('editing', editable);
 
-function stopEditing() {
-  textcontentSel.attr('contenteditable', false)
-    .classed('editing', false);
+  if (!editable) {
+    // serializeTreedNode on node edited.
+    var editedNode = textcontent.datum();
+    var serializedNode = null;
+    if (editedNode) {
+      serializedNode = serializeTreedNode(editedNode);
+    }
+    console.log('serializedNode', serializedNode);
+  }
 }
 
-d3.select(document).on('click', stopEditing);
+function currentlyEditing() {
+  var editable = textcontent.attr('contenteditable');
+  if (typeof editable === 'string' && editable === 'true') {
+    editable = true;
+  }
+  else {
+    editable = false;
+  }
+  return editable;
+}
+
+d3.select(document).on('click', function endEditing() {
+  if (currentlyEditing()) {
+    changeEditMode(false);
+  }
+});
 
 d3.select(document).on('keyup', function processKeyUp() {
   // Esc
   if (d3.event.keyCode === 27) {
     d3.event.stopPropagation();
-    stopEditing();
+    if (currentlyEditing()) {
+      changeEditMode(false);
+    }
+  }
+});
+
+textcontent.on('click', function startEditing() {
+  d3.event.stopPropagation();
+  if (!currentlyEditing()) {
+    changeEditMode(true);
   }
 });
 
@@ -250,6 +273,17 @@ function reconstituteSourceNode(treedNode) {
     sourceNode.children = _.map(treedNode._children, reconstituteSourceNode);
   }
   return sourceNode;
+}
+
+function serializeTreedNode(treedNode) {
+  var serialized = _.pick(treedNode, 'id', 'title', 'body');
+  var childSource = treedNode.children;
+  if (!treedNode.children) {
+    childSource = treedNode._children;
+  }
+  serialized.children = _.pluck(childSource, 'id');
+
+  return serialized;
 }
 
 /* Initialize */
