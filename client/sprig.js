@@ -1,3 +1,5 @@
+sprigToTree = require('./sprig-tree_relations');
+
 var board = d3.select('svg#svgBoard');
 var graph = board.select('g#graphRoot')
   .attr('transform', 'translate(' + 200 + ',' + 200 + ')');
@@ -222,7 +224,7 @@ function changeEditMode(editable) {
     var editedNode = textcontent.datum();
     var serializedNode = null;
     if (editedNode) {
-      serializedNode = serializeTreedNode(editedNode);
+      serializedNode = sprigToTree.serializeTreedNode(editedNode);
     }
     console.log('serializedNode', serializedNode);
   }
@@ -263,28 +265,6 @@ textcontent.on('click', function startEditing() {
 });
 
 /* Persistence */
-
-function reconstituteSourceNode(treedNode) {
-  var sourceNode = _.pick(treedNode, 'id', 'title', 'body');
-  if (treedNode.children) {
-    sourceNode.children = _.map(treedNode.children, reconstituteSourceNode);
-  }
-  else if (treedNode._children) {
-    sourceNode.children = _.map(treedNode._children, reconstituteSourceNode);
-  }
-  return sourceNode;
-}
-
-function serializeTreedNode(treedNode) {
-  var serialized = _.pick(treedNode, 'id', 'title', 'body');
-  var childSource = treedNode.children;
-  if (!treedNode.children) {
-    childSource = treedNode._children;
-  }
-  serialized.children = _.pluck(childSource, 'id');
-
-  return serialized;
-}
 
 /* Initialize */
 
