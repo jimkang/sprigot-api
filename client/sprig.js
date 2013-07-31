@@ -209,10 +209,6 @@ d3.select('#textpane .textcontent').style('display', 'none');
 
 var textcontent = d3.select('#textpane .textcontent');
 
-function save() {
-  toggleEditable();
-}
-
 function changeEditMode(editable) {
   textcontent.attr('contenteditable', editable)
     .classed('editing', editable);
