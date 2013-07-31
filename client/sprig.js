@@ -273,27 +273,21 @@ var sprigRequest = {
   }
 };
 
-var xhr = new XMLHttpRequest();
-xhr.open('POST', settings.serverURL);
-xhr.setRequestHeader('Content-Type', 'application/json');
-xhr.setRequestHeader('accept', 'application/json');
+// request(settings.serverURL, {req1: sprigRequest}, 
+//   function done(error, response) {
+//     if (error) {
+//       console.log('Error while getting sprig:', error);
+//       return;
+//     }
 
-xhr.onload = function gotSprig() {
-  var retrieved = false;
-
-  if (this.status === 200) {
-    var response = JSON.parse(this.responseText);
-    if ('req1' in response && response.req1.status === 'Found') {
-      retrieved = true;
-      initGraphWithNodeTree(response.req1.result);
-    }
-  }
-  if (!retrieved) {
-    console.log('Error while getting sprig.');
-  }
-};
-
-// xhr.send(JSON.stringify({req1: sprigRequest}));
+//     if ('req1' in response && response.req1.status === 'Found') {
+//       initGraphWithNodeTree(response.req1.result);  
+//     }
+//     else {
+//       console.log('Sprig not found.');
+//     }
+//   }
+// );
 
 function initGraphWithNodeTree(nodeTree) {
   root = nodeTree;
