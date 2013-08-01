@@ -209,16 +209,51 @@ d3.select('#textpane .textcontent').style('display', 'none');
 
 var textcontent = d3.select('#textpane .textcontent');
 
+function makeId() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
+
 function changeEditMode(editable) {
   textcontent.attr('contenteditable', editable)
     .classed('editing', editable);
 
   if (!editable) {
+    var editedNode = textcontent.datum();
+    editedNode.body = textcontent.html();
+    textcontent.datum(editedNode);
+    // TODO: Sync back to the datum in the tree.
+
     // serializeTreedNode on node edited.
     var editedNode = textcontent.datum();
     var serializedNode = null;
     if (editedNode) {
-      serializedNode = sprigToTree.serializeTreedNode(editedNode);
+      serializedNode = serializeTreedNode(editedNode);
+    }
+    if (serializedNode) {
+      var saveId = makeId();
+      var body = {};
+      body[saveId] = {
+        op: 'saveSprig',
+        params: {
+          sprigId: serializedNode.id,
+          sprigContents: serializedNode
+        }
+      };
+      request(settings.serverURL, body, function done(error, response) {
+        if (error) {
+          console.log('Error while saving sprig:', error);
+          return;
+        }
+
+        if (saveId in response && response[saveId].status === 'posted') {
+          console.log('Sprig saved:', response);
+        }
+        else {
+          console.log('Sprig not saved.');
+        }
+      });
     }
     console.log('serializedNode', serializedNode);
   }
@@ -269,7 +304,7 @@ var sprigRequest = {
   }
 };
 
-// request(settings.serverURL, {req1: sprigRequest}, 
+// request(settings.serverURL, {req1: sprigRequest},
 //   function done(error, response) {
 //     if (error) {
 //       console.log('Error while getting sprig:', error);
@@ -277,7 +312,7 @@ var sprigRequest = {
 //     }
 
 //     if ('req1' in response && response.req1.status === 'Found') {
-//       initGraphWithNodeTree(response.req1.result);  
+//       initGraphWithNodeTree(response.req1.result);
 //     }
 //     else {
 //       console.log('Sprig not found.');
