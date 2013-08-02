@@ -3,6 +3,7 @@ var _ = require('underscore');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var caseDataSource = require('../client/caseData');
 var sprigTree = require('../client/sprig-tree_relations')
+var uid = require('../client/uid').uid;
 
 /* Utils */
 
@@ -194,5 +195,104 @@ describe('A visitor', function getASprig() {
     });
   });
 
+  it('should post four sprigs that are part of a hierarchy', 
+    function postHierarchicalSprigs(testDone) {
+
+      var sprigOneId = uid(8);
+      var sprigTwoId = uid(8);
+      var sprigThreeId = uid(8);
+      var sprigFourId = uid(8);
+
+      session.sprigOne = {
+        id: sprigOneId,
+        title: 'Sprig One',
+        body: 'First, there was one sprig.',
+        children: [sprigTwoId, sprigThreeId]
+      };
+
+      session.sprigTwo = {
+        id: sprigTwoId,
+        title: 'Sprig Two',
+        body: 'Then, there was a second sprig.'
+      };
+
+      session.sprigThree = {
+        id: sprigThreeId,
+        title: 'Sprig Three',
+        body: 'Soon after, a third sprig appeared.',
+        children: [sprigFourId]
+      };
+
+      session.sprigFour = {
+        id: sprigFourId,
+        title: 'Sprig Four',
+        body: 'Finally, the fourth sprig showed.'
+      };
+
+      utils.sendJSONRequest({
+        url: settings.baseURL,
+        method: 'POST',
+        jsonParams: {
+          sprig1req: {
+            op: 'saveSprig',
+            params: {
+              sprigId: sprigOneId,
+              sprigContents: session.sprigOne
+            }
+          },
+          sprig2req: {
+            op: 'saveSprig',
+            params: {
+              sprigId: sprigTwoId,
+              sprigContents: session.sprigTwo
+            }
+          },
+          sprig3req: {
+            op: 'saveSprig',
+            params: {
+              sprigId: sprigThreeId,
+              sprigContents: session.sprigThree
+            }
+          },
+          sprig4req: {
+            op: 'saveSprig',
+            params: {
+              sprigId: sprigFourId,
+              sprigContents: session.sprigFour
+            }
+          },
+        },
+        done: function donePostingSprigHierarchy(error, xhr) {
+          var response = JSON.parse(xhr.responseText);
+          console.log(response);
+          assert.deepEqual(response.sprig1req, {
+            status: 'posted',
+            result: {
+              sprigId: session.sprigOne.id
+            }
+          });
+          assert.deepEqual(response.sprig2req, {
+            status: 'posted',
+            result: {
+              sprigId: session.sprigTwo.id
+            }
+          });
+          assert.deepEqual(response.sprig3req, {
+            status: 'posted',
+            result: {
+              sprigId: session.sprigThree.id
+            }
+          });
+          assert.deepEqual(response.sprig4req, {
+            status: 'posted',
+            result: {
+              sprigId: session.sprigFour.id
+            }
+          });
+
+          testDone();
+        }
+      });
+  });
 });
 
