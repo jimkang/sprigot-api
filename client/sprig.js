@@ -232,7 +232,7 @@ function changeEditMode(editable) {
       serializedNode = serializeTreedNode(editedNode);
     }
     if (serializedNode) {
-      var saveId = makeId();
+      var saveId = uid(8); //makeId();
       var body = {};
       body[saveId] = {
         op: 'saveSprig',
