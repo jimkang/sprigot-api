@@ -182,7 +182,7 @@ describe('A visitor', function getASprig() {
       },
       done: function donePostingAndGettingSprig(error, xhr) {
         var response = JSON.parse(xhr.responseText);
-        console.log(response);
+        // console.log(response);
         assert.deepEqual(response.sprig1req, {
           status: 'posted',
           result: {
@@ -264,7 +264,7 @@ describe('A visitor', function getASprig() {
         },
         done: function donePostingSprigHierarchy(error, xhr) {
           var response = JSON.parse(xhr.responseText);
-          console.log(response);
+          // console.log(response);
           assert.deepEqual(response.sprig1req, {
             status: 'posted',
             result: {
@@ -294,5 +294,53 @@ describe('A visitor', function getASprig() {
         }
       });
   });
+
+  it('should get a sprig hierarchy', function getSprigHierarchy(testDone) {
+    var sprigTree = {
+      id: session.sprigOne.id,
+      title: 'Sprig One',
+      body: 'First, there was one sprig.',
+      children: [
+        {
+          id: session.sprigTwo.id,
+          title: 'Sprig Two',
+          body: 'Then, there was a second sprig.'
+        },
+        {
+          id: session.sprigThree.id,
+          title: 'Sprig Three',
+          body: 'Soon after, a third sprig appeared.',
+          children: [
+            {
+              id: session.sprigFour.id,
+              title: 'Sprig Four',
+              body: 'Finally, the fourth sprig showed.'
+            }
+          ]
+        }
+      ]
+    };
+
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        sprig1req: {
+          op: 'getSprig',
+          params: {
+            sprigId: session.sprigOne.id,
+            childDepth: 2
+          }
+        }
+      },
+      done: function doneGettingSprig(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        var fetchedTree = response.sprig1req.result;
+        assert.deepEqual(sprigTree, fetchedTree);
+        testDone();
+      }
+    });
+  });
+
 });
 

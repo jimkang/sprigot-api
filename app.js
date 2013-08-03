@@ -2,6 +2,7 @@ var http = require('http');
 var url = require('url');
 var levelup = require('level');
 var _ = require('underscore');
+var treegetting = require('./treegetting');
 
 var caseDataSource = require('./client/caseData');
 var port = 80;
@@ -55,10 +56,8 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
 
   var headers = _.clone(baseHeaders);
   headers['Content-Type'] = 'text/json';
-  debugger;
 
   function jobComplete(status, jobKey, result) {
-    debugger;
     responses[jobKey] = {
       status: status,
       result: result
@@ -78,9 +77,16 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
     var jobKey = jobKeys[i];
     var job = jobs[jobKey];
     switch (job.op) {
-      case 'getSprig':        
+      case 'getSprig':
         if (job.params.sprigId) {
-          getSprigFromDb(job.params.sprigId, jobKey, jobComplete);
+          if (typeof job.params.childDepth === 'number' && 
+            job.params.childDepth > 0) {
+            getSprigTreeFromDb(job.params.sprigId, job.params.childDepth, 
+              jobKey, jobComplete);
+          }
+          else {
+            getSprigFromDb(job.params.sprigId, jobKey, jobComplete);
+          }
         }
         else {
           jobComplete('Not understood', jobKey, null);
@@ -118,9 +124,21 @@ function getSprigFromDb(sprigId, jobKey, jobComplete) {
   });
 }
 
+function getSprigTreeFromDb(sprigId, childDepth, jobKey, jobComplete) {
+  treegetting.getTree(db, sprigId, childDepth, 
+    function done(errors, value) {
+      if (errors.length > 0) {
+        jobComplete('Errors while getting tree', jobKey, errors);
+      }
+      else {
+        jobComplete('got', jobKey, value);
+      }
+    }
+  );
+}
+
 function saveSprigToDb(sprigId, sprigContents, jobKey, jobComplete) {
   db.put(sprigId, sprigContents, function putDbDone(error) {
-    debugger;
     if (error) {
       jobComplete('Database error', jobKey, error);
     }
@@ -133,3 +151,4 @@ function saveSprigToDb(sprigId, sprigContents, jobKey, jobComplete) {
 }
 
 console.log('Server running at http://127.0.0.1:' + port);
+
