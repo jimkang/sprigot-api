@@ -300,25 +300,26 @@ textcontent.on('click', function startEditing() {
 var sprigRequest = {
   op: 'getSprig',
   params: {
-    sprigId: 'sprig1'
+    sprigId: 'notonline',
+    childDepth: 20
   }
 };
 
-// request(settings.serverURL, {req1: sprigRequest},
-//   function done(error, response) {
-//     if (error) {
-//       console.log('Error while getting sprig:', error);
-//       return;
-//     }
+request(settings.serverURL, {req1: sprigRequest},
+  function done(error, response) {
+    if (error) {
+      console.log('Error while getting sprig:', error);
+      return;
+    }
 
-//     if ('req1' in response && response.req1.status === 'Found') {
-//       initGraphWithNodeTree(response.req1.result);
-//     }
-//     else {
-//       console.log('Sprig not found.');
-//     }
-//   }
-// );
+    if ('req1' in response && response.req1.status === 'got') {
+      initGraphWithNodeTree(response.req1.result);
+    }
+    else {
+      console.log('Sprig not found.');
+    }
+  }
+);
 
 function initGraphWithNodeTree(nodeTree) {
   root = nodeTree;
@@ -334,7 +335,4 @@ function initGraphWithNodeTree(nodeTree) {
   },
   800);  
 }
-
-// Temporarily load static data.
-initGraphWithNodeTree(caseDataSource);
 
