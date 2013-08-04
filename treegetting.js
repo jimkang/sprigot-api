@@ -4,8 +4,8 @@ var _ = require('underscore');
 var TreeGetter = function TreeGetter(db, rootSprigId, childDepth, done) {
   this.treeGetState = {
     db: db,
-    sprigsToGet: {},
-    sprigsGot: {},
+    sprigsToGet: 0,
+    sprigsGot: 0,
     errors: [],
     depthLimit: childDepth,
     tree: {},
@@ -16,7 +16,7 @@ var TreeGetter = function TreeGetter(db, rootSprigId, childDepth, done) {
 TreeGetter.prototype.getSprigFromDb = function getSprigTreeFromDb(
   rootSprigId, depth, parent) {
 
-  this.treeGetState.sprigsToGet[rootSprigId] = true;
+  ++this.treeGetState.sprigsToGet;
 
   this.treeGetState.db.get(rootSprigId, function getComplete(error, value) {
     this.receiveSprig(error, depth, parent, value);
@@ -32,7 +32,7 @@ TreeGetter.prototype.receiveSprig = function receiveSprig(
     return;
   }
 
-  this.treeGetState.sprigsGot[sprig.id] = sprig;
+  ++this.treeGetState.sprigsGot;
 
   if (parent) {
     debugger;
@@ -60,8 +60,7 @@ TreeGetter.prototype.receiveSprig = function receiveSprig(
 
 TreeGetter.prototype.wrapUpIfComplete = function wrapUpIfComplete() {
   debugger;
-  if (_.keys(this.treeGetState.sprigsGot).length >= 
-    _.keys(this.treeGetState.sprigsToGet).length) {
+  if (this.treeGetState.sprigsGot >= this.treeGetState.sprigsToGet) {
     this.treeGetState.done(this.treeGetState.errors, this.treeGetState.tree);
   }
 };
