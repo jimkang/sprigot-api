@@ -78,9 +78,10 @@ var session = {
 
 /* Actor: Visitor */
 
-var rootSprig = sprigTree.serializeTreedNode(caseDataSource);
+session.rootSprig = sprigTree.serializeTreedNode(caseDataSource);
 
 describe('A visitor', function getASprig() {
+
   it('should not get a sprig using the wrong id', function getSprig(testDone) {
     utils.sendJSONRequest({
       url: settings.baseURL,
@@ -89,7 +90,8 @@ describe('A visitor', function getASprig() {
         sprig3req: {
           op: 'getSprig',
           params: {
-            sprigId: 'sprig3'
+            id: 'sprig3',
+            doc: 'doc1'
           }
         }
       },
@@ -101,7 +103,107 @@ describe('A visitor', function getASprig() {
     });
   });
 
+  it('should post a doc', function postDoc(testDone) {
+    session.firstDocId = uid(4);
+
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        docPostReq1: {
+          op: 'saveDoc',
+          params: {
+            id: session.firstDocId,
+            rootSprig: session.rootSprig.id,
+            authors: [
+              'deathmtn', 'smidgeo'
+            ],
+            admins: [
+              'deathmtn'
+            ],
+            readers: [
+              'smidgeo', 'drwily'
+            ]
+          }
+        }
+      },
+      done: function donePostingDoc(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        assert.deepEqual(response.docPostReq1, {
+          status: 'saved',
+          result: {
+            id: session.firstDocId
+          }
+        });
+        testDone();
+      }
+    });
+  });
+
+  it('should post another doc', function postDoc(testDone) {
+    session.secondDocId = uid(4);
+
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        docPostReq1: {
+          op: 'saveDoc',
+          params: {
+            id: session.secondDocId,
+            authors: [
+              'smidgeo'
+            ],
+            admins: [
+              'smidgeo'
+            ],
+            readers: [
+              'smidgeo', 'drwily'
+            ]
+          }
+        }
+      },
+      done: function donePostingDoc(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        assert.deepEqual(response.docPostReq1, {
+          status: 'saved',
+          result: {
+            id: session.secondDocId
+          }
+        });
+        testDone();
+      }
+    });
+  });
+
+  // TODO: Auth tests.
+
   it('should post a sprig', function postSprig(testDone) {
+    session.rootSprig.doc = session.firstDocId;
+
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        sprig2req: {
+          op: 'saveSprig',
+          params: session.rootSprig
+        }
+      },
+      done: function donePostingSprig(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        assert.deepEqual(response.sprig2req, {
+          status: 'saved',
+          result: {
+            id: session.rootSprig.id
+          }
+        });
+        testDone();
+      }
+    });
+  });
+
+  it('should not post a sprig lacking a doc', function postSprig(testDone) {
     utils.sendJSONRequest({
       url: settings.baseURL,
       method: 'POST',
@@ -109,23 +211,22 @@ describe('A visitor', function getASprig() {
         sprig2req: {
           op: 'saveSprig',
           params: {
-            sprigId: 'sprig2',
-            sprigContents: rootSprig
+            id: 'sprig234',
+            sprigContents: session.rootSprig
           }
         }
       },
       done: function donePostingSprig(error, xhr) {
         var response = JSON.parse(xhr.responseText);
         assert.deepEqual(response.sprig2req, {
-          status: 'posted',
-          result: {
-            sprigId: 'sprig2'
-          }
+          status: 'Not understood',
+          result: null
         });
         testDone();
       }
     });
   });
+
 
   it('should get a sprig', function getSprig(testDone) {
     utils.sendJSONRequest({
@@ -135,64 +236,75 @@ describe('A visitor', function getASprig() {
         sprig1req: {
           op: 'getSprig',
           params: {
-            sprigId: 'sprig2',
+            id: session.rootSprig.id,
+            doc: session.firstDocId,
             childDepth: 0
           }
         }
       },
       done: function doneGettingSprig(error, xhr) {
         var response = JSON.parse(xhr.responseText);
-        assert.deepEqual(response.sprig1req.result, rootSprig);
+        assert.deepEqual(response.sprig1req.result, session.rootSprig);
         testDone();
       }
     });
   });
 
-  it('should post a sprig, and also get a sprig', function postAndGetSprig(testDone) {
-    var testSprigContents = {
-      id: 'one',
-      title: 'One',
-      body: 'First, there was one.',
-      children: [
-        {
-          id: 'two',
-          title: 'Two',
-          body: 'Then, there were two.'
-        }
-      ]
-    };
+  it('should post a sprig, and also get a sprig', 
+    function postAndGetSprig(testDone) {
+      session.orphanSprigOneId = uid(4);
+      session.orphanSprigTwoId = uid(4);
 
-    utils.sendJSONRequest({
-      url: settings.baseURL,
-      method: 'POST',
-      jsonParams: {
-        sprig1req: {
-          op: 'saveSprig',
-          params: {
-            sprigId: 'sprig10',
-            sprigContents: testSprigContents
+      var testSprig1 = {
+        id: session.orphanSprigOneId,
+        doc: session.firstDocId,
+        title: 'One',
+        body: 'First, there was one.',
+        children: [session.orphanSprigTwoId]
+      };
+
+      var testSprig2 = {
+        id: session.orphanSprigTwoId,
+        doc: session.firstDocId,
+        title: 'Two',
+        body: 'Then, there were two.',
+      };
+
+      utils.sendJSONRequest({
+        url: settings.baseURL,
+        method: 'POST',
+        jsonParams: {
+          sprig1req: {
+            op: 'saveSprig',
+            params: testSprig1
+          },
+          sprig2req: {
+            op: 'saveSprig',
+            params: testSprig2
+          },
+          sprig3req: {
+            op: 'getSprig',
+            params: {
+              id: session.rootSprig.id,
+              doc: session.firstDocId
+            }            
           }
         },
-        sprig2req: {
-          op: 'getSprig',
-          params: {
-            sprigId: 'sprig2'
-          }
+        done: function donePostingAndGettingSprig(error, xhr) {
+          var response = JSON.parse(xhr.responseText);
+          assert.deepEqual(response.sprig1req, {
+            status: 'saved',
+            result: {
+              id: session.orphanSprigOneId
+            }
+          });
+          assert.deepEqual(response.sprig2req.result.id, 
+            session.orphanSprigTwoId);
+          assert.deepEqual(response.sprig3req.result, session.rootSprig);
+          testDone();
         }
-      },
-      done: function donePostingAndGettingSprig(error, xhr) {
-        var response = JSON.parse(xhr.responseText);
-        // console.log(response);
-        assert.deepEqual(response.sprig1req, {
-          status: 'posted',
-          result: {
-            sprigId: 'sprig10'
-          }
-        });
-        assert.deepEqual(response.sprig2req.result, rootSprig);        
-        testDone();
       }
-    });
+    );
   });
 
   it('should post four sprigs that are part of a hierarchy', 
@@ -205,6 +317,7 @@ describe('A visitor', function getASprig() {
 
       session.sprigOne = {
         id: sprigOneId,
+        doc: session.secondDocId,
         title: 'Sprig One',
         body: 'First, there was one sprig.',
         children: [sprigTwoId, sprigThreeId]
@@ -212,12 +325,14 @@ describe('A visitor', function getASprig() {
 
       session.sprigTwo = {
         id: sprigTwoId,
+        doc: session.secondDocId,
         title: 'Sprig Two',
         body: 'Then, there was a second sprig.'
       };
 
       session.sprigThree = {
         id: sprigThreeId,
+        doc: session.secondDocId,
         title: 'Sprig Three',
         body: 'Soon after, a third sprig appeared.',
         children: [sprigFourId]
@@ -225,6 +340,7 @@ describe('A visitor', function getASprig() {
 
       session.sprigFour = {
         id: sprigFourId,
+        doc: session.secondDocId,
         title: 'Sprig Four',
         body: 'Finally, the fourth sprig showed.'
       };
@@ -235,58 +351,46 @@ describe('A visitor', function getASprig() {
         jsonParams: {
           sprig1req: {
             op: 'saveSprig',
-            params: {
-              sprigId: sprigOneId,
-              sprigContents: session.sprigOne
-            }
+            params: session.sprigOne
           },
           sprig2req: {
             op: 'saveSprig',
-            params: {
-              sprigId: sprigTwoId,
-              sprigContents: session.sprigTwo
-            }
+            params: session.sprigTwo
           },
           sprig3req: {
             op: 'saveSprig',
-            params: {
-              sprigId: sprigThreeId,
-              sprigContents: session.sprigThree
-            }
+            params: session.sprigThree
           },
           sprig4req: {
             op: 'saveSprig',
-            params: {
-              sprigId: sprigFourId,
-              sprigContents: session.sprigFour
-            }
+            params: session.sprigFour
           },
         },
         done: function donePostingSprigHierarchy(error, xhr) {
           var response = JSON.parse(xhr.responseText);
           // console.log(response);
           assert.deepEqual(response.sprig1req, {
-            status: 'posted',
+            status: 'saved',
             result: {
-              sprigId: session.sprigOne.id
+              id: session.sprigOne.id
             }
           });
           assert.deepEqual(response.sprig2req, {
-            status: 'posted',
+            status: 'saved',
             result: {
-              sprigId: session.sprigTwo.id
+              id: session.sprigTwo.id
             }
           });
           assert.deepEqual(response.sprig3req, {
-            status: 'posted',
+            status: 'saved',
             result: {
-              sprigId: session.sprigThree.id
+              id: session.sprigThree.id
             }
           });
           assert.deepEqual(response.sprig4req, {
-            status: 'posted',
+            status: 'saved',
             result: {
-              sprigId: session.sprigFour.id
+              id: session.sprigFour.id
             }
           });
 
@@ -328,7 +432,7 @@ describe('A visitor', function getASprig() {
         sprig1req: {
           op: 'getSprig',
           params: {
-            sprigId: session.sprigOne.id,
+            id: session.sprigOne.id,
             childDepth: 2
           }
         }
