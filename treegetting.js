@@ -12,7 +12,6 @@ function getDocSprigsFromDb(docId, done) {
   });
 
   stream.on('data', function takeSprig(sprig) {
-    console.log('doc sprig', sprig);
     sprigsForIds[sprig.id] = sprig;
   });
   stream.on('error', function streamError(error) {
