@@ -5,6 +5,7 @@ var db = levelup('./db/sprigot.db', {
 });
 
 var nsDelimiter = '\x00';
+var nsEndRangeDelimiter = '\xff';
 
 function getSprigFromDb(id, docId, jobKey, jobComplete) {
   var key = getSprigKey(id, docId);
@@ -24,19 +25,6 @@ function getSprigFromDb(id, docId, jobKey, jobComplete) {
   });
 }
 
-function getSprigTreeFromDb(id, docId, childDepth, jobKey, jobComplete) {
-  treegetting.getTree(db, id, childDepth, 
-    function done(errors, value) {
-      if (errors.length > 0) {
-        jobComplete('Errors while getting tree', jobKey, errors);
-      }
-      else {
-        jobComplete('got', jobKey, value);
-      }
-    }
-  );
-}
-
 function saveSprigToDb(sprigParams, jobKey, jobComplete) {
   var key = getSprigKey(sprigParams.id, sprigParams.doc);
   db.put(key, sprigParams, function putDbDone(error) {
@@ -52,12 +40,10 @@ function saveSprigToDb(sprigParams, jobKey, jobComplete) {
 }
 
 function saveDocToDb(docParams, jobKey, jobComplete) {
-  debugger;
   var cleanId = sanitizeKeySegment(docParams.id);
   var key = 'd' + nsDelimiter + cleanId;
 
   db.put(key, docParams, function putDbDone(error) {
-    debugger;
     if (error) {
       jobComplete('Database error', jobKey, error);
     }
@@ -80,10 +66,19 @@ function getSprigKey(id, docId) {
   return key;
 }
 
+function getRangeForSprigsInDoc(docId) {
+  var cleanDocId = sanitizeKeySegment(docId);
+  return [
+    's' + nsDelimiter + cleanDocId + nsDelimiter,
+    's' + nsDelimiter + cleanDocId + nsEndRangeDelimiter
+  ];
+}
+
 module.exports = {
+  db: db,
   getSprigFromDb: getSprigFromDb,
-  getSprigTreeFromDb: getSprigTreeFromDb,
   saveSprigToDb: saveSprigToDb, 
   saveDocToDb: saveDocToDb,
-  sanitizeKeySegment: sanitizeKeySegment
+  sanitizeKeySegment: sanitizeKeySegment,
+  getRangeForSprigsInDoc: getRangeForSprigsInDoc
 };

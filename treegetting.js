@@ -1,72 +1,82 @@
-var levelup = require('level');
-var _ = require('underscore');
+var dbwrap = require('./dbwrap');
 
-var TreeGetter = function TreeGetter(db, rootSprigId, childDepth, done) {
-  this.treeGetState = {
-    db: db,
-    sprigsToGet: 0,
-    sprigsGot: 0,
-    errors: [],
-    depthLimit: childDepth,
-    tree: {},
-    done: done
-  };
+// done params: errorS, sprig hash.
+function getDocSprigsFromDb(docId, done) {
+  var sprigsForIds = {};
+  var errors = [];
+
+  var sprigRange = dbwrap.getRangeForSprigsInDoc(docId);
+  var stream = dbwrap.db.createValueStream({
+    start: sprigRange[0],
+    end: sprigRange[1]
+  });
+
+  stream.on('data', function takeSprig(sprig) {
+    console.log('doc sprig', sprig);
+    sprigsForIds[sprig.id] = sprig;
+  });
+  stream.on('error', function streamError(error) {
+    errors.push(error);
+  });
+  stream.on('close', function respondToStreamClosing() {
+    done(errors, sprigsForIds);
+  });
 };
 
-TreeGetter.prototype.getSprigFromDb = function getSprigTreeFromDb(
-  rootSprigId, depth, parent) {
+function treeify(sprigsForIds, rootId, depthLimit) {
+  var tree = sprigsForIds[rootId];
+  var currentDepth = 0;
+  var sprigsAtNextDepth = null;
+  var sprigsAtDepth = [tree];
 
-  ++this.treeGetState.sprigsToGet;
+  while (currentDepth <= depthLimit) {
+    sprigsAtNextDepth = [];
 
-  this.treeGetState.db.get(rootSprigId, function getComplete(error, value) {
-    this.receiveSprig(error, depth, parent, value);
-  }
-  .bind(this));
-};
+    sprigsAtDepth.forEach(function convertChildren(sprig) {
+      convertChildRefsToSprigs(sprig, sprigsForIds);
 
-TreeGetter.prototype.receiveSprig = function receiveSprig(
-  error, depth, parent, sprig) {
+      if (currentDepth + 1 <= depthLimit && 
+        typeof sprig.children === 'object') {
 
-  if (error) {
-    this.treeGetState.errors.push(error);
-    return;
-  }
+          sprigsAtNextDepth = sprigsAtNextDepth.concat(sprig.children);
+      }
+    });
 
-  ++this.treeGetState.sprigsGot;
-
-  if (parent) {
-    debugger;
-    // Replace the id in children with the sprig object.
-    var childIndex = parent.children.indexOf(sprig.id);
-    parent.children[childIndex] = sprig;
-  }
-  else {
-    this.treeGetState.tree = sprig;
+    currentDepth++;
+    sprigsAtDepth = sprigsAtNextDepth;
   }
 
-  debugger;
-
-  if (depth < this.treeGetState.depthLimit && 
-    typeof sprig.children === 'object') {
-
-    sprig.children.forEach(function getSprigChild(childId) {
-      this.getSprigFromDb(childId, depth + 1, sprig);
-    }
-    .bind(this));
-  }
-
-  this.wrapUpIfComplete();
+  return tree;
 }
 
-TreeGetter.prototype.wrapUpIfComplete = function wrapUpIfComplete() {
-  debugger;
-  if (this.treeGetState.sprigsGot >= this.treeGetState.sprigsToGet) {
-    this.treeGetState.done(this.treeGetState.errors, this.treeGetState.tree);
+function convertChildRefsToSprigs(sprig, sprigsForIds) {
+  var childId = null;
+  var child = null;
+  if (typeof sprig.children === 'object') {
+    for (var i = 0; i < sprig.children.length; ++i) {
+      childId = sprig.children[i];
+      child = sprigsForIds[childId];
+      if (child) {
+        sprig.children[i] = child;
+      }
+    }
   }
-};
+}
 
-module.exports.getTree = function getTree(db, sprigId, childDepth, done) {
-  var treeGetter = new TreeGetter(db, sprigId, childDepth, done);
-  treeGetter.getSprigFromDb(sprigId, 0, null);
-};
+module.exports.getTreeFromDb = function getTreeFromDb(
+  id, docId, childDepth, jobKey, jobComplete) {
 
+  getDocSprigsFromDb(docId, function gotSprigs(errors, sprigsForIds) {
+    var sprigTree = treeify(sprigsForIds, id, childDepth);
+    debugger;
+  
+    var status = 'got';
+    var results = sprigTree;
+    if (errors.length > 0) {
+      status = 'Database errors';
+      results = errors;
+    }
+    jobComplete(status, jobKey, results);
+  });
+
+}

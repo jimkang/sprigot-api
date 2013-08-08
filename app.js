@@ -1,8 +1,8 @@
 var http = require('http');
 var url = require('url');
 var _ = require('underscore');
-var treegetting = require('./treegetting');
 var dbwrap = require('./dbwrap');
+var treegetting = require('./treegetting');
 
 var caseDataSource = require('./client/caseData');
 var port = 80;
@@ -77,8 +77,9 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
         if (job.params.id && job.params.doc) {
           if (typeof job.params.childDepth === 'number' && 
             job.params.childDepth > 0) {
-            dbwrap.getSprigTreeFromDb(job.params.id, job.params.childDepth, 
-              jobKey, jobComplete);
+
+            treegetting.getTreeFromDb(job.params.id, job.params.doc, 
+              job.params.childDepth, jobKey, jobComplete);
           }
           else {
             dbwrap.getSprigFromDb(job.params.id, job.params.doc, 

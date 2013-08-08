@@ -402,21 +402,25 @@ describe('A visitor', function getASprig() {
   it('should get a sprig hierarchy', function getSprigHierarchy(testDone) {
     var sprigTree = {
       id: session.sprigOne.id,
+      doc: session.secondDocId,
       title: 'Sprig One',
       body: 'First, there was one sprig.',
       children: [
         {
           id: session.sprigTwo.id,
+          doc: session.secondDocId,
           title: 'Sprig Two',
           body: 'Then, there was a second sprig.'
         },
         {
           id: session.sprigThree.id,
+          doc: session.secondDocId,
           title: 'Sprig Three',
           body: 'Soon after, a third sprig appeared.',
           children: [
             {
               id: session.sprigFour.id,
+              doc: session.secondDocId,
               title: 'Sprig Four',
               body: 'Finally, the fourth sprig showed.'
             }
@@ -431,8 +435,9 @@ describe('A visitor', function getASprig() {
       jsonParams: {
         sprig1req: {
           op: 'getSprig',
-          params: {
+          params: {            
             id: session.sprigOne.id,
+            doc: session.secondDocId,
             childDepth: 2
           }
         }
