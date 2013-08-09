@@ -8,7 +8,7 @@ else {
 }
 
 function reconstituteSourceNode(treedNode) {
-  var sourceNode = _.pick(treedNode, 'id', 'title', 'body');
+  var sourceNode = _.pick(treedNode, 'id', 'doc', 'title', 'body');
   if (treedNode.children) {
     sourceNode.children = _.map(treedNode.children, reconstituteSourceNode);
   }
@@ -19,7 +19,7 @@ function reconstituteSourceNode(treedNode) {
 }
 
 function serializeTreedNode(treedNode) {
-  var serialized = _.pick(treedNode, 'id', 'title', 'body');
+  var serialized = _.pick(treedNode, 'id', 'doc', 'title', 'body');
   var childSource = treedNode.children;
   if (!treedNode.children) {
     childSource = treedNode._children;
