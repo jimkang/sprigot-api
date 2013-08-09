@@ -32,11 +32,10 @@ function treeify(sprigsForIds, rootId, depthLimit) {
     sprigsAtNextDepth = [];
 
     sprigsAtDepth.forEach(function convertChildren(sprig) {
-      convertChildRefsToSprigs(sprig, sprigsForIds);
-
       if (currentDepth + 1 <= depthLimit && 
         typeof sprig.children === 'object') {
 
+          convertChildRefsToSprigs(sprig, sprigsForIds);
           sprigsAtNextDepth = sprigsAtNextDepth.concat(sprig.children);
       }
     });
