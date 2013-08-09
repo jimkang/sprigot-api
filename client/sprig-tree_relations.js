@@ -24,7 +24,9 @@ function serializeTreedNode(treedNode) {
   if (!treedNode.children) {
     childSource = treedNode._children;
   }
-  serialized.children = _.pluck(childSource, 'id');
+  if (childSource) {
+    serialized.children = _.pluck(childSource, 'id');
+  }
 
   return serialized;
 }
