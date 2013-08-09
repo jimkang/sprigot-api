@@ -516,5 +516,37 @@ describe('A visitor', function getASprig() {
       });
   });
 
+  it('should get a deep tree hierarchy', function getSprigTree(testDone) {
+    function addDocRefToNodesInTree(tree) {
+      tree.doc = session.deepDocId;
+      if (tree.children) {
+        tree.children.forEach(addDocRefToNodesInTree);
+      }
+    }
+    addDocRefToNodesInTree(caseDataSource);    
+
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        sprig1req: {
+          op: 'getSprig',
+          params: {            
+            id: 'notonline',
+            doc: session.deepDocId,
+            childDepth: 20
+          }
+        }
+      },
+      done: function doneGettingSprig(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        var fetchedTree = response.sprig1req.result;
+        assert.deepEqual(fetchedTree, caseDataSource);
+        testDone();
+      }
+    });
+
+  });
+
 });
 
