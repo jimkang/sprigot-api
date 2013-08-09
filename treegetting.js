@@ -35,8 +35,8 @@ function treeify(sprigsForIds, rootId, depthLimit) {
       if (currentDepth + 1 <= depthLimit && 
         typeof sprig.children === 'object') {
 
-          convertChildRefsToSprigs(sprig, sprigsForIds);
-          sprigsAtNextDepth = sprigsAtNextDepth.concat(sprig.children);
+        convertChildRefsToSprigs(sprig, sprigsForIds);
+        sprigsAtNextDepth = sprigsAtNextDepth.concat(sprig.children);
       }
     });
 
