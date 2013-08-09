@@ -140,8 +140,9 @@ describe('A visitor', function getASprig() {
     });
   });
 
-  it('should post another doc', function postDoc(testDone) {
+  it('should post more docs', function postDocs(testDone) {
     session.secondDocId = uid(4);
+    session.deepDocId = uid(4);
 
     utils.sendJSONRequest({
       url: settings.baseURL,
@@ -161,6 +162,21 @@ describe('A visitor', function getASprig() {
               'smidgeo', 'drwily'
             ]
           }
+        },
+        docPostReq2: {
+          op: 'saveDoc',
+          params: {
+            id: session.deepDocId,
+            authors: [
+              'drwily'
+            ],
+            admins: [
+              'drwily'
+            ],
+            readers: [
+              'smidgeo', 'drwily'
+            ]
+          }
         }
       },
       done: function donePostingDoc(error, xhr) {
@@ -169,6 +185,12 @@ describe('A visitor', function getASprig() {
           status: 'saved',
           result: {
             id: session.secondDocId
+          }
+        });
+        assert.deepEqual(response.docPostReq2, {
+          status: 'saved',
+          result: {
+            id: session.deepDocId
           }
         });
         testDone();
@@ -449,6 +471,49 @@ describe('A visitor', function getASprig() {
         testDone();
       }
     });
+  });
+
+  it('should post a deeper hierarchy', 
+    function postHierarchicalSprigs(testDone) {
+
+      var sprigs = [];
+      function walkTree(tree) {
+        tree.doc = session.deepDocId;
+        var serializedNode = sprigTree.serializeTreedNode(tree);
+        sprigs.push(serializedNode);
+        if (tree.children) {
+          tree.children.forEach(walkTree);
+        }
+      }
+      walkTree(caseDataSource);
+
+      var reqParams = {};
+      sprigs.forEach(function addRequestForSprig(sprig) {
+        reqParams[sprig.id + 'req'] = {
+          op: 'saveSprig',
+          params: sprig
+        };
+      });
+
+      utils.sendJSONRequest({
+        url: settings.baseURL,
+        method: 'POST',
+        jsonParams: reqParams,
+        done: function donePostingSprigHierarchy(error, xhr) {
+          var response = JSON.parse(xhr.responseText);
+
+          for (var reqId in reqParams) {
+            assert.deepEqual(response[reqId], {
+              status: 'saved',
+              result: {
+                id: reqParams[reqId].params.id
+              }
+            });
+          }
+
+          testDone();
+        }
+      });
   });
 
 });
