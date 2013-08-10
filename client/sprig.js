@@ -312,7 +312,9 @@ request(settings.serverURL, {req1: sprigRequest},
     }
 
     if ('req1' in response && response.req1.status === 'got') {
-      initGraphWithNodeTree(response.req1.result);
+      var sanitizedTree = sanitizeTreeForD3(response.req1.result);
+      initGraphWithNodeTree(sanitizedTree);
+      console.log('Load result:', response.req1.result);
     }
     else {
       console.log('Sprig not found.');

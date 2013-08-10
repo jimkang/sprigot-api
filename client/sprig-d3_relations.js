@@ -20,5 +20,32 @@ function serializeTreedNode(treedNode) {
   return serialized;
 }
 
-module.exports.serializeTreedNode = serializeTreedNode;
+function sanitizeTreeForD3(tree) {
+  if (typeof tree.children === 'object') {
+    var childRefs = [];
+    var validChildren = [];
+    for (var i = 0; i < tree.children.length; ++i) {
+      var child = tree.children[i];
+      if (typeof child === 'object') {
+        validChildren.push(child);
+      }
+      else {
+        childRefs.push(child);
+      }
+    }
+    if (childRefs.length > 0) {
+      tree.childRefs = childRefs;
+    }
+    if (validChildren.length > 0) {
+      tree.children = validChildren;
+      tree.children.forEach(sanitizeTreeForD3);
+    }
+  }
+  return tree;
+}
+
+module.exports = {
+  serializeTreedNode: serializeTreedNode,
+  sanitizeTreeForD3: sanitizeTreeForD3
+};
 
