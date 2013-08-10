@@ -7,7 +7,6 @@ else {
   module = {exports: {}};
 }
 
-
 function serializeTreedNode(treedNode) {
   var serialized = _.pick(treedNode, 'id', 'doc', 'title', 'body');
   var childSource = treedNode.children;
