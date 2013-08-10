@@ -234,12 +234,10 @@ function changeEditMode(editable) {
     if (serializedNode) {
       var saveId = uid(8); //makeId();
       var body = {};
+      serializedNode.doc = '1sU0';
       body[saveId] = {
         op: 'saveSprig',
-        params: {
-          sprigId: serializedNode.id,
-          sprigContents: serializedNode
-        }
+        params: serializedNode
       };
       request(settings.serverURL, body, function done(error, response) {
         if (error) {
@@ -247,7 +245,7 @@ function changeEditMode(editable) {
           return;
         }
 
-        if (saveId in response && response[saveId].status === 'posted') {
+        if (saveId in response && response[saveId].status === 'saved') {
           console.log('Sprig saved:', response);
         }
         else {
@@ -300,7 +298,8 @@ textcontent.on('click', function startEditing() {
 var sprigRequest = {
   op: 'getSprig',
   params: {
-    sprigId: 'notonline',
+    id: 'notonline',
+    doc: '1sU0',
     childDepth: 20
   }
 };
@@ -320,6 +319,32 @@ request(settings.serverURL, {req1: sprigRequest},
     }
   }
 );
+
+function createNewDoc() {
+  request(settings.serverURL, {
+    docPostReq1: {
+      op: 'saveDoc',
+      params: {
+        id: uid(4),
+        rootSprig: 'notonline',
+        authors: [
+          'ignignokt'
+        ],
+        admins: [
+          'ignignokt'
+        ]
+      }
+    }
+  },
+  function done(error, response) {
+    if (error) {
+      console.log('Error while saving doc:', error);
+    }
+    else {
+      console.log('Saved doc:', response);
+    }
+  });
+}
 
 function initGraphWithNodeTree(nodeTree) {
   root = nodeTree;
