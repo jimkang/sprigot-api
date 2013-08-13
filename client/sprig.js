@@ -6,13 +6,17 @@ var margin = {top: 20, right: 10, bottom: 20, left: 10},
   width = board.node().clientWidth - margin.right - margin.left,
   height = board.node().clientHeight - margin.top - margin.bottom;
     
-var i = 0,
-  duration = 750,
-  root;
+var i = 0;
+var duration = 750;
 
 var settings = {
   serverURL: 'http://127.0.0.1:3000'
 };
+
+var g = {
+  focusEl: null,
+  root: null
+}
 
 // The tree generates a left-to-right tree, and we want a top-to-bottom tree, 
 // so we flip x and y when we talk to it.
@@ -26,10 +30,10 @@ graph.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 // d3.select(self.frameElement).style('height', '800px');
 
-function update(source) {
+function update(source, done) {
 
   // Compute the new tree layout.
-  var nodes = tree.nodes(root).reverse();
+  var nodes = tree.nodes(g.root).reverse();
   nodes.forEach(function swapXAndY(d) {
     var oldX = d.x;
     var oldX0 = d.x0;
@@ -139,6 +143,10 @@ function update(source) {
     d.x0 = d.x;
     d.y0 = d.y;
   });
+
+  if (done) {
+    done();
+  }
 }
 
 function translateYFromSel(sel) {
@@ -162,11 +170,18 @@ function panToElement(focusElementSel) {
   750);
 }
 
-var textcontent = d3.select('#textpane .textcontent')
+var textcontent = d3.select('#textpane .textcontent');
+var addButton = d3.select('#textpane button');
 
 
 // Toggle children on click.
 function click(d) {
+  clickOnEl(d, this);
+}
+
+function clickOnEl(d, el) {
+  g.focusEl = el;
+
   if (d.children) {
     d._children = d.children;
     d.children = null;
@@ -174,21 +189,21 @@ function click(d) {
   else {
     d.children = d._children;
     d._children = null;
-    var clickedNode = this;
 
     // The new nodes are going to be at the same y that this node was at, and 
     // this node is going to move up. So, pan to the old x and y, where the 
     // new nodes will be.
-    var clickedEl = d3.select(clickedNode);
+    var clickedEl = d3.select(g.focusEl);
     panToElement(clickedEl);
   }
   d.visited = true;
-  update(d);
+  update(g.root);
 
   // Fill in the side pane with the text.
   textcontent.html(d.body);
   textcontent.style('display', 'block');
   textcontent.datum(d);
+  addButton.style('display', 'block');
 }
 
 
@@ -205,7 +220,8 @@ BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'),
 
 /* Editing */
 
-d3.select('#textpane .textcontent').style('display', 'none');
+textcontent.style('display', 'none');
+addButton.style('display', 'none');
 
 var textcontent = d3.select('#textpane .textcontent');
 
@@ -291,6 +307,71 @@ textcontent.on('click', function startEditing() {
   }
 });
 
+addButton.on('click', function addChildSprig() {
+  d3.event.stopPropagation();
+  if (currentlyEditing()) {
+    changeEditMode(false);
+  }
+
+  var focusNode = d3.select(g.focusEl).datum();
+
+  var newSprig = {
+    id: uid(8),
+    doc: '1sU0',
+    title: 'One',
+    body: ''
+    // ephemera: {
+    //   isNew: true,
+    //   parent: focusNode
+    // }
+  };
+
+  var currentChildren = focusNode.children;
+  if (!currentChildren) {
+    currentChildren = focusNode._children;
+  }
+  if (!currentChildren) {
+    currentChildren = [];
+  }
+  currentChildren.push(newSprig);
+
+  focusNode.children = currentChildren;
+
+  var saveNewSprigId = uid(4);
+  var saveParentSprigId = uid(4);
+  
+  var body = {};
+  body[saveNewSprigId] = {
+    op: 'saveSprig',
+    params: newSprig
+  };
+  body[saveParentSprigId] = {
+    op: 'saveSprig',
+    params: serializeTreedNode(focusNode)
+  };
+
+  request(settings.serverURL, body, 
+  function done(error, response) {
+    if (error) {
+      console.log('Error while saving sprigs:', error);
+      return;
+    }
+
+    console.log('New sprig save status:', response[saveNewSprigId].status);
+    console.log('Parent sprig save status:', response[saveParentSprigId].status);
+  });
+
+  update(g.root, function done() {
+    var newSprigSel = d3.select('#' + newSprig.id);
+
+    setTimeout(function clickOnNewNode() {
+      clickOnEl(newSprigSel.datum(), newSprigSel.node());
+    },
+    500);
+  });
+});
+
+
 /* Persistence */
 
 /* Initialize */
@@ -349,16 +430,16 @@ function createNewDoc() {
 }
 
 function initGraphWithNodeTree(nodeTree) {
-  root = nodeTree;
-  root.x0 = height / 2;
-  root.y0 = 0;
+  g.root = nodeTree;
+  g.root.x0 = height / 2;
+  g.root.y0 = 0;
 
-  root.children.forEach(collapse);
-  collapse(root);
-  update(root);
+  g.root.children.forEach(collapse);
+  collapse(g.root);
+  update(g.root);
 
   setTimeout(function initialPan() {
-    panToElement(d3.select('#' + root.id));
+    panToElement(d3.select('#' + g.root.id));
   },
   800);  
 }
