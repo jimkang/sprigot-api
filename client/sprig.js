@@ -171,7 +171,7 @@ function panToElement(focusElementSel) {
 }
 
 var textcontent = d3.select('#textpane .textcontent');
-var addButton = d3.select('#textpane button');
+var addButton = d3.select('#textpane .newsprigbutton');
 
 
 // Toggle children on click.
