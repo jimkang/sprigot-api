@@ -222,7 +222,7 @@ BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'),
 /* Editing */
 
 textcontent.style('display', 'none');
-d3.selectAll('#textpane button').style('display', 'none');
+d3.selectAll('#textpane *').style('display', 'none');
 
 var textcontent = d3.select('#textpane .textcontent');
 
