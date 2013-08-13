@@ -172,6 +172,7 @@ function panToElement(focusElementSel) {
 
 var textcontent = d3.select('#textpane .textcontent');
 var addButton = d3.select('#textpane .newsprigbutton');
+var editTitleButton = d3.select('#textpane .edittitlebutton');
 
 
 // Toggle children on click.
@@ -203,7 +204,7 @@ function clickOnEl(d, el) {
   textcontent.html(d.body);
   textcontent.style('display', 'block');
   textcontent.datum(d);
-  addButton.style('display', 'block');
+  d3.selectAll('#textpane button').style('display', 'block');
 }
 
 
@@ -221,7 +222,7 @@ BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'),
 /* Editing */
 
 textcontent.style('display', 'none');
-addButton.style('display', 'none');
+d3.selectAll('#textpane button').style('display', 'none');
 
 var textcontent = d3.select('#textpane .textcontent');
 
@@ -318,7 +319,7 @@ addButton.on('click', function addChildSprig() {
   var newSprig = {
     id: uid(8),
     doc: '1sU0',
-    title: 'One',
+    title: 'New Sprig',
     body: ''
     // ephemera: {
     //   isNew: true,
