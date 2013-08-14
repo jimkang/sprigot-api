@@ -303,7 +303,7 @@ function startEditing() {
 
 function addChildSprig() {
   d3.event.stopPropagation();
-  if (inEditMode(g.textcontent.node())) {
+  if (g.editZone.classed('editing')) {
     changeEditMode(false);
   }
 
