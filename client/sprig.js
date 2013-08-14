@@ -18,7 +18,10 @@ var g = {
   root: null,
   treeLayout: null,
   diagonalProjection: null,
-  textcontent: null
+  textcontent: null,
+  titleField: null,
+  editZone: null,
+  addButton: null
 }
 
 function update(source, done) {
@@ -188,9 +191,11 @@ function clickOnEl(d, el) {
 
   // Fill in the side pane with the text.
   g.textcontent.html(d.body);
-  g.textcontent.style('display', 'block');
   g.textcontent.datum(d);
+  g.titleField.datum(d);
+
   d3.selectAll('#textpane button').style('display', 'block');
+  g.editZone.style('display', 'block');
 }
 
 
@@ -205,21 +210,41 @@ function collapse(d) {
 
 /* Editing */
 
-function makeId() {
-  return Math.floor((1 + Math.random()) * 0x10000)
-    .toString(16)
-    .substring(1);
+function makeId(lengthOfRandomPart) {
+  return 's' + uid(lengthOfRandomPart);
+  // return Math.floor((1 + Math.random()) * 0x10000)
+  //   .toString(16)
+  //   .substring(1);
+}
+
+function showTitle() {
+  g.titleField.text(g.titleField.datum().title);
+  g.titleField.style('display', 'block');
 }
 
 function changeEditMode(editable) {
-  g.textcontent.attr('contenteditable', editable)
-    .classed('editing', editable);
+  g.textcontent.attr('contenteditable', editable);
+  g.titleField.attr('contenteditable', editable);
+  g.editZone.classed('editing', editable);
 
-  if (!editable) {
+  if (editable) {
+    showTitle();
+  }
+  else {
+    g.titleField.style('display', 'none');
+
     var editedNode = g.textcontent.datum();
     editedNode.body = g.textcontent.html();
+
+    var newTitle = g.titleField.text();
+    var titleChanged = (newTitle !== editedNode.title);
+    editedNode.title = newTitle;
+    if (titleChanged) {
+      d3.select('#' + editedNode.id + ' text').text(editedNode.title);
+    }
+
     g.textcontent.datum(editedNode);
-    // TODO: Sync back to the datum in the g.treeLayout.
+    g.titleField.datum(editedNode);
 
     // serializeTreedNode on node edited.
     var editedNode = g.textcontent.datum();
@@ -228,7 +253,7 @@ function changeEditMode(editable) {
       serializedNode = serializeTreedNode(editedNode);
     }
     if (serializedNode) {
-      var saveId = uid(8); //makeId();
+      var saveId = makeId(4);
       var body = {};
       serializedNode.doc = '1sU0';
       body[saveId] = {
@@ -253,19 +278,8 @@ function changeEditMode(editable) {
   }
 }
 
-function currentlyEditing() {
-  var editable = g.textcontent.attr('contenteditable');
-  if (typeof editable === 'string' && editable === 'true') {
-    editable = true;
-  }
-  else {
-    editable = false;
-  }
-  return editable;
-}
-
 d3.select(document).on('click', function endEditing() {
-  if (currentlyEditing()) {
+  if (g.editZone.classed('editing')) {
     changeEditMode(false);
   }
 });
@@ -274,7 +288,7 @@ d3.select(document).on('keyup', function processKeyUp() {
   // Esc
   if (d3.event.keyCode === 27) {
     d3.event.stopPropagation();
-    if (currentlyEditing()) {
+    if (g.editZone.classed('editing')) {
       changeEditMode(false);
     }
   }
@@ -282,21 +296,21 @@ d3.select(document).on('keyup', function processKeyUp() {
 
 function startEditing() {
   d3.event.stopPropagation();
-  if (!currentlyEditing()) {
+  if (!g.editZone.classed('editing')) {
     changeEditMode(true);
   }
 }
 
 function addChildSprig() {
   d3.event.stopPropagation();
-  if (currentlyEditing()) {
+  if (inEditMode(g.textcontent.node())) {
     changeEditMode(false);
   }
 
   var focusNode = d3.select(g.focusEl).datum();
 
   var newSprig = {
-    id: uid(8),
+    id: makeId(8),
     doc: '1sU0',
     title: 'New Sprig',
     body: ''
@@ -411,16 +425,19 @@ function init() {
   graph.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
   g.textcontent = d3.select('#textpane .textcontent');
+  g.titleField = d3.select('#textpane .sprigTitleField');
+  g.editZone = d3.select('#textpane .editZone');
   g.addButton = d3.select('#textpane .newsprigbutton');
-  g.editTitleButton = d3.select('#textpane .edittitlebutton');
 
   BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
     d3.select('g#graphRoot'));
 
-  g.textcontent.style('display', 'none');
-  d3.selectAll('#textpane *').style('display', 'none');
+  g.editZone.style('display', 'none');
+  g.titleField.style('display', 'none');
+  d3.selectAll('#textpane button').style('display', 'none');
 
   g.textcontent.on('click', startEditing);
+  g.titleField.on('click', startEditing);
   g.addButton.on('click', addChildSprig);
 
   var sprigRequest = {
