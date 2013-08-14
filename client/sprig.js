@@ -15,25 +15,16 @@ var settings = {
 
 var g = {
   focusEl: null,
-  root: null
+  root: null,
+  treeLayout: null,
+  diagonalProjection: null,
+  textcontent: null
 }
-
-// The tree generates a left-to-right tree, and we want a top-to-bottom tree, 
-// so we flip x and y when we talk to it.
-var tree = d3.layout.tree();
-tree.nodeSize([160, 160]);
-
-var diagonal = d3.svg.diagonal()
-  .projection(function(d) { return [d.y, d.x]; });
-
-graph.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-// d3.select(self.frameElement).style('height', '800px');
 
 function update(source, done) {
 
   // Compute the new tree layout.
-  var nodes = tree.nodes(g.root).reverse();
+  var nodes = g.treeLayout.nodes(g.root).reverse();
   nodes.forEach(function swapXAndY(d) {
     var oldX = d.x;
     var oldX0 = d.x0;
@@ -43,7 +34,7 @@ function update(source, done) {
     d.y0 = oldX0;
   });
 
-  var links = tree.links(nodes);
+  var links = g.treeLayout.links(nodes);
 
   // Normalize for fixed-depth.
   nodes.forEach(function(d) { d.x = d.depth * 180; });
@@ -121,20 +112,20 @@ function update(source, done) {
     .attr('class', 'link')
     .attr('d', function(d) {
       var o = {x: source.x0, y: source.y0};
-      return diagonal({source: o, target: o});
+      return g.diagonalProjection({source: o, target: o});
     });
 
   // Transition links to their new position.
   link//.transition()
     // .duration(duration)
-    .attr('d', diagonal);
+    .attr('d', g.diagonalProjection);
 
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
     .duration(duration)
     .attr('d', function(d) {
       var o = {x: source.x, y: source.y};
-      return diagonal({source: o, target: o});
+      return g.diagonalProjection({source: o, target: o});
     })
     .remove();
 
@@ -170,11 +161,6 @@ function panToElement(focusElementSel) {
   750);
 }
 
-var textcontent = d3.select('#textpane .textcontent');
-var addButton = d3.select('#textpane .newsprigbutton');
-var editTitleButton = d3.select('#textpane .edittitlebutton');
-
-
 // Toggle children on click.
 function click(d) {
   clickOnEl(d, this);
@@ -201,9 +187,9 @@ function clickOnEl(d, el) {
   update(g.root);
 
   // Fill in the side pane with the text.
-  textcontent.html(d.body);
-  textcontent.style('display', 'block');
-  textcontent.datum(d);
+  g.textcontent.html(d.body);
+  g.textcontent.style('display', 'block');
+  g.textcontent.datum(d);
   d3.selectAll('#textpane button').style('display', 'block');
 }
 
@@ -216,15 +202,8 @@ function collapse(d) {
   }
 }
 
-BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
-  d3.select('g#graphRoot'));
 
 /* Editing */
-
-textcontent.style('display', 'none');
-d3.selectAll('#textpane *').style('display', 'none');
-
-var textcontent = d3.select('#textpane .textcontent');
 
 function makeId() {
   return Math.floor((1 + Math.random()) * 0x10000)
@@ -233,17 +212,17 @@ function makeId() {
 }
 
 function changeEditMode(editable) {
-  textcontent.attr('contenteditable', editable)
+  g.textcontent.attr('contenteditable', editable)
     .classed('editing', editable);
 
   if (!editable) {
-    var editedNode = textcontent.datum();
-    editedNode.body = textcontent.html();
-    textcontent.datum(editedNode);
-    // TODO: Sync back to the datum in the tree.
+    var editedNode = g.textcontent.datum();
+    editedNode.body = g.textcontent.html();
+    g.textcontent.datum(editedNode);
+    // TODO: Sync back to the datum in the g.treeLayout.
 
     // serializeTreedNode on node edited.
-    var editedNode = textcontent.datum();
+    var editedNode = g.textcontent.datum();
     var serializedNode = null;
     if (editedNode) {
       serializedNode = serializeTreedNode(editedNode);
@@ -275,7 +254,7 @@ function changeEditMode(editable) {
 }
 
 function currentlyEditing() {
-  var editable = textcontent.attr('contenteditable');
+  var editable = g.textcontent.attr('contenteditable');
   if (typeof editable === 'string' && editable === 'true') {
     editable = true;
   }
@@ -301,14 +280,14 @@ d3.select(document).on('keyup', function processKeyUp() {
   }
 });
 
-textcontent.on('click', function startEditing() {
+function startEditing() {
   d3.event.stopPropagation();
   if (!currentlyEditing()) {
     changeEditMode(true);
   }
-});
+}
 
-addButton.on('click', function addChildSprig() {
+function addChildSprig() {
   d3.event.stopPropagation();
   if (currentlyEditing()) {
     changeEditMode(false);
@@ -370,39 +349,10 @@ addButton.on('click', function addChildSprig() {
     },
     500);
   });
-});
+}
 
 
 /* Persistence */
-
-/* Initialize */
-
-var sprigRequest = {
-  op: 'getSprig',
-  params: {
-    id: 'notonline',
-    doc: '1sU0',
-    childDepth: 20
-  }
-};
-
-request(settings.serverURL, {req1: sprigRequest},
-  function done(error, response) {
-    if (error) {
-      console.log('Error while getting sprig:', error);
-      return;
-    }
-
-    if ('req1' in response && response.req1.status === 'got') {
-      var sanitizedTree = sanitizeTreeForD3(response.req1.result);
-      initGraphWithNodeTree(sanitizedTree);
-      console.log('Load result:', response.req1.result);
-    }
-    else {
-      console.log('Sprig not found.');
-    }
-  }
-);
 
 function createNewDoc() {
   request(settings.serverURL, {
@@ -430,6 +380,9 @@ function createNewDoc() {
   });
 }
 
+/* Initialize */
+
+
 function initGraphWithNodeTree(nodeTree) {
   g.root = nodeTree;
   g.root.x0 = height / 2;
@@ -445,3 +398,57 @@ function initGraphWithNodeTree(nodeTree) {
   800);  
 }
 
+
+function init() {
+  // The tree generates a left-to-right tree, and we want a top-to-bottom tree, 
+  // so we flip x and y when we talk to it.
+  g.treeLayout = d3.layout.tree();
+  g.treeLayout.nodeSize([160, 160]);
+
+  g.diagonalProjection = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; });
+
+  graph.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+  g.textcontent = d3.select('#textpane .textcontent');
+  g.addButton = d3.select('#textpane .newsprigbutton');
+  g.editTitleButton = d3.select('#textpane .edittitlebutton');
+
+  BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
+    d3.select('g#graphRoot'));
+
+  g.textcontent.style('display', 'none');
+  d3.selectAll('#textpane *').style('display', 'none');
+
+  g.textcontent.on('click', startEditing);
+  g.addButton.on('click', addChildSprig);
+
+  var sprigRequest = {
+    op: 'getSprig',
+    params: {
+      id: 'notonline',
+      doc: '1sU0',
+      childDepth: 20
+    }
+  };
+
+  request(settings.serverURL, {req1: sprigRequest},
+    function done(error, response) {
+      if (error) {
+        console.log('Error while getting sprig:', error);
+        return;
+      }
+
+      if ('req1' in response && response.req1.status === 'got') {
+        var sanitizedTree = sanitizeTreeForD3(response.req1.result);
+        initGraphWithNodeTree(sanitizedTree);
+        console.log('Load result:', response.req1.result);
+      }
+      else {
+        console.log('Sprig not found.');
+      }
+    }
+  );
+}
+
+init();
