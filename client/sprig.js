@@ -405,7 +405,12 @@ function deleteSprig() {
     console.log('Parent sprig save status:', response[saveOpId].status);
   });
 
-
+  update(g.root, function doneUpdating() {
+    setTimeout(function clickOnParentOfDeletedNode() {
+      clickOnEl(parentNode, d3.select('#' + parentNode.id).node());
+    },
+    500);
+  });
 }
 
 
