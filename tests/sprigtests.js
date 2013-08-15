@@ -548,5 +548,34 @@ describe('A visitor', function getASprig() {
 
   });
 
+  it('should delete a sprig', function deleteSprig(testDone) {
+    // console.log('deleting', session.secondDocId, session.sprigOne.id);
+
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        sprig100req: {
+          op: 'deleteSprig',
+          params: {
+            id: session.sprigOne.id,
+            doc: session.secondDocId
+          }
+        }
+      },
+      done: function doneDeleting(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        assert.deepEqual(response.sprig100req, {
+          status: 'deleted',
+          result: {
+            id: session.sprigOne.id
+          }
+        });
+        testDone();
+      }
+    });
+    testDone();
+  });
+
 });
 

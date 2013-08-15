@@ -98,6 +98,14 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
           jobComplete('Not understood', jobKey, null);
         }
         break;
+      case 'deleteSprig':
+        if (job.params.id && job.params.doc) {
+          dbwrap.deleteSprigFromDb(job.params, jobKey, jobComplete);
+        }
+        else {
+          jobComplete('Not understood', jobKey, null);
+        }
+        break;
       case 'saveDoc':
         if (job.params.id) {
           dbwrap.saveDocToDb(job.params, jobKey, jobComplete);

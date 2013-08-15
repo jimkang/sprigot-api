@@ -39,6 +39,20 @@ function saveSprigToDb(sprigParams, jobKey, jobComplete) {
   });
 }
 
+function deleteSprigFromDb(sprigParams, jobKey, jobComplete) {
+  var key = getSprigKey(sprigParams.id, sprigParams.doc);
+  db.del(key, {}, function delDbDone(error) {
+    if (error) {
+      jobComplete('Database error', jobKey, error);
+    }
+    else {
+      jobComplete('deleted', jobKey, {
+        id: sanitizeKeySegment(sprigParams.id)
+      });
+    }
+  });
+}
+
 function saveDocToDb(docParams, jobKey, jobComplete) {
   var cleanId = sanitizeKeySegment(docParams.id);
   var key = 'd' + nsDelimiter + cleanId;
@@ -78,6 +92,7 @@ module.exports = {
   db: db,
   getSprigFromDb: getSprigFromDb,
   saveSprigToDb: saveSprigToDb, 
+  deleteSprigFromDb: deleteSprigFromDb,
   saveDocToDb: saveDocToDb,
   sanitizeKeySegment: sanitizeKeySegment,
   getRangeForSprigsInDoc: getRangeForSprigsInDoc
