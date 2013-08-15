@@ -282,13 +282,13 @@ function saveNodeSprig(node) {
   }
 }
 
-d3.select(document).on('click', function endEditing() {
+function endEditing() {
   if (g.editZone.classed('editing')) {
     changeEditMode(false);
   }
-});
+}
 
-d3.select(document).on('keyup', function processKeyUp() {
+function processKeyUp() {
   // Esc
   if (d3.event.keyCode === 27) {
     d3.event.stopPropagation();
@@ -296,7 +296,7 @@ d3.select(document).on('keyup', function processKeyUp() {
       changeEditMode(false);
     }
   }
-});
+}
 
 function startEditing() {
   d3.event.stopPropagation();
@@ -489,6 +489,10 @@ function init() {
   g.titleField.on('click', startEditing);
   g.addButton.on('click', addChildSprig);
   g.deleteButton.on('click', deleteSprig);
+
+  var doc = d3.select(document);
+  doc.on('click', endEditing);
+  doc.on('keyup', processKeyUp);
 
   var sprigRequest = {
     op: 'getSprig',
