@@ -4,7 +4,7 @@ var db = levelup('./db/sprigot.db', {
   valueEncoding: 'json'
 });
 
-var nsDelimiter = '\x00';
+var nsDelimiter = '!';
 var nsEndRangeDelimiter = '\xff';
 
 function getSprigFromDb(id, docId, jobKey, jobComplete) {
