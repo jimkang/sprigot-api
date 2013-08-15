@@ -21,7 +21,8 @@ var g = {
   textcontent: null,
   titleField: null,
   editZone: null,
-  addButton: null
+  addButton: null,
+  deleteButton: null
 }
 
 function update(source, done) {
@@ -222,7 +223,7 @@ function showTitle() {
   g.titleField.style('display', 'block');
 }
 
-function changeEditMode(editable) {
+function changeEditMode(editable, skipSave) {
   g.textcontent.attr('contenteditable', editable);
   g.titleField.attr('contenteditable', editable);
   g.editZone.classed('editing', editable);
@@ -246,35 +247,38 @@ function changeEditMode(editable) {
     g.textcontent.datum(editedNode);
     g.titleField.datum(editedNode);
 
-    // serializeTreedNode on node edited.
-    var editedNode = g.textcontent.datum();
-    var serializedNode = null;
-    if (editedNode) {
-      serializedNode = serializeTreedNode(editedNode);
+    if (!skipSave) {
+      saveNodeSprig(g.textcontent.datum());
     }
-    if (serializedNode) {
-      var saveId = makeId(4);
-      var body = {};
-      serializedNode.doc = '1sU0';
-      body[saveId] = {
-        op: 'saveSprig',
-        params: serializedNode
-      };
-      request(settings.serverURL, body, function done(error, response) {
-        if (error) {
-          console.log('Error while saving sprig:', error);
-          return;
-        }
+  }
+}
 
-        if (saveId in response && response[saveId].status === 'saved') {
-          console.log('Sprig saved:', response);
-        }
-        else {
-          console.log('Sprig not saved.');
-        }
-      });
-    }
-    console.log('serializedNode', serializedNode);
+function saveNodeSprig(node) {
+  var serializedNode = null;
+  if (node) {
+    serializedNode = serializeTreedNode(node);
+  }
+  if (serializedNode) {
+    var saveId = makeId(4);
+    var body = {};
+    serializedNode.doc = '1sU0';
+    body[saveId] = {
+      op: 'saveSprig',
+      params: serializedNode
+    };
+    request(settings.serverURL, body, function done(error, response) {
+      if (error) {
+        console.log('Error while saving sprig:', error);
+        return;
+      }
+
+      if (saveId in response && response[saveId].status === 'saved') {
+        console.log('Sprig saved:', response);
+      }
+      else {
+        console.log('Sprig not saved.');
+      }
+    });
   }
 }
 
@@ -365,6 +369,45 @@ function addChildSprig() {
   });
 }
 
+function deleteSprig() {
+  d3.event.stopPropagation();
+  if (g.editZone.classed('editing')) {
+    changeEditMode(false, true);
+  }
+
+  var focusNode = d3.select(g.focusEl).datum();
+  var parentNode = focusNode.parent;
+  var childIndex = parentNode.children.indexOf(focusNode);
+  parentNode.children.splice(childIndex, 1);
+
+  var requestBody = {};
+  var deleteOpId = uid(4);
+  var saveOpId = uid(4);
+  requestBody[deleteOpId] = {
+    op: 'deleteSprig',
+    params: {
+      id: focusNode.id,
+      doc: '1sU0'
+    }
+  };
+  requestBody[saveOpId] = {
+    op: 'saveSprig',
+    params: serializeTreedNode(parentNode)
+  };
+  
+  request(settings.serverURL, requestBody, function done(error, response) {
+    if (error) {
+      console.log('Error while saving sprigs:', error);
+      return;
+    }
+
+    console.log('Sprig deletion status:', response[deleteOpId].status);
+    console.log('Parent sprig save status:', response[saveOpId].status);
+  });
+
+
+}
+
 
 /* Persistence */
 
@@ -428,6 +471,7 @@ function init() {
   g.titleField = d3.select('#textpane .sprigTitleField');
   g.editZone = d3.select('#textpane .editZone');
   g.addButton = d3.select('#textpane .newsprigbutton');
+  g.deleteButton = d3.select('#textpane .deletesprigbutton');
 
   BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
     d3.select('g#graphRoot'));
@@ -439,6 +483,7 @@ function init() {
   g.textcontent.on('click', startEditing);
   g.titleField.on('click', startEditing);
   g.addButton.on('click', addChildSprig);
+  g.deleteButton.on('click', deleteSprig);
 
   var sprigRequest = {
     op: 'getSprig',
@@ -466,6 +511,8 @@ function init() {
       }
     }
   );
+
+  // initGraphWithNodeTree(caseDataSource);
 }
 
 init();
