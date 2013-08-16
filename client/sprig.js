@@ -208,6 +208,21 @@ function collapse(d) {
   }
 }
 
+function nodeIsExpanded(treeNode) {
+  return (treeNode.children && !treeNode._children);
+}
+
+function followBranchOfNode(treeNode) {
+  // TODO: Define primary paths?
+  var childIndex = 0;
+  if (typeof treeNode.children === 'object' && 
+    childIndex < treeNode.children.length) {
+
+    var childNode = treeNode.children[childIndex];
+    var childEl = d3.select('#' + childNode.id).node();
+    clickOnEl(childNode, childEl);
+  }
+}
 
 /* Editing */
 
@@ -300,13 +315,30 @@ function respondToDocKeyUp() {
       changeEditMode(false);
     }
   }
-  // 'e'
-  else if (!g.editZone.classed('editing') && d3.event.which === 69) {
-    d3.event.stopPropagation();
-    if (g.editZone.style('display') === 'block') {
-      changeEditMode(true);
-    } 
-  }  
+  else if (!g.editZone.classed('editing')) {
+    // 'e'
+    if (d3.event.which === 69) {
+      d3.event.stopPropagation();
+      if (g.editZone.style('display') === 'block') {
+        changeEditMode(true);
+      }
+    }
+    // Down arrow.
+    else if (d3.event.which === 40) {
+      respondToDownArrow();
+    }
+  }
+}
+
+function respondToDownArrow() {
+  d3.event.stopPropagation();
+  var focusNode = d3.select(g.focusEl).datum();
+  if (nodeIsExpanded(focusNode)) {
+    followBranchOfNode(focusNode);
+  }
+  else {
+    clickOnEl(focusNode, d3.select('#' + focusNode.id).node());
+  }
 }
 
 function respondToEditZoneKeyDown() {
