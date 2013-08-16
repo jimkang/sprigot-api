@@ -494,6 +494,15 @@ function init() {
   doc.on('click', endEditing);
   doc.on('keyup', processKeyUp);
 
+  g.editZone.on('keydown', function editZoneKeyUp() {
+    if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 13) {
+      d3.event.stopPropagation();
+      if (g.editZone.classed('editing')) {
+        changeEditMode(false);
+      } 
+    }
+  });
+
   var sprigRequest = {
     op: 'getSprig',
     params: {
