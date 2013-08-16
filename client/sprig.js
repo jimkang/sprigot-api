@@ -230,6 +230,8 @@ function changeEditMode(editable, skipSave) {
 
   if (editable) {
     showTitle();
+    g.textcontent.node().focus();
+    // TODO: Make the cursor bolder? Flash the cursor?
   }
   else {
     g.titleField.style('display', 'none');
@@ -288,13 +290,31 @@ function endEditing() {
   }
 }
 
-function processKeyUp() {
+function respondToDocKeyUp() {
+  // CONSIDER: Disabling all of this listening when editing is going on.
+
   // Esc
   if (d3.event.keyCode === 27) {
     d3.event.stopPropagation();
     if (g.editZone.classed('editing')) {
       changeEditMode(false);
     }
+  }
+  // 'e'
+  else if (!g.editZone.classed('editing') && d3.event.which === 69) {
+    d3.event.stopPropagation();
+    if (g.editZone.style('display') === 'block') {
+      changeEditMode(true);
+    } 
+  }  
+}
+
+function respondToEditZoneKeyDown() {
+  if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 13) {
+    d3.event.stopPropagation();
+    if (g.editZone.classed('editing')) {
+      changeEditMode(false);
+    } 
   }
 }
 
@@ -492,16 +512,9 @@ function init() {
 
   var doc = d3.select(document);
   doc.on('click', endEditing);
-  doc.on('keyup', processKeyUp);
+  doc.on('keyup', respondToDocKeyUp);
 
-  g.editZone.on('keydown', function editZoneKeyUp() {
-    if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 13) {
-      d3.event.stopPropagation();
-      if (g.editZone.classed('editing')) {
-        changeEditMode(false);
-      } 
-    }
-  });
+  g.editZone.on('keydown', respondToEditZoneKeyDown);
 
   var sprigRequest = {
     op: 'getSprig',
