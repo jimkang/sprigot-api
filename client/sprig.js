@@ -232,6 +232,22 @@ function followParentOfNode(treeNode) {
   }
 }
 
+// direction should be negative to go to the left, positive to go to the right.
+function moveToSiblingNode(treeNode, direction) {
+  if (typeof treeNode.parent === 'object' &&
+    typeof treeNode.parent.children === 'object') {
+
+    var parentSel = d3.select('#' + treeNode.parent.id);
+    var focusIndex = treeNode.parent.children.indexOf(treeNode);
+    var siblingIndex = focusIndex + direction;
+    if (siblingIndex > -1 && siblingIndex < treeNode.parent.children.length) {
+      var siblingNode = treeNode.parent.children[siblingIndex];
+      var siblingEl = d3.select('#' + siblingNode.id).node();
+      clickOnEl(siblingNode, siblingEl);
+    }
+  }
+}
+
 /* Editing */
 
 function makeId(lengthOfRandomPart) {
@@ -340,6 +356,14 @@ function respondToDocKeyUp() {
       case 38:
         respondToUpArrow();
         break;
+      // Left arrow.
+      case 37:
+        respondToLeftArrow();
+        break;
+      // Right arrow.
+      case 39:
+        respondToRightArrow();
+        break;
     }
   }
 }
@@ -365,6 +389,18 @@ function respondToUpArrow() {
   else {
     followParentOfNode(focusNode);
   }
+}
+
+function respondToLeftArrow() {
+  d3.event.stopPropagation();
+  var focusNode = d3.select(g.focusEl).datum();
+  moveToSiblingNode(focusNode, -1);
+}
+
+function respondToRightArrow() {
+  d3.event.stopPropagation();
+  var focusNode = d3.select(g.focusEl).datum();
+  moveToSiblingNode(focusNode, 1);
 }
 
 function respondToEditZoneKeyDown() {
