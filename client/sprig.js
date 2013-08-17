@@ -364,6 +364,12 @@ function respondToDocKeyUp() {
       case 39:
         respondToRightArrow();
         break;
+      // = key
+      case 187:
+        if (d3.event.shiftKey) {
+          addChildSprig();
+        }
+        break;
     }
   }
 }
@@ -402,6 +408,7 @@ function respondToRightArrow() {
   var focusNode = d3.select(g.focusEl).datum();
   moveToSiblingNode(focusNode, 1);
 }
+
 
 function respondToEditZoneKeyDown() {
   if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 13) {
