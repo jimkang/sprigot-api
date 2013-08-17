@@ -84,9 +84,23 @@ function update(source, done) {
 
   nodeUpdate.select('circle')
     .attr('r', 8)
-    .style('fill', function(d) { 
-      return d.visited ? 'lightsteelblue' : '#08a'; 
+    .style('fill', function(d) {
+      var fillColor = '#08a';
+      if (nodeHasFocus(d)) {
+        fillColor = '#dd512e';
+      }
+      else if (d.visited) {
+        fillColor = 'lightsteelblue';
+      }
+      return fillColor;
       // return d._children ? 'lightsteelblue' : '#fff'; 
+    })
+    .style('fill-opacity', function(d) {
+      var opacity = 0.7;
+      if (nodeHasFocus(d)) {
+        opacity = 1.0;
+      }
+      return opacity;
     })
     .style('stroke-width', function(d) { 
       return (d._children && d._children.length > 0) ? '1.4em' : 0;
@@ -163,6 +177,10 @@ function panToElement(focusElementSel) {
     height: 1
   },
   750);
+}
+
+function nodeHasFocus(treeNode) {
+  return (g.focusEl && treeNode === d3.select(g.focusEl).datum());
 }
 
 // Toggle children on click.
