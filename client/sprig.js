@@ -364,13 +364,31 @@ function respondToDocKeyUp() {
       case 39:
         respondToRightArrow();
         break;
-      // = key
+      // equal key
       case 187:
         if (d3.event.shiftKey) {
           addChildSprig();
         }
         break;
     }
+  }
+}
+
+function showDeleteSprigDialog() {
+  g.OKCancelDialog = new OKCancelDialog('#questionDialog', 
+    'Do you want to delete this?', 'Delete', 
+    deleteSprig,
+    function removeOKCancelDialog() {
+      delete g.OKCancelDialog;
+    }
+  );
+  g.OKCancelDialog.show();  
+}
+
+function respondToDocKeyDown() {
+  // cmd+delete keys
+  if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 8) {
+    showDeleteSprigDialog();
   }
 }
 
@@ -611,11 +629,12 @@ function init() {
   g.textcontent.on('click', startEditing);
   g.titleField.on('click', startEditing);
   g.addButton.on('click', addChildSprig);
-  g.deleteButton.on('click', deleteSprig);
+  g.deleteButton.on('click', showDeleteSprigDialog);
 
   var doc = d3.select(document);
   doc.on('click', endEditing);
   doc.on('keyup', respondToDocKeyUp);
+  doc.on('keydown', respondToDocKeyDown);
 
   g.editZone.on('keydown', respondToEditZoneKeyDown);
 

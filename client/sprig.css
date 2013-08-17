@@ -69,6 +69,11 @@ svg {
   min-width: 200px;
 }
 
+.notification {
+  border: 2px blue dotted;
+  -moz-border-radius: 1em; -webkit-border-radius: 1em; border-radius: 1em;
+}
+
 section {
   display: -webkit-box;   /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  
   display: -moz-box;      /* OLD: Firefox (buggy) */ 
