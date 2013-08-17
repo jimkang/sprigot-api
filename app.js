@@ -39,7 +39,7 @@ http.createServer(function takeRequest(req, res) {
     respondThatReqWasNotUnderstood(res);
   }
 })
-.listen(port, '127.0.0.1');
+.listen(port);
 
 
 function respondToRequestWithBody(req, body, res, baseHeaders) {  
@@ -122,5 +122,5 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
 }
 
 
-console.log('Server running at http://127.0.0.1:' + port);
+console.log('Server running at:', port);
 
