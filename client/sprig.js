@@ -533,7 +533,9 @@ function initGraphWithNodeTree(nodeTree) {
   update(g.root);
 
   setTimeout(function initialPan() {
-    panToElement(d3.select('#' + g.root.id));
+    var rootSel = d3.select('#' + g.root.id);
+    g.focusEl = rootSel.node();
+    panToElement(rootSel);
   },
   800);  
 }
