@@ -89,7 +89,7 @@ function update(source, done) {
       // return d._children ? 'lightsteelblue' : '#fff'; 
     })
     .style('stroke-width', function(d) { 
-      return d._children ? '1.4em' : 0;
+      return (d._children && d._children.length > 0) ? '1.4em' : 0;
     });
 
   nodeUpdate.select('text')
