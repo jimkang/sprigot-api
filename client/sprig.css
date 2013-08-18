@@ -1,7 +1,7 @@
 body {
   background-color: #242424;
-	font-family: 'Futura', 'Helvetica Neue', Helvetica, sans-serif;
-  font-size: 16px;
+	font-family: brandon-grotesque, 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 28px;
   color: #eee;
 
   background: -webkit-linear-gradient(top, #182838, #081828);
@@ -43,7 +43,7 @@ svg {
 }
 
 #textpane {
-  font-family: Georgia, 'Book Antiqua';
+  font-family: adobe-garamond-pro, ff-tisa-web-pro, Georgia, 'Book Antiqua';
   background-color: #ffe;
   color: #403838;
   margin-left: 8px;
@@ -54,7 +54,7 @@ svg {
 
 .textcontent {
   font-weight: normal;  
-  font-size: 20px;
+  font-size: 24px;
   padding-left: 1.2em;
   padding-right: 1em;
   padding-top: 1em;
