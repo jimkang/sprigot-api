@@ -87,7 +87,7 @@ function update(source, done) {
     .style('fill', function(d) {
       var fillColor = '#08a';
       if (nodeHasFocus(d)) {
-        fillColor = '#dd512e';
+        fillColor = '#e0362f';
       }
       else if (d.visited) {
         fillColor = 'lightsteelblue';
