@@ -192,6 +192,7 @@ function clickOnEl(d, el) {
   g.focusEl = el;
 
   toggleChildren(d);
+
   if (nodeIsExpanded(d)) {
     var clickedEl = d3.select(g.focusEl);
     panToElement(clickedEl);    
@@ -200,13 +201,18 @@ function clickOnEl(d, el) {
   d.visited = true;
   update(g.root);
 
-  // Fill in the side pane with the text.
-  g.textcontent.html(d.body);
-  g.textcontent.datum(d);
-  g.titleField.datum(d);
+  syncTextpaneWithTreeNode(d);
+}
+
+function syncTextpaneWithTreeNode(treeNode) {
+  g.textcontent.datum(treeNode);
+  g.titleField.datum(treeNode);
+
+  g.textcontent.html(treeNode.body);
+  g.titleField.html(treeNode.title)
 
   d3.selectAll('#textpane button').style('display', 'block');
-  g.editZone.style('display', 'block');
+  g.editZone.style('display', 'block');  
 }
 
 function toggleChildren(treeNode) {
