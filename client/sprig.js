@@ -189,19 +189,16 @@ function click(d) {
 }
 
 function clickOnEl(d, el) {
-  g.focusEl = el;
-
   toggleChildren(d);
+  navigateToTreeNode(d, el);
+}
 
-  if (nodeIsExpanded(d)) {
-    var clickedEl = d3.select(g.focusEl);
-    panToElement(clickedEl);    
-  }
-
-  d.visited = true;
+function navigateToTreeNode(treeNode, el) {
+  g.focusEl = el;
+  treeNode.visited = true;
   update(g.root);
-
-  syncTextpaneWithTreeNode(d);
+  syncTextpaneWithTreeNode(treeNode);
+  panToElement(d3.select(g.focusEl));
 }
 
 function syncTextpaneWithTreeNode(treeNode) {
