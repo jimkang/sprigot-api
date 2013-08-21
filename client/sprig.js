@@ -191,20 +191,12 @@ function click(d) {
 function clickOnEl(d, el) {
   g.focusEl = el;
 
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } 
-  else {
-    d.children = d._children;
-    d._children = null;
-
-    // The new nodes are going to be at the same y that this node was at, and 
-    // this node is going to move up. So, pan to the old x and y, where the 
-    // new nodes will be.
+  toggleChildren(d);
+  if (nodeIsExpanded(d)) {
     var clickedEl = d3.select(g.focusEl);
-    panToElement(clickedEl);
+    panToElement(clickedEl);    
   }
+
   d.visited = true;
   update(g.root);
 
@@ -217,6 +209,16 @@ function clickOnEl(d, el) {
   g.editZone.style('display', 'block');
 }
 
+function toggleChildren(treeNode) {
+  if (treeNode.children) {
+    treeNode._children = treeNode.children;
+    treeNode.children = null;
+  } 
+  else {
+    treeNode.children = treeNode._children;
+    treeNode._children = null;
+  }
+}
 
 function collapse(d) {
   if (d.children) {
