@@ -65,7 +65,7 @@ svg {
   border: 4px red dashed;
 }
 
-#boardContainer {
+#graphPane {
   min-width: 200px;
 }
 
@@ -100,4 +100,18 @@ section {
   margin: 0;
   height: 100%;
   width: 100% /* needed for Firefox */   
+}
+
+@media only screen and (max-width: 640px) {
+  section {
+    flex-direction: column;
+    -webkit-flex-direction: column;
+  }
+
+  #graphPane {
+    height: 300px;
+  }
+  .pane {
+    width: 100%;
+  }
 }
