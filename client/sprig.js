@@ -218,15 +218,19 @@ function toggleChildren(treeNode) {
     treeNode.children = null;
   } 
   else {
-    treeNode.children = treeNode._children;
-    treeNode._children = null;
+    expandChildren(treeNode);
   }
 }
 
-function collapse(d) {
+function expandChildren(treeNode) {
+  treeNode.children = treeNode._children;
+  treeNode._children = null;
+}
+
+function collapseRecursively(d) {
   if (d.children) {
     d._children = d.children;
-    d._children.forEach(collapse);
+    d._children.forEach(collapseRecursively);
     d.children = null;
   }
 }
@@ -266,7 +270,10 @@ function moveToSiblingNode(treeNode, direction) {
     if (siblingIndex > -1 && siblingIndex < treeNode.parent.children.length) {
       var siblingNode = treeNode.parent.children[siblingIndex];
       var siblingEl = d3.select('#' + siblingNode.id).node();
-      clickOnEl(siblingNode, siblingEl);
+      if (siblingNode._children) {
+        expandChildren(siblingNode);
+      }
+      navigateToTreeNode(siblingNode, siblingEl);
     }
   }
 }
@@ -430,7 +437,7 @@ function respondToUpArrow() {
   d3.event.stopPropagation();
   var focusNode = d3.select(g.focusEl).datum();
   if (nodeIsExpanded(focusNode)) {
-    collapse(focusNode);
+    collapseRecursively(focusNode);
     update(focusNode);
   }
   else {
@@ -614,8 +621,7 @@ function initGraphWithNodeTree(nodeTree) {
   g.root.x0 = height / 2;
   g.root.y0 = 0;
 
-  g.root.children.forEach(collapse);
-  collapse(g.root);
+  collapseRecursively(g.root);
   update(g.root);
 
   setTimeout(function initialPan() {
