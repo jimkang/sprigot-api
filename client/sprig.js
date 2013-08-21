@@ -492,6 +492,8 @@ function addChildSprig() {
 
   focusNode.children = currentChildren;
 
+  changeEditMode(true);
+
   var saveNewSprigId = uid(4);
   var saveParentSprigId = uid(4);
   
