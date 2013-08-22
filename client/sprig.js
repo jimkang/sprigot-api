@@ -167,8 +167,9 @@ function translateXFromSel(sel) {
 }
 
 function panToElement(focusElementSel) {
-  var y = parseInt(translateYFromSel(focusElementSel));
-  var x = parseInt(translateXFromSel(focusElementSel));
+  var currentScale = BoardZoomer.zoomBehavior.scale();
+  var y = parseInt(translateYFromSel(focusElementSel)) * currentScale;
+  var x = parseInt(translateXFromSel(focusElementSel)) * currentScale;
 
   BoardZoomer.panToCenterOnRect({
     x: x,
@@ -653,6 +654,8 @@ function init() {
   BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
     d3.select('g#graphRoot'));
 
+  setGraphScale();
+
   g.editZone.style('display', 'none');
   g.titleField.style('display', 'none');
   d3.selectAll('#textpane button').style('display', 'none');
@@ -697,6 +700,14 @@ function init() {
   );
 
   // initGraphWithNodeTree(caseDataSource);
+}
+
+function setGraphScale() {
+  var actualBoardHeight = board.node().clientHeight;
+  if (actualBoardHeight <= 200) {
+    BoardZoomer.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
+    BoardZoomer.zoomBehavior.scale(0.5);
+  }
 }
 
 init();
