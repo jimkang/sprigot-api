@@ -83,7 +83,16 @@ var BoardZoomer = {
     var boardWidth = parseInt(BoardZoomer.boardSelection.node().clientWidth);
     var boardHeight = parseInt(BoardZoomer.boardSelection.node().clientHeight);
 
-    BoardZoomer.tweenToNewZoom(1, 
+    var scale = 1.0;
+    var oldTransform = BoardZoomer.rootSelection.attr('transform');
+
+    if (oldTransform) {
+      var parsed = 
+        BoardZoomer.parseScaleAndTranslateFromTransformString(oldTransform);
+      scale = parsed.scale;
+    }
+
+    BoardZoomer.tweenToNewZoom(scale, 
       [(-rect.x - rect.width/2 + boardWidth/2), 
       (-rect.y - rect.height/2 + boardHeight/2)], duration);
   },  
