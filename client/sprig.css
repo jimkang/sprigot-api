@@ -115,7 +115,6 @@ section {
   #graphPane {
     height: 320px;
   }
-
 }
 
 @media only screen and (max-device-height: 568px) {
