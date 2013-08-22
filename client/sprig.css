@@ -108,10 +108,18 @@ section {
     -webkit-flex-direction: column;
   }
 
-  #graphPane {
-    height: 300px;
-  }
   .pane {
     width: 100%;
+  }
+
+  #graphPane {
+    height: 320px;
+  }
+
+}
+
+@media only screen and (max-device-height: 568px) {
+  #graphPane {
+    height: 200px;
   }
 }
