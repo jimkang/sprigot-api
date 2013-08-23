@@ -75,8 +75,9 @@ svg#svgBoard {
 }
 
 .divider {
-  width: 4%;
-  min-width: 40px;
+  width: 38px;
+  min-width: 38px;
+  height: 48px;
 }
 
 .textcontent {

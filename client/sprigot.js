@@ -729,10 +729,9 @@ init();
 function syncExpanderArrow() {
   // TODO: Media query to apply this only in 'column' layout.
   var textPaneIsHidden = g.nongraphPane.classed('collapsedPane');
-  var actualBoardHeight = board.node().clientHeight;
+  // var actualBoardHeight = board.node().clientHeight;
   var xOffset = textPaneIsHidden ? 36 : 6;
-  var transformString = 
-    'translate(' + xOffset + ', ' +  (actualBoardHeight/2-16) + ') ';
+  var transformString = 'translate(' + xOffset + ', 0) ';
   transformString += ('scale(' + (textPaneIsHidden ? '-1' : '1') + ', 1)');
 
   g.expanderArrow
