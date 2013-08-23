@@ -749,4 +749,8 @@ function toggleGraphExpansion() {
     .classed('pane', !shouldHideTextPane);
 
   syncExpanderArrow();
+
+  if (g.focusEl) {
+    panToElement(d3.select(g.focusEl));
+  }
 }
