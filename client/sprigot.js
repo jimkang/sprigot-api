@@ -199,6 +199,12 @@ function navigateToTreeNode(treeNode, el) {
   treeNode.visited = true;
   update(g.root);
   syncTextpaneWithTreeNode(treeNode);
+
+  var textPaneIsHidden = g.nongraphPane.classed('collapsedPane');
+  if (textPaneIsHidden) {
+    toggleGraphExpansion();
+  }
+
   panToElement(d3.select(g.focusEl));
 }
 
@@ -724,7 +730,7 @@ function syncExpanderArrow() {
   // TODO: Media query to apply this only in 'column' layout.
   var textPaneIsHidden = g.nongraphPane.classed('collapsedPane');
   var actualBoardHeight = board.node().clientHeight;
-  var xOffset = textPaneIsHidden ? 34 : 6;
+  var xOffset = textPaneIsHidden ? 36 : 6;
   var transformString = 
     'translate(' + xOffset + ', ' +  (actualBoardHeight/2-16) + ') ';
   transformString += ('scale(' + (textPaneIsHidden ? '-1' : '1') + ', 1)');
