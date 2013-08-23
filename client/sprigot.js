@@ -650,6 +650,9 @@ function init() {
   g.editZone = d3.select('#textpane .editZone');
   g.addButton = d3.select('#textpane .newsprigbutton');
   g.deleteButton = d3.select('#textpane .deletesprigbutton');
+  g.expanderArrow = d3.select('#expanderArrow');
+  g.nongraphPane = d3.select('#nongraphPane');
+  g.graphPane = d3.select('#graphPane');
 
   BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
     d3.select('g#graphRoot'));
@@ -664,6 +667,7 @@ function init() {
   g.titleField.on('click', startEditing);
   g.addButton.on('click', addChildSprig);
   g.deleteButton.on('click', showDeleteSprigDialog);
+  g.expanderArrow.on('click', toggleGraphExpansion);
 
   var doc = d3.select(document);
   doc.on('click', endEditing);
@@ -671,6 +675,8 @@ function init() {
   doc.on('keydown', respondToDocKeyDown);
 
   g.editZone.on('keydown', respondToEditZoneKeyDown);
+
+  syncExpanderArrow();
 
   var sprigRequest = {
     op: 'getSprig',
@@ -711,3 +717,36 @@ function setGraphScale() {
 }
 
 init();
+
+/* Widgets */
+
+function syncExpanderArrow() {
+  // TODO: Media query to apply this only in 'column' layout.
+  var textPaneIsHidden = g.nongraphPane.classed('collapsedPane');
+  var actualBoardHeight = board.node().clientHeight;
+  var xOffset = textPaneIsHidden ? 34 : 6;
+  var transformString = 
+    'translate(' + xOffset + ', ' +  (actualBoardHeight/2-16) + ') ';
+  transformString += ('scale(' + (textPaneIsHidden ? '-1' : '1') + ', 1)');
+
+  g.expanderArrow
+    .transition()
+      .duration(500).ease('linear').attr('transform', transformString)
+      .attr('stroke-opacity', 0.3).attr('stroke-width', 2)
+
+  // g.expanderArrow
+    .transition().delay(501).duration(500)
+      .attr('stroke-opacity', 0.12).attr('stroke-width', 1);
+}
+
+function toggleGraphExpansion() {
+  var textPaneIsHidden = g.nongraphPane.classed('collapsedPane');
+  var shouldHideTextPane = !textPaneIsHidden;
+
+  g.nongraphPane.classed('collapsedPane', shouldHideTextPane)
+    .classed('pane', !shouldHideTextPane);
+  g.graphPane.classed('expandedPane', shouldHideTextPane)
+    .classed('pane', !shouldHideTextPane);
+
+  syncExpanderArrow();
+}

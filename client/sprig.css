@@ -10,11 +10,15 @@ body {
   background: -o-linear-gradient(top, #024, #012);
 }
 
-svg {
+svg#svgBoard {
   border: 1px dotted rgba(224, 235, 255, 0.1);
   -webkit-border-radius: 0.4em;
   -moz-border-radius: 0.4em;
   border-radius: 0.4em;
+}
+
+.arrowboard {
+  background-color: transparent;
 }
 
 .node circle {
@@ -42,6 +46,16 @@ svg {
   min-width: 200px;
 }
 
+.collapsedPane {
+  width: 0;
+  min-height: 0px;
+}
+
+.expandedPane {
+  width: 96%;
+  min-width: 200px;
+}
+
 #textpane {
   font-family: adelle, Georgia, serif;
   background-color: #ffe;
@@ -50,6 +64,19 @@ svg {
   -webkit-border-radius: 0.4em;
   -moz-border-radius: 0.4em;
   border-radius: 0.4em;
+}
+
+.collapsedPane #textpane {
+  display: none;
+}
+
+#graphPane {
+  min-width: 200px;
+}
+
+.divider {
+  width: 4%;
+  min-width: 40px;
 }
 
 .textcontent {
@@ -63,10 +90,6 @@ svg {
 
 .editing {
   border: 4px red dashed;
-}
-
-#graphPane {
-  min-width: 200px;
 }
 
 .notification {
@@ -101,6 +124,7 @@ section {
   height: 100%;
   width: 100% /* needed for Firefox */   
 }
+
 
 @media only screen and (max-width: 640px) {
   section {
