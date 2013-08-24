@@ -140,6 +140,15 @@ section {
   #graphPane {
     height: 320px;
   }
+
+  .divider {
+    transform-origin: center;
+    transform: rotate(90deg);
+    -webkit-transform-origin: center;
+    -webkit-transform: rotate(90deg);
+    -ms-transform-origin: center;
+    -ms-transform: rotate(90deg);
+  }
 }
 
 @media only screen and (max-device-height: 568px) {
