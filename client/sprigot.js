@@ -735,11 +735,11 @@ function syncExpanderArrow() {
   g.expanderArrow
     .transition()
       .duration(500).ease('linear').attr('transform', transformString)
-      .attr('stroke-opacity', 0.3).attr('stroke-width', 2)
+      .attr('stroke-opacity', 0.5).attr('stroke-width', 2)
 
   // g.expanderArrow
     .transition().delay(501).duration(500)
-      .attr('stroke-opacity', 0.12).attr('stroke-width', 1);
+      .attr('stroke-opacity', 0.15).attr('stroke-width', 1);
 }
 
 function toggleGraphExpansion() {
