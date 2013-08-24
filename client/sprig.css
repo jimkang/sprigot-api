@@ -1,3 +1,7 @@
+html {
+  height: 100%;
+}
+
 body {
   background-color: #242424;
 	font-family: brandon-grotesque, 'Helvetica Neue', Helvetica, sans-serif;
@@ -8,6 +12,11 @@ body {
   background: -moz-linear-gradient(top, #024, #012);
   background: -ms-linear-gradient(top, #024, #012);
   background: -o-linear-gradient(top, #024, #012);
+
+  height: 100%;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 svg#svgBoard {
@@ -135,10 +144,17 @@ section {
 
   .pane {
     width: 100%;
+    height: 44%;
   }
 
-  #graphPane {
-    height: 320px;
+  .collapsedPane {
+    height: 0;
+    min-width: 0px;
+  }
+
+  .expandedPane {
+    height: 90%;
+    min-height: 200px;
   }
 
   .divider {
@@ -146,6 +162,8 @@ section {
     transform: rotate(90deg);
     -webkit-transform-origin: center;
     -webkit-transform: rotate(90deg);
+    -moz-transform-origin: center;
+    -moz-transform: rotate(90deg);
     -ms-transform-origin: center;
     -ms-transform: rotate(90deg);
   }
