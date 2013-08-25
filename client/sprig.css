@@ -73,7 +73,12 @@ svg#svgBoard {
 
 #graphPane {
   min-width: 200px;
-  height: 100%; /* Need for Firefox */
+}
+
+@-moz-document url-prefix(http) {
+  #graphPane {
+    height: 100%; /* Need for Firefox */
+  }
 }
 
 .divider {
