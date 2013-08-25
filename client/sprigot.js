@@ -11,6 +11,7 @@ var duration = 750;
 
 var settings = {
   serverURL: 'http://127.0.0.1:3000'
+  // serverURL: 'http://192.168.1.104:3000'
 };
 
 var g = {
@@ -716,6 +717,10 @@ function init() {
 
 function setGraphScale() {
   var actualBoardHeight = board.node().clientHeight;
+  if (actualBoardHeight < 1) {
+    // Firefox.
+    actualBoardHeight = board.node().parentNode.clientHeight;
+  }
   if (actualBoardHeight <= 200) {
     BoardZoomer.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
     BoardZoomer.zoomBehavior.scale(0.5);

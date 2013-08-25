@@ -82,6 +82,7 @@ svg#svgBoard {
 
 #graphPane {
   min-width: 200px;
+  height: 100%; /* Need for Firefox */
 }
 
 .divider {
@@ -140,8 +141,10 @@ section {
 @media only screen and (max-width: 640px) {
   section {
     flex-direction: column;
+
     /* Without this, Safari won't respect -webkit-flex-direction. */
     -webkit-box-orient: vertical;
+
     -webkit-flex-direction: column;
   }
 
