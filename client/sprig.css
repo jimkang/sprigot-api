@@ -7,12 +7,7 @@ body {
   font-size: 24px;
   color: #eee;
 
-  background-color: #242424;
-  background: -webkit-linear-gradient(top, #182838, #081828);
-  background: -ms-linear-gradient(top, #024, #012);
-
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-color: #252528;
   
   margin: 0;
   height: 100%;
