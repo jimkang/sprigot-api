@@ -23,7 +23,8 @@ http.createServer(function takeRequest(req, res) {
     res.end('OK');
   }
   else if ('content-type' in req.headers && req.method === 'POST' &&
-    req.headers['content-type'].toLowerCase() === 'application/json') {
+    req.headers['content-type'].toLowerCase()
+    .indexOf('application/json') === 0) {
 
     var body = '';
 
@@ -36,7 +37,8 @@ http.createServer(function takeRequest(req, res) {
     });
   }
   else {
-    respondThatReqWasNotUnderstood(res);
+    res.writeHead(304, headers);
+    res.end('Not understood');
   }
 })
 .listen(port);
