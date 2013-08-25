@@ -3,20 +3,21 @@ html {
 }
 
 body {
-  background-color: #242424;
 	font-family: brandon-grotesque, 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 24px;
   color: #eee;
 
+  background-color: #242424;
   background: -webkit-linear-gradient(top, #182838, #081828);
   background: -moz-linear-gradient(top, #024, #012);
   background: -ms-linear-gradient(top, #024, #012);
   background: -o-linear-gradient(top, #024, #012);
 
-  height: 100%;
-  margin: 0;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  
+  margin: 0;
+  height: 100%;
 }
 
 svg#svgBoard {
