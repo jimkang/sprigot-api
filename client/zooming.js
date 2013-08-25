@@ -8,8 +8,8 @@ var BoardZoomer = {
   setUpZoomOnBoard: function(boardSel, rootGroupSel) {
     // Make x and y scaling functions that just returns whatever is passed into 
     // them (same domain and range).
-    var width = boardSel.node().clientWidth;
-    var height = boardSel.node().clientHeight;
+    var width = this.getActualWidth(boardSel.node());
+    var height = this.getActualHeight(boardSel.node());
 
     var x = d3.scale.linear()
       .domain([0, width])
@@ -80,8 +80,8 @@ var BoardZoomer = {
     if (!duration) {
       duration = 300;
     }
-    var boardWidth = parseInt(BoardZoomer.boardSelection.node().clientWidth);
-    var boardHeight = parseInt(BoardZoomer.boardSelection.node().clientHeight);
+    var boardWidth = this.getActualWidth(this.boardSelection.node());
+    var boardHeight = this.getActualHeight(this.boardSelection.node());
 
     var scale = 1.0;
     var oldTransform = BoardZoomer.rootSelection.attr('transform');
@@ -266,5 +266,23 @@ var BoardZoomer = {
 
     return [(-scaleAndTranslate.translate[0] + boardWidth/2)/scaleAndTranslate.scale, 
       (-scaleAndTranslate.translate[1] + boardHeight/2)/scaleAndTranslate.scale];
+  },
+
+  getActualHeight: function getActualHeight(el) {
+    var height = el.clientHeight;
+    if (height < 1) {
+      // Firefox doesn't have client heights for SVG elements.
+      height = el.parentNode.clientHeight;
+    }
+    return height;
+  },
+  getActualWidth: function getActualWidth(el) {
+    var height = el.clientWidth;
+    if (height < 1) {
+      // Firefox doesn't have client heights for SVG elements.
+      height = el.parentNode.clientWidth;
+    }
+    return height;
   }
+
 }

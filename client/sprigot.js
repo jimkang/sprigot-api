@@ -716,11 +716,8 @@ function init() {
 }
 
 function setGraphScale() {
-  var actualBoardHeight = board.node().clientHeight;
-  if (actualBoardHeight < 1) {
-    // Firefox.
-    actualBoardHeight = board.node().parentNode.clientHeight;
-  }
+  var actualBoardHeight = BoardZoomer.getActualHeight(board.node());
+
   if (actualBoardHeight <= 200) {
     BoardZoomer.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
     BoardZoomer.zoomBehavior.scale(0.5);
