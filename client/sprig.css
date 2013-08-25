@@ -173,7 +173,13 @@ section {
 }
 
 @media only screen and (max-device-height: 568px) {
-  #graphPane {
-    height: 200px;
+  section {
+    height: 568px;
+  }
+  .pane {
+    height: 220px;
+  }
+  .expandedPane {
+    height: 360px;
   }
 }
