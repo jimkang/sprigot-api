@@ -9,9 +9,7 @@ body {
 
   background-color: #242424;
   background: -webkit-linear-gradient(top, #182838, #081828);
-  background: -moz-linear-gradient(top, #024, #012);
   background: -ms-linear-gradient(top, #024, #012);
-  background: -o-linear-gradient(top, #024, #012);
 
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -23,7 +21,6 @@ body {
 svg#svgBoard {
   border: 1px dotted rgba(224, 235, 255, 0.1);
   -webkit-border-radius: 0.4em;
-  -moz-border-radius: 0.4em;
   border-radius: 0.4em;
 }
 
@@ -72,7 +69,6 @@ svg#svgBoard {
   color: #403838;
   margin-left: 8px;
   -webkit-border-radius: 0.4em;
-  -moz-border-radius: 0.4em;
   border-radius: 0.4em;
 }
 
@@ -106,12 +102,11 @@ svg#svgBoard {
 
 .notification {
   border: 2px blue dotted;
-  -moz-border-radius: 1em; -webkit-border-radius: 1em; border-radius: 1em;
+  -webkit-border-radius: 1em; border-radius: 1em;
 }
 
 section {
   display: -webkit-box;   /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  
-  display: -moz-box;      /* OLD: Firefox (buggy) */ 
   display: -ms-flexbox;   /* MID: IE 10 */
   display: -webkit-flex;  /* NEW, Chrome 21+ */
   display: flex;          /* NEW: Opera 12.1, Firefox 22+ */
@@ -127,7 +122,7 @@ section {
   -webkit-align-items: center;
   align-items: center;
 
-  -webkit-box-pack: center; -moz-box-pack: center; 
+  -webkit-box-pack: center;
   -ms-flex-pack: center; 
   -webkit-justify-content: center;
   justify-content: center;
@@ -168,8 +163,6 @@ section {
     transform: rotate(90deg);
     -webkit-transform-origin: center;
     -webkit-transform: rotate(90deg);
-    -moz-transform-origin: center;
-    -moz-transform: rotate(90deg);
     -ms-transform-origin: center;
     -ms-transform: rotate(90deg);
   }
