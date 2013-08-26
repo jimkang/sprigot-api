@@ -698,7 +698,7 @@ function initGraphWithNodeTree(nodeTree) {
 }
 
 
-function init() {
+function init(docId) {
   initDOM();
 
   // The tree generates a left-to-right tree, and we want a top-to-bottom tree, 
@@ -744,7 +744,7 @@ function init() {
     op: 'getSprig',
     params: {
       id: 'notonline',
-      doc: '1sU0',
+      doc: docId,
       childDepth: 20
     }
   };
@@ -779,7 +779,7 @@ function setGraphScale() {
   }
 }
 
-init();
+// init();
 
 /* Widgets */
 
