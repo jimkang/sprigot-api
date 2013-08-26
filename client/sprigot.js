@@ -773,7 +773,7 @@ function init(docId) {
 function setGraphScale() {
   var actualBoardHeight = BoardZoomer.getActualHeight(g.board.node());
 
-  if (actualBoardHeight <= 200) {
+  if (actualBoardHeight <= 230) {
     BoardZoomer.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
     BoardZoomer.zoomBehavior.scale(0.5);
   }
