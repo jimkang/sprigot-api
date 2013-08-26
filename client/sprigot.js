@@ -1,11 +1,4 @@
-var board = d3.select('svg#svgBoard');
-var graph = board.select('g#graphRoot')
-  .attr('transform', 'translate(' + 200 + ',' + 200 + ')');
-
-var margin = {top: 20, right: 10, bottom: 20, left: 10},
-  width = board.node().clientWidth - margin.right - margin.left,
-  height = board.node().clientHeight - margin.top - margin.bottom;
-    
+var margin = {top: 20, right: 10, bottom: 20, left: 10};
 var i = 0;
 var duration = 750;
 
@@ -15,6 +8,8 @@ var settings = {
 };
 
 var g = {
+  board: null,
+  graph: null,
   focusEl: null,
   root: null,
   treeLayout: null,
@@ -45,7 +40,7 @@ function update(source, done) {
   nodes.forEach(function(d) { d.x = d.depth * 180; });
 
   // Update the nodes.
-  var node = graph.selectAll('g.node')
+  var node = g.graph.selectAll('g.node')
     .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
   // Enter any new nodes at the parent's previous position.
@@ -123,7 +118,7 @@ function update(source, done) {
     .style('fill-opacity', 1e-6);
 
   // Update the links…
-  var link = graph.selectAll('path.link')
+  var link = g.graph.selectAll('path.link')
     .data(links, function(d) { return d.target.id; });
 
   // Enter any new links at the parent's previous position.
@@ -623,9 +618,71 @@ function createNewDoc() {
 
 /* Initialize */
 
+function initDOM() {
+  var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
+  initGraphPane(sprigotSel);
+  initDivider(sprigotSel);
+  initNongraphPane(sprigotSel);
+}
+
+function initGraphPane(sprigotSel) {
+  g.graphPane = sprigotSel.append('div')
+    .attr('id', 'graphPane')
+    .classed('pane', true);
+
+  g.board = g.graphPane.append('svg')
+    .attr({
+      id: 'svgBoard',
+      width: '100%',
+      height: '100%'
+    });
+
+  g.board.append('g').attr('id', 'background')
+    .append('rect').attr({
+      width: '100%',
+      height: '100%',
+      fill: 'rgba(0, 0, 16, 0.2)'
+    });
+
+  g.graph = g.board.append('g').attr({
+    id: 'graphRoot',
+    transform: 'translate(' + margin.left + ',' + margin.top + ')'
+  });
+}
+
+function initDivider(sprigotSel) {
+  sprigotSel.append('div').classed('divider', true)
+    .append('svg').classed('arrowboard', true)
+      .append('polygon').attr({
+        id: 'expanderArrow',
+        fill: 'rgba(0, 0, 64, 0.4)',
+        stroke: '#E0EBFF',
+        'stroke-width': 1,
+        points: '0,0 32,24 0,48',
+        transform: 'translate(0, 0)'
+      });
+}
+
+function initNongraphPane(sprigotSel) {
+  g.nongraphPane = sprigotSel.append('div')
+    .classed('pane', true).attr('id', 'nongraphPane');
+  
+  g.nongraphPane.append('div').attr('id', 'questionDialog');
+  
+  var textpane = g.nongraphPane.append('div').attr('id', 'textpane');
+  
+  var editZone = textpane.append('div').classed('editZone', true);
+  editZone.append('span').classed('sprigTitleField', true);
+  editZone.append('div').classed('textcontent', true).attr('tabindex', 0);
+
+  textpane.append('button').classed('newsprigbutton', true).text('+');
+  textpane.append('button').classed('deletesprigbutton', true).text('-');
+}
 
 function initGraphWithNodeTree(nodeTree) {
   g.root = nodeTree;
+
+  var height = g.board.node().clientHeight - margin.top - margin.bottom;
   g.root.x0 = height / 2;
   g.root.y0 = 0;
 
@@ -642,6 +699,8 @@ function initGraphWithNodeTree(nodeTree) {
 
 
 function init() {
+  initDOM();
+
   // The tree generates a left-to-right tree, and we want a top-to-bottom tree, 
   // so we flip x and y when we talk to it.
   g.treeLayout = d3.layout.tree();
@@ -650,16 +709,12 @@ function init() {
   g.diagonalProjection = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
 
-  graph.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
   g.textcontent = d3.select('#textpane .textcontent');
   g.titleField = d3.select('#textpane .sprigTitleField');
   g.editZone = d3.select('#textpane .editZone');
   g.addButton = d3.select('#textpane .newsprigbutton');
   g.deleteButton = d3.select('#textpane .deletesprigbutton');
   g.expanderArrow = d3.select('#expanderArrow');
-  g.nongraphPane = d3.select('#nongraphPane');
-  g.graphPane = d3.select('#graphPane');
 
   BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
     d3.select('g#graphRoot'));
@@ -716,7 +771,7 @@ function init() {
 }
 
 function setGraphScale() {
-  var actualBoardHeight = BoardZoomer.getActualHeight(board.node());
+  var actualBoardHeight = BoardZoomer.getActualHeight(g.board.node());
 
   if (actualBoardHeight <= 200) {
     BoardZoomer.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
