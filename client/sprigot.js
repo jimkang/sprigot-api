@@ -195,6 +195,7 @@ function navigateToTreeNode(treeNode, el) {
   treeNode.visited = true;
   update(g.root);
   syncTextpaneWithTreeNode(treeNode);
+  showTextpane();
 
   var textPaneIsHidden = g.nongraphPane.classed('collapsedPane');
   if (textPaneIsHidden) {
@@ -210,9 +211,34 @@ function syncTextpaneWithTreeNode(treeNode) {
 
   g.textcontent.html(treeNode.body);
   g.titleField.html(treeNode.title)
+}
 
+function showTextpane() {
   d3.selectAll('#textpane button').style('display', 'block');
-  g.editZone.style('display', 'block');  
+  g.editZone.style('display', 'block');    
+}
+
+function fadeInTextPane(transitionTime) {
+  if (g.editZone.style('display') === 'none') {
+    var buttons = d3.selectAll('#textpane button');
+    var textpane = d3.select('#textpane');
+
+    textpane.style('opacity', 0);
+    buttons.style('opacity', 0);
+    g.editZone.style('opacity', 0);
+
+    buttons.style('display', 'block')
+      .transition().duration(transitionTime)
+      .style('opacity', 1);
+
+    g.editZone.style('display', 'block')
+      .transition().duration(transitionTime)
+      .style('opacity', 1);
+
+    textpane
+      .transition().duration(transitionTime)
+      .style('opacity', 1);
+  }
 }
 
 function toggleChildren(treeNode) {
@@ -693,6 +719,12 @@ function initGraphWithNodeTree(nodeTree) {
     var rootSel = d3.select('#' + g.root.id);
     g.focusEl = rootSel.node();
     panToElement(rootSel);
+
+    setTimeout(function initialTextPaneShow() {
+      syncTextpaneWithTreeNode(g.root, g.focusEl);
+      fadeInTextPane(750);
+    },
+    725);
   },
   800);  
 }
