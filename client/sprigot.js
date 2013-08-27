@@ -335,7 +335,7 @@ function saveNodeSprig(node) {
   if (serializedNode) {
     var saveId = makeId(4);
     var body = {};
-    serializedNode.doc = '1sU0';
+    serializedNode.doc = g.docId;
     body[saveId] = {
       op: 'saveSprig',
       params: serializedNode
@@ -487,7 +487,7 @@ function addChildSprig() {
 
   var newSprig = {
     id: makeId(8),
-    doc: '1sU0',
+    doc: g.docId,
     title: 'New Sprig',
     body: ''
     // ephemera: {
@@ -561,7 +561,7 @@ function deleteSprig() {
     op: 'deleteSprig',
     params: {
       id: focusNode.id,
-      doc: '1sU0'
+      doc: g.docId
     }
   };
   requestBody[saveOpId] = {
@@ -699,6 +699,8 @@ function initGraphWithNodeTree(nodeTree) {
 
 
 function init(docId) {
+  g.docId = docId;
+
   initDOM();
 
   // The tree generates a left-to-right tree, and we want a top-to-bottom tree, 
@@ -741,10 +743,9 @@ function init(docId) {
   syncExpanderArrow();
 
   var sprigRequest = {
-    op: 'getSprig',
+    op: 'getDoc',
     params: {
-      id: 'notonline',
-      doc: docId,
+      id: docId,
       childDepth: 20
     }
   };
@@ -757,7 +758,7 @@ function init(docId) {
       }
 
       if ('req1' in response && response.req1.status === 'got') {
-        var sanitizedTree = sanitizeTreeForD3(response.req1.result);
+        var sanitizedTree = sanitizeTreeForD3(response.req1.result.sprigTree);
         initGraphWithNodeTree(sanitizedTree);
         console.log('Load result:', response.req1.result);
       }
