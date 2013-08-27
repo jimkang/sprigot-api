@@ -18,7 +18,8 @@ var g = {
   titleField: null,
   editZone: null,
   addButton: null,
-  deleteButton: null
+  deleteButton: null,
+  editAvailable: false
 }
 
 function update(source, done) {
@@ -322,6 +323,10 @@ function showTitle() {
 }
 
 function changeEditMode(editable, skipSave) {
+  if (!g.editAvailable) {
+    return;
+  }
+  
   g.textcontent.attr('contenteditable', editable);
   g.titleField.attr('contenteditable', editable);
   g.editZone.classed('editing', editable);
@@ -701,8 +706,10 @@ function initNongraphPane(sprigotSel) {
   editZone.append('span').classed('sprigTitleField', true);
   editZone.append('div').classed('textcontent', true).attr('tabindex', 0);
 
-  textpane.append('button').classed('newsprigbutton', true).text('+');
-  textpane.append('button').classed('deletesprigbutton', true).text('-');
+  if (g.editAvailable) {
+    textpane.append('button').classed('newsprigbutton', true).text('+');
+    textpane.append('button').classed('deletesprigbutton', true).text('-');
+  }
 }
 
 function initGraphWithNodeTree(nodeTree) {
@@ -759,14 +766,19 @@ function init(docId) {
   g.titleField.style('display', 'none');
   d3.selectAll('#textpane button').style('display', 'none');
 
-  g.textcontent.on('click', startEditing);
-  g.titleField.on('click', startEditing);
-  g.addButton.on('click', addChildSprig);
-  g.deleteButton.on('click', showDeleteSprigDialog);
+  if (g.editAvailable) {
+    g.textcontent.on('click', startEditing);
+    g.titleField.on('click', startEditing);
+    g.addButton.on('click', addChildSprig);
+    g.deleteButton.on('click', showDeleteSprigDialog);
+  }
+
   g.expanderArrow.on('click', toggleGraphExpansion);
 
   var doc = d3.select(document);
-  doc.on('click', endEditing);
+  if (g.editAvailable) {
+    doc.on('click', endEditing);
+  }
   doc.on('keyup', respondToDocKeyUp);
   doc.on('keydown', respondToDocKeyDown);
 
