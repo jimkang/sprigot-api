@@ -5,7 +5,7 @@ var db = levelup('./db/sprigot.db', {
 });
 
 var nsDelimiter = '!';
-var nsEndRangeDelimiter = '\xff';
+var nsEndRangeDelimiter = '\xff'; // ÿ
 
 function getSprigFromDb(id, docId, jobKey, jobComplete) {
   var key = getSprigKey(id, docId);
@@ -54,8 +54,7 @@ function deleteSprigFromDb(sprigParams, jobKey, jobComplete) {
 }
 
 function saveDocToDb(docParams, jobKey, jobComplete) {
-  var cleanId = sanitizeKeySegment(docParams.id);
-  var key = 'd' + nsDelimiter + cleanId;
+  var key = getDocKey(docParams.id);
 
   db.put(key, docParams, function putDbDone(error) {
     if (error) {
@@ -63,8 +62,26 @@ function saveDocToDb(docParams, jobKey, jobComplete) {
     }
     else {
       jobComplete('saved', jobKey, {
-        id: cleanId
+        id: getDocIdFromKey(key)
       });
+    }
+  });
+}
+
+function getDocFromDb(id, jobKey, jobComplete) {
+  var key = getDocKey(id);
+
+  db.get(key, function getFromDbDone(error, value) {
+    if (error) {
+      if (error.name === 'NotFoundError') {
+        jobComplete('Not found', jobKey, []);
+      }
+      else {
+        jobComplete('Database error', jobKey, error);
+      }
+    }
+    else {
+      jobComplete('got', jobKey, value);
     }
   });
 }
@@ -78,6 +95,21 @@ function getSprigKey(id, docId) {
   var cleanDocId = sanitizeKeySegment(docId);
   var key = 's' + nsDelimiter + cleanDocId + nsDelimiter + cleanId;  
   return key;
+}
+
+function getDocKey(id) {
+  var cleanId = sanitizeKeySegment(id);
+  var key = 'd' + nsDelimiter + cleanId;
+  return key;
+}
+
+function getDocIdFromKey(key) {
+  var parts = key.split(nsDelimiter);
+  var id = null;
+  if (parts.length > 1) {
+    id = parts[1];
+  }
+  return id;
 }
 
 function getRangeForSprigsInDoc(docId) {
@@ -94,6 +126,7 @@ module.exports = {
   saveSprigToDb: saveSprigToDb, 
   deleteSprigFromDb: deleteSprigFromDb,
   saveDocToDb: saveDocToDb,
+  getDocFromDb: getDocFromDb,
   sanitizeKeySegment: sanitizeKeySegment,
   getRangeForSprigsInDoc: getRangeForSprigsInDoc
 };

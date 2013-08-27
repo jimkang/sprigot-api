@@ -142,7 +142,20 @@ describe('A visitor', function getASprig() {
 
   it('should post more docs', function postDocs(testDone) {
     session.secondDocId = uid(4);
-    session.deepDocId = uid(4);
+
+    session.deepDocParams = {
+      id: uid(4),
+      rootSprig: session.rootSprig.id,
+      authors: [
+        'drwily'
+      ],
+      admins: [
+        'drwily'
+      ],
+      readers: [
+        'smidgeo', 'drwily'
+      ]
+    };
 
     utils.sendJSONRequest({
       url: settings.baseURL,
@@ -152,6 +165,7 @@ describe('A visitor', function getASprig() {
           op: 'saveDoc',
           params: {
             id: session.secondDocId,
+            rootSprig: session.rootSprig.id,
             authors: [
               'smidgeo'
             ],
@@ -165,18 +179,7 @@ describe('A visitor', function getASprig() {
         },
         docPostReq2: {
           op: 'saveDoc',
-          params: {
-            id: session.deepDocId,
-            authors: [
-              'drwily'
-            ],
-            admins: [
-              'drwily'
-            ],
-            readers: [
-              'smidgeo', 'drwily'
-            ]
-          }
+          params: session.deepDocParams
         }
       },
       done: function donePostingDoc(error, xhr) {
@@ -190,7 +193,7 @@ describe('A visitor', function getASprig() {
         assert.deepEqual(response.docPostReq2, {
           status: 'saved',
           result: {
-            id: session.deepDocId
+            id: session.deepDocParams.id
           }
         });
         testDone();
@@ -478,7 +481,7 @@ describe('A visitor', function getASprig() {
 
       var sprigs = [];
       function walkTree(tree) {
-        tree.doc = session.deepDocId;
+        tree.doc = session.deepDocParams.id;
         var serializedNode = sprigTree.serializeTreedNode(tree);
         sprigs.push(serializedNode);
         if (tree.children) {
@@ -516,9 +519,11 @@ describe('A visitor', function getASprig() {
       });
   });
 
-  it('should get a deep tree hierarchy', function getSprigTree(testDone) {
+  it('should get a deep tree hierarchy via the doc', function getSprigTree(
+    testDone) {
+
     function addDocRefToNodesInTree(tree) {
-      tree.doc = session.deepDocId;
+      tree.doc = session.deepDocParams.id;
       if (tree.children) {
         tree.children.forEach(addDocRefToNodesInTree);
       }
@@ -530,17 +535,18 @@ describe('A visitor', function getASprig() {
       method: 'POST',
       jsonParams: {
         sprig1req: {
-          op: 'getSprig',
+          op: 'getDoc',
           params: {            
-            id: 'notonline',
-            doc: session.deepDocId,
+            id: session.deepDocParams.id,
             childDepth: 20
           }
         }
       },
       done: function doneGettingSprig(error, xhr) {
         var response = JSON.parse(xhr.responseText);
-        var fetchedTree = response.sprig1req.result;
+        assert.deepEqual(_.omit(response.sprig1req.result, 'sprigTree'), 
+          session.deepDocParams);
+        var fetchedTree = response.sprig1req.result.sprigTree;
         assert.deepEqual(fetchedTree, caseDataSource);
         testDone();
       }

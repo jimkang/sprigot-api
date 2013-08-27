@@ -116,6 +116,39 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
           jobComplete('Not understood', jobKey,  null);
         }
         break;
+      case 'getDoc':
+        if (job.params.id) {
+          if (typeof job.params.childDepth === 'number' && 
+            job.params.childDepth > 0) {
+
+            dbwrap.getDocFromDb(job.params.id, jobKey, 
+              function gotDoc(status, jobKey, doc) {
+                if (status !== 'got') {
+                  jobComplete(status, jobKey, doc);
+                }
+                else {
+                  // TODO: Check to see if doc has limited readers.
+                  debugger;
+                  treegetting.getTreeFromDb(doc.rootSprig, doc.id, 
+                    job.params.childDepth, jobKey, 
+                    function gotTree(status, jobKey, tree) {
+                      doc.sprigTree = tree;
+                      jobComplete(status, jobKey, doc);
+                    }
+                  );
+                }
+              }
+            );
+          }
+          else {
+            dbwrap.getSprigFromDb(job.params.id, job.params.doc, 
+              jobKey, jobComplete);
+          }          
+        }
+        else {
+          jobComplete('Not understood', jobKey,  null);
+        }
+        break;        
       default:
         jobComplete('Not understood', jobKey, null);
         break;
