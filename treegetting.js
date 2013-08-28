@@ -32,8 +32,9 @@ function treeify(sprigsForIds, rootId, depthLimit) {
     sprigsAtNextDepth = [];
 
     sprigsAtDepth.forEach(function convertChildren(sprig) {
+      // If sprig.children is null, its type still counts as 'object'.
       if (currentDepth + 1 <= depthLimit && sprig &&
-        typeof sprig.children === 'object') {
+        typeof sprig.children === 'object' && sprig.children) {
 
         convertChildRefsToSprigs(sprig, sprigsForIds);
         sprigsAtNextDepth = sprigsAtNextDepth.concat(sprig.children);
