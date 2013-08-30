@@ -9,8 +9,12 @@ function direct(locationHash) {
       break;
     default:
       var docName = pathSegments[1];
+      if (pathSegments.length > 1) {
+        var sprigId = pathSegments[2];
+      }
+
       // TODO: Modularize sprigot.js, at least in an informal way.
-      init(docName);
+      init(docName, sprigId);
   }
 }
 
