@@ -256,8 +256,10 @@ function toggleChildren(treeNode) {
 }
 
 function expandChildren(treeNode) {
-  treeNode.children = treeNode._children;
-  treeNode._children = null;
+  if (treeNode._children) {
+    treeNode.children = treeNode._children;
+    treeNode._children = null;
+  }
 }
 
 function collapseRecursively(d) {
