@@ -1,10 +1,10 @@
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
 var i = 0;
-var duration = 750;
 
 var settings = {
-  serverURL: 'http://127.0.0.1:3000'
+  serverURL: 'http://127.0.0.1:3000',
   // serverURL: 'http://192.168.1.104:3000'
+  treeNodeAnimationDuration: 750
 };
 
 var g = {
@@ -22,7 +22,10 @@ var g = {
   editAvailable: false
 }
 
-function update(source, done) {
+function update(source, duration, done) {
+  if (!duration) {
+    duration = settings.treeNodeAnimationDuration;
+  }
 
   // Compute the new tree layout.
   var nodes = g.treeLayout.nodes(g.root).reverse();
@@ -564,7 +567,7 @@ function addChildSprig() {
     console.log('Parent sprig save status:', response[saveParentSprigId].status);
   });
 
-  update(g.root, function done() {
+  update(g.root, settings.treeNodeAnimationDuration, function done() {
     var newSprigSel = d3.select('#' + newSprig.id);
 
     setTimeout(function clickOnNewNode() {
@@ -610,7 +613,7 @@ function deleteSprig() {
     console.log('Parent sprig save status:', response[saveOpId].status);
   });
 
-  update(g.root, function doneUpdating() {
+  update(g.root, settings.treeNodeAnimationDuration, function doneUpdating() {
     setTimeout(function clickOnParentOfDeletedNode() {
       clickOnEl(parentNode, d3.select('#' + parentNode.id).node());
     },
