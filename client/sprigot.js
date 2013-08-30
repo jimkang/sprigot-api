@@ -198,9 +198,21 @@ function clickOnEl(d, el) {
 function navigateToTreeNode(treeNode, el) {
   g.focusEl = el;
   treeNode.visited = true;
+  syncURLToSprigId(treeNode.id);
+
   update(g.root);
   
   panToElement(d3.select(g.focusEl));
+}
+
+function syncURLToSprigId(sprigId) {
+  var newURL = location.protocol + '//' + location.host + 
+    '#/' + g.docId + '/' + sprigId;
+  window.history.pushState({
+    docId: g.docId,
+    sprigId: sprigId
+  },
+  null, newURL);  
 }
 
 function showTextpaneForTreeNode(treeNode) {
