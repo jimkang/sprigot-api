@@ -206,6 +206,13 @@ function navigateToTreeNode(treeNode, el) {
 }
 
 function syncURLToSprigId(sprigId) {
+  if (typeof window.history.state.docId === 'string' &&
+    typeof window.history.state.sprigId === 'string' && 
+    window.history.state.docId === g.docId &&
+    window.history.state.sprigId === sprigId) {
+    return;
+  }
+
   var newURL = location.protocol + '//' + location.host + 
     '#/' + g.docId + '/' + sprigId;
   window.history.pushState({
@@ -829,6 +836,20 @@ function init(docId, focusSprigId) {
   doc.on('keydown', respondToDocKeyDown);
 
   g.editZone.on('keydown', respondToEditZoneKeyDown);
+
+  window.onpopstate = function historyStatePopped(e) {
+    if (e.state) {
+      g.docId = e.state.docId;
+
+      goToSprig(e.state.sprigId);
+      setTimeout(function focusOnSprig() {
+        var focusSel = d3.select('#' + e.state.sprigId);
+        g.focusEl = focusSel.node();
+        panToElement(focusSel);
+      },
+      100);
+    }
+  };
 
   syncExpanderArrow();
 
