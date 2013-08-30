@@ -192,21 +192,30 @@ function click(d) {
 function clickOnEl(d, el) {
   toggleChildren(d);
   navigateToTreeNode(d, el);
+  showTextpaneForTreeNode(d);
 }
 
 function navigateToTreeNode(treeNode, el) {
   g.focusEl = el;
   treeNode.visited = true;
   update(g.root);
-  syncTextpaneWithTreeNode(treeNode);
-  showTextpane();
+  
+  panToElement(d3.select(g.focusEl));
+}
 
-  var textPaneIsHidden = g.nongraphPane.classed('collapsedPane');
-  if (textPaneIsHidden) {
+function showTextpaneForTreeNode(treeNode) {
+  syncTextpaneWithTreeNode(treeNode);
+
+  d3.selectAll('#textpane button').style('display', 'block');
+  g.editZone.style('display', 'block');    
+  uncollapseTextpane();
+}
+
+function uncollapseTextpane() {
+  var textPaneIsCollapsed = g.nongraphPane.classed('collapsedPane');
+  if (textPaneIsCollapsed) {
     toggleGraphExpansion();
   }
-
-  panToElement(d3.select(g.focusEl));
 }
 
 function syncTextpaneWithTreeNode(treeNode) {
@@ -215,11 +224,6 @@ function syncTextpaneWithTreeNode(treeNode) {
 
   g.textcontent.html(treeNode.body);
   g.titleField.html(treeNode.title)
-}
-
-function showTextpane() {
-  d3.selectAll('#textpane button').style('display', 'block');
-  g.editZone.style('display', 'block');    
 }
 
 function fadeInTextPane(transitionTime) {
@@ -309,7 +313,20 @@ function moveToSiblingNode(treeNode, direction) {
         expandChildren(siblingNode);
       }
       navigateToTreeNode(siblingNode, siblingEl);
+      showTextpaneForTreeNode(siblingNode);
     }
+  }
+}
+
+function goToSprig(sprigId) {
+  var pathToSprig = mapPathToSprigInD3Tree(sprigId, g.root, 100);
+  if (pathToSprig.length > 1) {
+    pathToSprig.forEach(function expandSprig(sprig) {
+      expandChildren(sprig);
+    });
+    update(g.root, 0, function done() {
+      navigateToSprig(sprigId);
+    });
   }
 }
 
@@ -331,7 +348,7 @@ function changeEditMode(editable, skipSave) {
   if (!g.editAvailable) {
     return;
   }
-  
+
   g.textcontent.attr('contenteditable', editable);
   g.titleField.attr('contenteditable', editable);
   g.editZone.classed('editing', editable);
@@ -570,13 +587,18 @@ function addChildSprig() {
   });
 
   update(g.root, settings.treeNodeAnimationDuration, function done() {
-    var newSprigSel = d3.select('#' + newSprig.id);
-
-    setTimeout(function clickOnNewNode() {
-      clickOnEl(newSprigSel.datum(), newSprigSel.node());
-    },
-    500);
+    navigateToSprig(newSprig.id);
+    showTextpaneForTreeNode(newSprig);
   });
+}
+
+function navigateToSprig(sprigId) {
+  var sprigSel = d3.select('#' + sprigId);
+
+  setTimeout(function doNavigate() {
+    navigateToTreeNode(sprigSel.datum(), sprigSel.node());
+  },
+  500);
 }
 
 function deleteSprig() {
@@ -717,7 +739,7 @@ function initNongraphPane(sprigotSel) {
   }
 }
 
-function initGraphWithNodeTree(nodeTree) {
+function initGraphWithNodeTree(nodeTree, focusSprigId) {
   g.root = nodeTree;
 
   var height = g.board.node().clientHeight - margin.top - margin.bottom;
@@ -725,15 +747,22 @@ function initGraphWithNodeTree(nodeTree) {
   g.root.y0 = 0;
 
   collapseRecursively(g.root);
-  update(g.root);
+
+  if (focusSprigId) {
+    goToSprig(focusSprigId);
+  }
+  else {
+    focusSprigId = g.root.id;
+    update(g.root);
+  }
 
   setTimeout(function initialPan() {
-    var rootSel = d3.select('#' + g.root.id);
-    g.focusEl = rootSel.node();
-    panToElement(rootSel);
+    var focusSel = d3.select('#' + focusSprigId);
+    g.focusEl = focusSel.node();
+    panToElement(focusSel);
 
     setTimeout(function initialTextPaneShow() {
-      syncTextpaneWithTreeNode(g.root, g.focusEl);
+      syncTextpaneWithTreeNode(focusSel.datum(), g.focusEl);
       fadeInTextPane(750);
     },
     725);
@@ -742,7 +771,7 @@ function initGraphWithNodeTree(nodeTree) {
 }
 
 
-function init(docId) {
+function init(docId, focusSprigId) {
   g.docId = docId;
 
   initDOM();
@@ -808,7 +837,7 @@ function init(docId) {
 
       if ('req1' in response && response.req1.status === 'got') {
         var sanitizedTree = sanitizeTreeForD3(response.req1.result.sprigTree);
-        initGraphWithNodeTree(sanitizedTree);
+        initGraphWithNodeTree(sanitizedTree, focusSprigId);
         console.log('Load result:', response.req1.result);
       }
       else {
