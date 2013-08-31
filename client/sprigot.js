@@ -11,6 +11,7 @@ var g = {
   board: null,
   graph: null,
   focusEl: null,
+  focusNode: null,
   root: null,
   treeLayout: null,
   diagonalProjection: null,
@@ -189,7 +190,7 @@ function panToElement(focusElementSel) {
 }
 
 function nodeHasFocus(treeNode) {
-  return (g.focusEl && treeNode === d3.select(g.focusEl).datum());
+  return (treeNode === g.focusNode);
 }
 
 // Toggle children on click.
@@ -204,7 +205,7 @@ function clickOnEl(d, el) {
 }
 
 function navigateToTreeNode(treeNode, el) {
-  g.focusEl = el;
+  setFocusEl(el);
   treeNode.visited = true;
   syncURLToSprigId(treeNode.id);
 
@@ -358,6 +359,11 @@ function goToSprig(sprigId) {
   }
 }
 
+function setFocusEl(el) {
+  g.focusEl = el;
+  g.focusNode = d3.select(g.focusEl).datum();
+}
+
 /* Editing */
 
 function makeId(lengthOfRandomPart) {
@@ -508,37 +514,33 @@ function respondToDocKeyDown() {
 
 function respondToDownArrow() {
   d3.event.stopPropagation();
-  var focusNode = d3.select(g.focusEl).datum();
-  if (nodeIsExpanded(focusNode)) {
-    followBranchOfNode(focusNode);
+  if (nodeIsExpanded(g.focusNode)) {
+    followBranchOfNode(g.focusNode);
   }
   else {
-    clickOnEl(focusNode, d3.select('#' + focusNode.id).node());
+    clickOnEl(g.focusNode, d3.select('#' + g.focusNode.id).node());
   }
 }
 
 function respondToUpArrow() {
   d3.event.stopPropagation();
-  var focusNode = d3.select(g.focusEl).datum();
-  if (nodeIsExpanded(focusNode)) {
-    collapseRecursively(focusNode);
-    update(focusNode);
+  if (nodeIsExpanded(g.focusNode)) {
+    collapseRecursively(g.focusNode);
+    update(g.focusNode);
   }
   else {
-    followParentOfNode(focusNode);
+    followParentOfNode(g.focusNode);
   }
 }
 
 function respondToLeftArrow() {
   d3.event.stopPropagation();
-  var focusNode = d3.select(g.focusEl).datum();
-  moveToSiblingNode(focusNode, -1);
+  moveToSiblingNode(g.focusNode, -1);
 }
 
 function respondToRightArrow() {
   d3.event.stopPropagation();
-  var focusNode = d3.select(g.focusEl).datum();
-  moveToSiblingNode(focusNode, 1);
+  moveToSiblingNode(g.focusNode, 1);
 }
 
 
@@ -564,29 +566,23 @@ function addChildSprig() {
     changeEditMode(false);
   }
 
-  var focusNode = d3.select(g.focusEl).datum();
-
   var newSprig = {
     id: makeId(8),
     doc: g.docId,
     title: 'New Sprig',
     body: ''
-    // ephemera: {
-    //   isNew: true,
-    //   parent: focusNode
-    // }
   };
 
-  var currentChildren = focusNode.children;
+  var currentChildren = g.focusNode.children;
   if (!currentChildren) {
-    currentChildren = focusNode._children;
+    currentChildren = g.focusNode._children;
   }
   if (!currentChildren) {
     currentChildren = [];
   }
   currentChildren.push(newSprig);
 
-  focusNode.children = currentChildren;
+  g.focusNode.children = currentChildren;
 
   changeEditMode(true);
 
@@ -600,7 +596,7 @@ function addChildSprig() {
   };
   body[saveParentSprigId] = {
     op: 'saveSprig',
-    params: serializeTreedNode(focusNode)
+    params: serializeTreedNode(g.focusNode)
   };
 
   request(settings.serverURL, body, 
@@ -635,9 +631,8 @@ function deleteSprig() {
     changeEditMode(false, true);
   }
 
-  var focusNode = d3.select(g.focusEl).datum();
-  var parentNode = focusNode.parent;
-  var childIndex = parentNode.children.indexOf(focusNode);
+  var parentNode = g.focusNode.parent;
+  var childIndex = parentNode.children.indexOf(g.focusNode);
   parentNode.children.splice(childIndex, 1);
 
   var requestBody = {};
@@ -646,7 +641,7 @@ function deleteSprig() {
   requestBody[deleteOpId] = {
     op: 'deleteSprig',
     params: {
-      id: focusNode.id,
+      id: g.focusNode.id,
       doc: g.docId
     }
   };
@@ -791,7 +786,7 @@ function initGraphWithNodeTree(nodeTree, focusSprigId) {
 
   setTimeout(function initialPan() {
     var focusSel = d3.select('#' + focusSprigId);
-    g.focusEl = focusSel.node();
+    setFocusEl(focusSel.node());
     panToElement(focusSel);
 
     setTimeout(function initialTextPaneShow() {
@@ -858,7 +853,7 @@ function init(docId, focusSprigId) {
       goToSprig(e.state.sprigId);
       setTimeout(function focusOnSprig() {
         var focusSel = d3.select('#' + e.state.sprigId);
-        g.focusEl = focusSel.node();
+        setFocusEl(focusSel.node());
         panToElement(focusSel);
       },
       100);
