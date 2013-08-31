@@ -206,7 +206,8 @@ function navigateToTreeNode(treeNode, el) {
 }
 
 function syncURLToSprigId(sprigId) {
-  if (typeof window.history.state.docId === 'string' &&
+  if (typeof typeof window.history.state === 'object' &&
+    typeof window.history.state.docId === 'string' &&
     typeof window.history.state.sprigId === 'string' && 
     window.history.state.docId === g.docId &&
     window.history.state.sprigId === sprigId) {
