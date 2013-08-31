@@ -19,7 +19,7 @@ var g = {
   editZone: null,
   addButton: null,
   deleteButton: null,
-  editAvailable: false
+  editAvailable: true
 }
 
 function update(source, duration, done) {
@@ -234,7 +234,7 @@ function syncURLToSprigId(sprigId) {
 function showTextpaneForTreeNode(treeNode) {
   syncTextpaneWithTreeNode(treeNode);
 
-  d3.selectAll('#textpane button').style('display', 'block');
+  d3.selectAll('#textpane *').style('display', 'block');
   g.editZone.style('display', 'block');    
   uncollapseTextpane();
 }
@@ -256,14 +256,14 @@ function syncTextpaneWithTreeNode(treeNode) {
 
 function fadeInTextPane(transitionTime) {
   if (g.editZone.style('display') === 'none') {
-    var buttons = d3.selectAll('#textpane button');
+    var textpaneChildren = d3.selectAll('#textpane *');
     var textpane = d3.select('#textpane');
 
     textpane.style('opacity', 0);
-    buttons.style('opacity', 0);
+    textpaneChildren.style('opacity', 0);
     g.editZone.style('opacity', 0);
 
-    buttons.style('display', 'block')
+    textpaneChildren.style('display', 'block')
       .transition().duration(transitionTime)
       .style('opacity', 1);
 
@@ -764,6 +764,11 @@ function initNongraphPane(sprigotSel) {
   if (g.editAvailable) {
     textpane.append('button').classed('newsprigbutton', true).text('+');
     textpane.append('button').classed('deletesprigbutton', true).text('-');
+    textpane.append('label').text('Emphasize');
+    textpane.append('input').attr({
+      type: 'checkbox',
+      id: 'emphasize'
+    });
   }
 }
 
@@ -826,7 +831,7 @@ function init(docId, focusSprigId) {
 
   g.editZone.style('display', 'none');
   g.titleField.style('display', 'none');
-  d3.selectAll('#textpane button').style('display', 'none');
+  d3.selectAll('#textpane *').style('display', 'none');
 
   if (g.editAvailable) {
     g.textcontent.on('click', startEditing);
