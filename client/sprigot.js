@@ -235,7 +235,7 @@ function syncURLToSprigId(sprigId) {
 function showTextpaneForTreeNode(treeNode) {
   syncTextpaneWithTreeNode(treeNode);
 
-  d3.selectAll('#textpane *').style('display', 'block');
+  d3.selectAll('#textpane :not(.sprigTitleField)').style('display', 'block');
   g.editZone.style('display', 'block');    
   uncollapseTextpane();
 }
@@ -252,19 +252,20 @@ function syncTextpaneWithTreeNode(treeNode) {
   g.titleField.datum(treeNode);
 
   g.textcontent.html(treeNode.body);
-  g.titleField.html(treeNode.title)
+  g.titleField.html(treeNode.title);
+  g.emphasizeCheckbox.attr('value', g.focusNode.emphasize ? 'on' : null);
 }
 
 function fadeInTextPane(transitionTime) {
   if (g.editZone.style('display') === 'none') {
-    var textpaneChildren = d3.selectAll('#textpane *');
+    var textpaneEditControls = d3.selectAll('#textpane :not(.sprigTitleField)');
     var textpane = d3.select('#textpane');
 
     textpane.style('opacity', 0);
-    textpaneChildren.style('opacity', 0);
+    textpaneEditControls.style('opacity', 0);
     g.editZone.style('opacity', 0);
 
-    textpaneChildren.style('display', 'block')
+    textpaneEditControls.style('display', 'block')
       .transition().duration(transitionTime)
       .style('opacity', 1);
 
@@ -503,6 +504,13 @@ function showDeleteSprigDialog() {
     }
   );
   g.OKCancelDialog.show();  
+}
+
+function respondToEmphasisCheckClick(d) {
+  if (g.focusNode) {
+    g.focusNode.emphasize = (this.value === 'on');
+    update(g.root);
+  }
 }
 
 function respondToDocKeyDown() {
@@ -757,13 +765,17 @@ function initNongraphPane(sprigotSel) {
   editZone.append('div').classed('textcontent', true).attr('tabindex', 0);
 
   if (g.editAvailable) {
-    textpane.append('button').classed('newsprigbutton', true).text('+');
-    textpane.append('button').classed('deletesprigbutton', true).text('-');
-    textpane.append('label').text('Emphasize');
+    textpane.append('button').text('+')
+      .classed('newsprigbutton', true).classed('editcontrol', true);
+    textpane.append('button').text('-')
+      .classed('deletesprigbutton', true).classed('editcontrol', true);
+    textpane.append('label').text('Emphasize')
+      .classed('editcontrol', true);
     textpane.append('input').attr({
       type: 'checkbox',
       id: 'emphasize'
-    });
+    })
+    .classed('editcontrol', true);
   }
 }
 
@@ -817,6 +829,7 @@ function init(docId, focusSprigId) {
   g.editZone = d3.select('#textpane .editZone');
   g.addButton = d3.select('#textpane .newsprigbutton');
   g.deleteButton = d3.select('#textpane .deletesprigbutton');
+  g.emphasizeCheckbox = d3.select('#textpane #emphasize');
   g.expanderArrow = d3.select('#expanderArrow');
 
   BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
@@ -833,6 +846,7 @@ function init(docId, focusSprigId) {
     g.titleField.on('click', startEditing);
     g.addButton.on('click', addChildSprig);
     g.deleteButton.on('click', showDeleteSprigDialog);
+    g.emphasizeCheckbox.on('click', respondToEmphasisCheckClick)
   }
 
   g.expanderArrow.on('click', toggleGraphExpansion);
@@ -900,8 +914,6 @@ function setGraphScale() {
   }
 }
 
-// init();
-
 /* Widgets */
 
 function syncExpanderArrow() {
@@ -914,8 +926,6 @@ function syncExpanderArrow() {
     .transition()
       .duration(500).ease('linear').attr('transform', transformString)
       .attr('stroke-opacity', 0.5).attr('stroke-width', 2)
-
-  // g.expanderArrow
     .transition().delay(501).duration(500)
       .attr('stroke-opacity', 0.15).attr('stroke-width', 1);
 }
