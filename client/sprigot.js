@@ -136,7 +136,15 @@ function update(source, duration, done) {
   // Transition links to their new position.
   link//.transition()
     // .duration(duration)
-    .attr('d', g.diagonalProjection);
+    .attr('d', g.diagonalProjection)
+    .attr('stroke-width', function getLinkWidth(d) {
+      if (typeof d.target.emphasize === 'boolean' && d.target.emphasize) {
+        return 4;
+      }
+      else {
+        return 1.5;
+      }
+    });
 
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
