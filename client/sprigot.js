@@ -116,14 +116,12 @@ function showDeleteSprigDialog() {
   g.OKCancelDialog.show();  
 }
 
-
 function respondToDocKeyDown() {
   // cmd+delete keys
   if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 8) {
     showDeleteSprigDialog();
   }
 }
-
 
 function respondToAddChildSprigCmd() {
   d3.event.stopPropagation();
@@ -181,7 +179,6 @@ function respondToAddChildSprigCmd() {
   });
 }
 
-
 function respondToDeleteSprigCmd() {
   d3.event.stopPropagation();
   if (TextStuff.editZone.classed('editing')) {
@@ -226,7 +223,6 @@ function respondToDeleteSprigCmd() {
     }
   );
 }
-
 
 /* Persistence */
 
@@ -277,7 +273,6 @@ function initDivider(sprigotSel) {
         transform: 'translate(0, 0)'
       });
 }
-
 
 function init(docId, focusSprigId) {
   g.docId = docId;
