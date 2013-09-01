@@ -2,14 +2,18 @@ var TreeNav = {
   sprigTree: null,
   graphCamera: null,
   treeRenderer: null,
-  graph: null
+  graph: null,
+  textStuff: null
 };
 
-TreeNav.init = function init(sprigTree, camera, treeRenderer, graph) {
+TreeNav.init = function init(sprigTree, camera, treeRenderer, graph, 
+  textStuff) {
+
   this.sprigTree = sprigTree;
   this.graphCamera = camera;
   this.treeRenderer = treeRenderer;
   this.graph = graph;
+  this.textStuff = textStuff;
 }
 
 TreeNav.toggleChildren = function toggleChildren(treeNode) {
@@ -76,7 +80,7 @@ TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
         this.expandChildren(siblingNode);
       }
       this.graph.focusOnTreeNode(siblingNode, siblingEl);
-      showTextpaneForTreeNode(siblingNode);
+      this.textStuff.showTextpaneForTreeNode(siblingNode);
     }
   }
 }

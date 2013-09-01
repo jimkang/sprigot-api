@@ -6,19 +6,11 @@ var settings = {
   treeNodeAnimationDuration: 750
 };
 
-var selections = {
-  textcontent: null,
-  titleField: null,
-  editZone: null,
-  addButton: null,
-  deleteButton: null
-};
-
 var g = {
   docId: null,
   root: null,
-  editAvailable: true,
-  OKCancelDialog: null
+  OKCancelDialog: null,
+  expanderArrow: null
 };
 
 function click(d) {
@@ -28,7 +20,7 @@ function click(d) {
 function clickOnEl(d, el) {
   TreeNav.toggleChildren(d);
   Graph.focusOnTreeNode(d, el);
-  showTextpaneForTreeNode(d);
+  TextStuff.showTextpaneForTreeNode(d);
 }
 
 function syncURLToSprigId(sprigId) {
@@ -49,103 +41,6 @@ function syncURLToSprigId(sprigId) {
   null, newURL);  
 }
 
-function showTextpaneForTreeNode(treeNode) {
-  syncTextpaneWithTreeNode(treeNode);
-
-  d3.selectAll('#textpane :not(.sprigTitleField)').style('display', 'block');
-  selections.editZone.style('display', 'block');    
-  uncollapseTextpane();
-}
-
-function uncollapseTextpane() {
-  var textPaneIsCollapsed = selections.nongraphPane.classed('collapsedPane');
-  if (textPaneIsCollapsed) {
-    toggleGraphExpansion();
-  }
-}
-
-function syncTextpaneWithTreeNode(treeNode) {
-  selections.textcontent.datum(treeNode);
-  selections.titleField.datum(treeNode);
-
-  selections.textcontent.html(treeNode.body);
-  selections.titleField.html(treeNode.title);
-  selections.emphasizeCheckbox.attr('value', Graph.focusNode.emphasize ? 'on' : null);
-}
-
-function fadeInTextPane(transitionTime) {
-  if (selections.editZone.style('display') === 'none') {
-    var textpaneEditControls = d3.selectAll('#textpane :not(.sprigTitleField)');
-    var textpane = d3.select('#textpane');
-
-    textpane.style('opacity', 0);
-    textpaneEditControls.style('opacity', 0);
-    selections.editZone.style('opacity', 0);
-
-    textpaneEditControls.style('display', 'block')
-      .transition().duration(transitionTime)
-      .style('opacity', 1);
-
-    selections.editZone.style('display', 'block')
-      .transition().duration(transitionTime)
-      .style('opacity', 1);
-
-    textpane
-      .transition().duration(transitionTime)
-      .style('opacity', 1);
-  }
-}
-
-
-/* Editing */
-
-function makeId(lengthOfRandomPart) {
-  return 's' + uid(lengthOfRandomPart);
-  // return Math.floor((1 + Math.random()) * 0x10000)
-  //   .toString(16)
-  //   .substring(1);
-}
-
-function showTitle() {
-  selections.titleField.text(selections.titleField.datum().title);
-  selections.titleField.style('display', 'block');
-}
-
-function changeEditMode(editable, skipSave) {
-  if (!g.editAvailable) {
-    return;
-  }
-
-  selections.textcontent.attr('contenteditable', editable);
-  selections.titleField.attr('contenteditable', editable);
-  selections.editZone.classed('editing', editable);
-
-  if (editable) {
-    showTitle();
-    selections.textcontent.node().focus();
-    // TODO: Make the cursor bolder? Flash the cursor?
-  }
-  else {
-    selections.titleField.style('display', 'none');
-
-    var editedNode = selections.textcontent.datum();
-    editedNode.body = selections.textcontent.html();
-
-    var newTitle = selections.titleField.text();
-    var titleChanged = (newTitle !== editedNode.title);
-    editedNode.title = newTitle;
-    if (titleChanged) {
-      d3.select('#' + editedNode.id + ' text').text(editedNode.title);
-    }
-
-    selections.textcontent.datum(editedNode);
-    selections.titleField.datum(editedNode);
-
-    if (!skipSave) {
-      saveNodeSprig(selections.textcontent.datum());
-    }
-  }
-}
 
 function saveNodeSprig(node) {
   var serializedNode = null;
@@ -153,7 +48,7 @@ function saveNodeSprig(node) {
     serializedNode = serializeTreedNode(node);
   }
   if (serializedNode) {
-    var saveId = makeId(4);
+    var saveId = TextStuff.makeId(4);
     var body = {};
     serializedNode.doc = g.docId;
     body[saveId] = {
@@ -176,29 +71,23 @@ function saveNodeSprig(node) {
   }
 }
 
-function endEditing() {
-  if (selections.editZone.classed('editing')) {
-    changeEditMode(false);
-  }
-}
-
 function respondToDocKeyUp() {
   // CONSIDER: Disabling all of this listening when editing is going on.
 
   // Esc
   if (d3.event.keyCode === 27) {
     d3.event.stopPropagation();
-    if (selections.editZone.classed('editing')) {
-      changeEditMode(false);
+    if (TextStuff.editZone.classed('editing')) {
+      TextStuff.changeEditMode(false);
     }
   }
-  else if (!selections.editZone.classed('editing')) {
+  else if (!TextStuff.editZone.classed('editing')) {
     switch (d3.event.which) {
       // 'e'.
       case 69:
         d3.event.stopPropagation();
-        if (selections.editZone.style('display') === 'block') {
-          changeEditMode(true);
+        if (TextStuff.editZone.style('display') === 'block') {
+          TextStuff.changeEditMode(true);
         }
         break;
       // Down arrow.
@@ -238,12 +127,6 @@ function showDeleteSprigDialog() {
   g.OKCancelDialog.show();  
 }
 
-function respondToEmphasisCheckClick(d) {
-  if (Graph.focusNode) {
-    Graph.focusNode.emphasize = (this.value === 'on');
-    TreeRenderer.update(g.root);
-  }
-}
 
 function respondToDocKeyDown() {
   // cmd+delete keys
@@ -252,30 +135,15 @@ function respondToDocKeyDown() {
   }
 }
 
-function respondToEditZoneKeyDown() {
-  if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 13) {
-    d3.event.stopPropagation();
-    if (selections.editZone.classed('editing')) {
-      changeEditMode(false);
-    } 
-  }
-}
-
-function startEditing() {
-  d3.event.stopPropagation();
-  if (!selections.editZone.classed('editing')) {
-    changeEditMode(true);
-  }
-}
 
 function respondToAddChildSprigCmd() {
   d3.event.stopPropagation();
-  if (selections.editZone.classed('editing')) {
-    changeEditMode(false);
+  if (TextStuff.editZone.classed('editing')) {
+    TextStuff.changeEditMode(false);
   }
 
   var newSprig = {
-    id: makeId(8),
+    id: TextStuff.makeId(8),
     doc: g.docId,
     title: 'New Sprig',
     body: ''
@@ -292,7 +160,7 @@ function respondToAddChildSprigCmd() {
 
   Graph.focusNode.children = currentChildren;
 
-  changeEditMode(true);
+  TextStuff.changeEditMode(true);
 
   var saveNewSprigId = uid(4);
   var saveParentSprigId = uid(4);
@@ -320,15 +188,15 @@ function respondToAddChildSprigCmd() {
 
   TreeRenderer.update(g.root, settings.treeNodeAnimationDuration, function done() {
     Graph.focusOnSprig(newSprig.id);
-    showTextpaneForTreeNode(newSprig);
+    TextStuff.showTextpaneForTreeNode(newSprig);
   });
 }
 
 
 function respondToDeleteSprigCmd() {
   d3.event.stopPropagation();
-  if (selections.editZone.classed('editing')) {
-    changeEditMode(false, true);
+  if (TextStuff.editZone.classed('editing')) {
+    TextStuff.changeEditMode(false, true);
   }
 
   var parentNode = Graph.focusNode.parent;
@@ -403,11 +271,10 @@ function createNewDoc() {
 
 function initDOM() {
   var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
-  Graph.init(sprigotSel, Camera, TreeRenderer, TreeNav);
+  Graph.init(sprigotSel, Camera, TreeRenderer, TreeNav, TextStuff);
   initDivider(sprigotSel);
-  initNongraphPane(sprigotSel);
+  TextStuff.init(sprigotSel, Graph, TreeRenderer);
 }
-
 
 function initDivider(sprigotSel) {
   sprigotSel.append('div').classed('divider', true)
@@ -422,70 +289,21 @@ function initDivider(sprigotSel) {
       });
 }
 
-function initNongraphPane(sprigotSel) {
-  selections.nongraphPane = sprigotSel.append('div')
-    .classed('pane', true).attr('id', 'nongraphPane');
-  
-  selections.nongraphPane.append('div').attr('id', 'questionDialog');
-  
-  var textpane = selections.nongraphPane.append('div').attr('id', 'textpane');
-  
-  var editZone = textpane.append('div').classed('editZone', true);
-  editZone.append('span').classed('sprigTitleField', true);
-  editZone.append('div').classed('textcontent', true).attr('tabindex', 0);
-
-  if (g.editAvailable) {
-    textpane.append('button').text('+')
-      .classed('newsprigbutton', true).classed('editcontrol', true);
-    textpane.append('button').text('-')
-      .classed('deletesprigbutton', true).classed('editcontrol', true);
-    textpane.append('label').text('Emphasize')
-      .classed('editcontrol', true);
-    textpane.append('input').attr({
-      type: 'checkbox',
-      id: 'emphasize'
-    })
-    .classed('editcontrol', true);
-  }
-}
-
-
 
 function init(docId, focusSprigId) {
   g.docId = docId;
 
   initDOM();
 
-  selections.textcontent = d3.select('#textpane .textcontent');
-  selections.titleField = d3.select('#textpane .sprigTitleField');
-  selections.editZone = d3.select('#textpane .editZone');
-  selections.addButton = d3.select('#textpane .newsprigbutton');
-  selections.deleteButton = d3.select('#textpane .deletesprigbutton');
-  selections.emphasizeCheckbox = d3.select('#textpane #emphasize');
-  selections.expanderArrow = d3.select('#expanderArrow');
-
-  selections.editZone.style('display', 'none');
-  selections.titleField.style('display', 'none');
-  d3.selectAll('#textpane *').style('display', 'none');
-
-  if (g.editAvailable) {
-    selections.textcontent.on('click', startEditing);
-    selections.titleField.on('click', startEditing);
-    selections.addButton.on('click', respondToAddChildSprigCmd);
-    selections.deleteButton.on('click', showDeleteSprigDialog);
-    selections.emphasizeCheckbox.on('click', respondToEmphasisCheckClick)
-  }
-
-  selections.expanderArrow.on('click', toggleGraphExpansion);
+  g.expanderArrow = d3.select('#expanderArrow');
+  g.expanderArrow.on('click', toggleGraphExpansion);
 
   var doc = d3.select(document);
-  if (selections.editAvailable) {
-    doc.on('click', endEditing);
+  if (TextStuff.editAvailable) {
+    doc.on('click', TextStuff.endEditing.bind(TextStuff));
   }
   doc.on('keyup', respondToDocKeyUp);
   doc.on('keydown', respondToDocKeyDown);
-
-  selections.editZone.on('keydown', respondToEditZoneKeyDown);
 
   window.onpopstate = function historyStatePopped(e) {
     if (e.state) {
@@ -536,12 +354,12 @@ function init(docId, focusSprigId) {
 /* Widgets */
 
 function syncExpanderArrow() {
-  var textPaneIsHidden = selections.nongraphPane.classed('collapsedPane');
+  var textPaneIsHidden = TextStuff.pane.classed('collapsedPane');
   var xOffset = textPaneIsHidden ? 36 : 6;
   var transformString = 'translate(' + xOffset + ', 0) ';
   transformString += ('scale(' + (textPaneIsHidden ? '-1' : '1') + ', 1)');
 
-  selections.expanderArrow
+  g.expanderArrow
     .transition()
       .duration(500).ease('linear').attr('transform', transformString)
       .attr('stroke-opacity', 0.5).attr('stroke-width', 2)
@@ -550,17 +368,17 @@ function syncExpanderArrow() {
 }
 
 function toggleGraphExpansion() {
-  var textPaneIsHidden = selections.nongraphPane.classed('collapsedPane');
+  var textPaneIsHidden = TextStuff.pane.classed('collapsedPane');
   var shouldHideTextPane = !textPaneIsHidden;
 
-  selections.nongraphPane.classed('collapsedPane', shouldHideTextPane)
+  TextStuff.pane.classed('collapsedPane', shouldHideTextPane)
     .classed('pane', !shouldHideTextPane);
   Graph.pane.classed('expandedPane', shouldHideTextPane)
     .classed('pane', !shouldHideTextPane);
 
   syncExpanderArrow();
 
-  if (selections.focusEl) {
+  if (Graph.focusEl) {
     Camera.panToElement(d3.select(Graph.focusEl));
   }
 }

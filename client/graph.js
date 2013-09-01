@@ -2,6 +2,7 @@ var Graph = {
   camera: null,
   treeRenderer: null,
   treeNav: null,
+  textStuff: null,
   pane: null,
   board: null,
   svgRoot: null,
@@ -9,10 +10,13 @@ var Graph = {
   focusNode: null
 };
 
-Graph.init = function init(sprigotSel, camera, treeRenderer, treeNav) {
+Graph.init = function init(sprigotSel, camera, treeRenderer, treeNav, 
+  textStuff) {
+
   this.camera = camera;
   this.treeRenderer = treeRenderer;
   this.treeNav = treeNav;
+  this.textStuff = textStuff;
 
   this.pane = sprigotSel.append('div')
     .attr('id', 'graphPane')
@@ -47,7 +51,7 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
   g.root = nodeTree;
 
   this.treeRenderer.init(g.root, this);
-  this.treeNav.init(g.root, Camera, TreeRenderer, this);
+  this.treeNav.init(g.root, Camera, TreeRenderer, this, this.textStuff);
 
   var height = this.board.node().clientHeight - margin.top - margin.bottom;
   g.root.x0 = height / 2;
@@ -67,12 +71,7 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
     var focusSel = d3.select('#' + focusSprigId);
     this.setFocusEl(focusSel.node());
     this.camera.panToElement(focusSel);
-
-    setTimeout(function initialTextPaneShow() {
-      syncTextpaneWithTreeNode(focusSel.datum(), selections.focusEl);
-      fadeInTextPane(750);
-    },
-    725);
+    this.textStuff.initialTextPaneShow(focusSel);
   }
   .bind(this),
   800);  
