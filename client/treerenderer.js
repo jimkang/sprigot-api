@@ -50,7 +50,7 @@ TreeRenderer.update = function update(source, duration, done) {
       return 'translate(' + source.y0 + ',' + source.x0 + ')'; 
     })
     .attr('id', function(d) { return d.id; })
-    .on('click', click);
+    .on('click', TreeRenderer.respondToNodeClick);
 
   nodeEnter.append('circle')
     .attr('r', 1e-6)
@@ -165,3 +165,9 @@ TreeRenderer.update = function update(source, duration, done) {
     done();
   }
 }
+
+TreeRenderer.respondToNodeClick = function respondToNodeClick(treeNode) {
+  // Global!
+  TreeNav.chooseTreeNode(treeNode, this);
+}
+

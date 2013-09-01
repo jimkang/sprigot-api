@@ -13,16 +13,6 @@ var g = {
   expanderArrow: null
 };
 
-function click(d) {
-  clickOnEl(d, this);
-}
-
-function clickOnEl(d, el) {
-  TreeNav.toggleChildren(d);
-  Graph.focusOnTreeNode(d, el);
-  TextStuff.showTextpaneForTreeNode(d);
-}
-
 function syncURLToSprigId(sprigId) {
   if (typeof typeof window.history.state === 'object' &&
     typeof window.history.state.docId === 'string' &&
@@ -40,7 +30,6 @@ function syncURLToSprigId(sprigId) {
   },
   null, newURL);  
 }
-
 
 function saveNodeSprig(node) {
   var serializedNode = null;
@@ -231,7 +220,7 @@ function respondToDeleteSprigCmd() {
   TreeRenderer.update(g.root, settings.treeNodeAnimationDuration, 
     function doneUpdating() {
       setTimeout(function clickOnParentOfDeletedNode() {
-        clickOnEl(parentNode, d3.select('#' + parentNode.id).node());
+        TreeNav.chooseTreeNode(parentNode, d3.select('#' + parentNode.id).node());
       },
       500);
     }
@@ -349,7 +338,6 @@ function init(docId, focusSprigId) {
 
   // initGraphWithNodeTree(caseDataSource);
 }
-
 
 /* Widgets */
 

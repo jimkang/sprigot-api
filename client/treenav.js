@@ -16,6 +16,13 @@ TreeNav.init = function init(sprigTree, camera, treeRenderer, graph,
   this.textStuff = textStuff;
 }
 
+
+TreeNav.chooseTreeNode = function chooseTreeNode(treeNode, treeEl) {
+  TreeNav.toggleChildren(treeNode);
+  Graph.focusOnTreeNode(treeNode, treeEl);
+  TextStuff.showTextpaneForTreeNode(treeNode);
+}
+
 TreeNav.toggleChildren = function toggleChildren(treeNode) {
   if (treeNode.children) {
     treeNode._children = treeNode.children;
@@ -53,14 +60,14 @@ TreeNav.followBranchOfNode = function followBranchOfNode(treeNode) {
 
     var childNode = treeNode.children[childIndex];
     var childEl = d3.select('#' + childNode.id).node();
-    clickOnEl(childNode, childEl);
+    this.chooseTreeNode(childNode, childEl);
   }
 }
 
 TreeNav.followParentOfNode = function followParentOfNode(treeNode) {
   if (typeof treeNode.parent === 'object') {
     var parentSel = d3.select('#' + treeNode.parent.id);
-    clickOnEl(treeNode.parent, parentSel.node());
+    this.chooseTreeNode(treeNode.parent, parentSel.node());
     this.graphCamera.panToElement(parentSel);
   }
 }
@@ -106,7 +113,7 @@ TreeNav.respondToDownArrow = function respondToDownArrow() {
     this.followBranchOfNode(this.graph.focusNode);
   }
   else {
-    clickOnEl(this.graph.focusNode, 
+    this.chooseTreeNode(this.graph.focusNode, 
       d3.select('#' + this.graph.focusNode.id).node());
   }
 }
