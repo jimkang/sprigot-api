@@ -1,5 +1,4 @@
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
-var i = 0;
 
 var settings = {
   serverURL: 'http://127.0.0.1:3000',
@@ -13,8 +12,6 @@ var g = {
   focusEl: null,
   focusNode: null,
   root: null,
-  treeLayout: null,
-  diagonalProjection: null,
   textcontent: null,
   titleField: null,
   editZone: null,
@@ -23,149 +20,6 @@ var g = {
   editAvailable: true
 }
 
-function update(source, duration, done) {
-  if (!duration) {
-    duration = settings.treeNodeAnimationDuration;
-  }
-
-  // Compute the new tree layout.
-  var nodes = g.treeLayout.nodes(g.root).reverse();
-  nodes.forEach(function swapXAndY(d) {
-    var oldX = d.x;
-    var oldX0 = d.x0;
-    d.x = d.y;
-    d.x0 = d.y0;
-    d.y = oldX;
-    d.y0 = oldX0;
-  });
-
-  var links = g.treeLayout.links(nodes);
-
-  // Normalize for fixed-depth.
-  nodes.forEach(function(d) { d.x = d.depth * 180; });
-
-  // Update the nodes.
-  var node = g.graph.selectAll('g.node')
-    .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
-  // Enter any new nodes at the parent's previous position.
-  var nodeEnter = node.enter().append('g')
-    .attr('class', 'node')
-    .attr('transform', function(d) { 
-      return 'translate(' + source.y0 + ',' + source.x0 + ')'; 
-    })
-    .attr('id', function(d) { return d.id; })
-    .on('click', click);
-
-  nodeEnter.append('circle')
-    .attr('r', 1e-6)
-    .style('fill', function(d) { 
-      return d._children ? 'lightsteelblue' : '#fff'; 
-    })
-    .style('fill-opacity', 0.7)
-    .style('stroke', 'rgba(0, 64, 192, 0.7)');
-
-  nodeEnter.append('text')
-    .attr('x', function(d) { 
-      return d.children || d._children ? '0.3em' : '-0.3em'; 
-    })
-    .attr('y', '-1em')
-    .attr('dy', '.35em')
-    .attr('text-anchor', function(d) {
-      // Remember: swapXAndY().
-      return (d.y > 0) ? 'start' : 'end'; 
-    })
-    .text(function(d) { return d.title; })
-    .style('fill-opacity', 1e-6);
-
-  // Transition nodes to their new position.
-  var nodeUpdate = node.transition()
-    .duration(duration)
-    .attr('transform', function(d) { return 'translate(' + d.y + ',' + d.x + ')'; });
-
-  nodeUpdate.select('circle')
-    .attr('r', 8)
-    .style('fill', function(d) {
-      var fillColor = '#08a';
-      if (nodeHasFocus(d)) {
-        fillColor = '#e0362f';
-      }
-      else if (d.visited) {
-        fillColor = 'lightsteelblue';
-      }
-      return fillColor;
-      // return d._children ? 'lightsteelblue' : '#fff'; 
-    })
-    .style('fill-opacity', function(d) {
-      var opacity = 0.7;
-      if (nodeHasFocus(d)) {
-        opacity = 1.0;
-      }
-      return opacity;
-    })
-    .style('stroke-width', function(d) { 
-      return (d._children && d._children.length > 0) ? '1.4em' : 0;
-    });
-
-  nodeUpdate.select('text')
-    .style('fill-opacity', 1);
-
-  // Transition exiting nodes to the parent's new position.
-  var nodeExit = node.exit().transition()
-    .duration(duration)
-    .attr('transform', function(d) { return 'translate(' + source.y + ',' + source.x + ')'; })
-    .remove();
-
-  nodeExit.select('circle')
-    .attr('r', 1e-6);
-
-  nodeExit.select('text')
-    .style('fill-opacity', 1e-6);
-
-  // Update the links…
-  var link = g.graph.selectAll('path.link')
-    .data(links, function(d) { return d.target.id; });
-
-  // Enter any new links at the parent's previous position.
-  link.enter().insert('path', 'g')
-    .attr('class', 'link')
-    .attr('d', function(d) {
-      var o = {x: source.x0, y: source.y0};
-      return g.diagonalProjection({source: o, target: o});
-    });
-
-  // Transition links to their new position.
-  link//.transition()
-    // .duration(duration)
-    .attr('d', g.diagonalProjection)
-    .attr('stroke-width', function getLinkWidth(d) {
-      if (typeof d.target.emphasize === 'boolean' && d.target.emphasize) {
-        return 4;
-      }
-      else {
-        return 1.5;
-      }
-    });
-
-  // Transition exiting nodes to the parent's new position.
-  link.exit().transition()
-    .duration(duration)
-    .attr('d', function(d) {
-      var o = {x: source.x, y: source.y};
-      return g.diagonalProjection({source: o, target: o});
-    })
-    .remove();
-
-  // Stash the old positions for transition.
-  nodes.forEach(function(d) {
-    d.x0 = d.x;
-    d.y0 = d.y;
-  });
-
-  if (done) {
-    done();
-  }
-}
 
 function translateYFromSel(sel) {
   return sel.attr('transform').split(',')[1].split('.')[0];
@@ -199,7 +53,7 @@ function click(d) {
 }
 
 function clickOnEl(d, el) {
-  toggleChildren(d);
+  treenav.toggleChildren(d);
   navigateToTreeNode(d, el);
   showTextpaneForTreeNode(d);
 }
@@ -209,7 +63,7 @@ function navigateToTreeNode(treeNode, el) {
   treeNode.visited = true;
   syncURLToSprigId(treeNode.id);
 
-  update(g.root);
+  treeRenderer.update(g.root);
   
   panToElement(d3.select(g.focusEl));
 }
@@ -279,86 +133,6 @@ function fadeInTextPane(transitionTime) {
   }
 }
 
-function toggleChildren(treeNode) {
-  if (treeNode.children) {
-    treeNode._children = treeNode.children;
-    treeNode.children = null;
-  } 
-  else {
-    expandChildren(treeNode);
-  }
-}
-
-function expandChildren(treeNode) {
-  if (treeNode._children) {
-    treeNode.children = treeNode._children;
-    treeNode._children = null;
-  }
-}
-
-function collapseRecursively(d) {
-  if (d.children) {
-    d._children = d.children;
-    d._children.forEach(collapseRecursively);
-    d.children = null;
-  }
-}
-
-function nodeIsExpanded(treeNode) {
-  return (treeNode.children && !treeNode._children);
-}
-
-function followBranchOfNode(treeNode) {
-  // TODO: Define primary paths?
-  var childIndex = 0;
-  if (typeof treeNode.children === 'object' && 
-    childIndex < treeNode.children.length) {
-
-    var childNode = treeNode.children[childIndex];
-    var childEl = d3.select('#' + childNode.id).node();
-    clickOnEl(childNode, childEl);
-  }
-}
-
-function followParentOfNode(treeNode) {
-  if (typeof treeNode.parent === 'object') {
-    var parentSel = d3.select('#' + treeNode.parent.id);
-    clickOnEl(treeNode.parent, parentSel.node());
-    panToElement(parentSel);
-  }
-}
-
-// direction should be negative to go to the left, positive to go to the right.
-function moveToSiblingNode(treeNode, direction) {
-  if (typeof treeNode.parent === 'object' &&
-    typeof treeNode.parent.children === 'object') {
-
-    var parentSel = d3.select('#' + treeNode.parent.id);
-    var focusIndex = treeNode.parent.children.indexOf(treeNode);
-    var siblingIndex = focusIndex + direction;
-    if (siblingIndex > -1 && siblingIndex < treeNode.parent.children.length) {
-      var siblingNode = treeNode.parent.children[siblingIndex];
-      var siblingEl = d3.select('#' + siblingNode.id).node();
-      if (siblingNode._children) {
-        expandChildren(siblingNode);
-      }
-      navigateToTreeNode(siblingNode, siblingEl);
-      showTextpaneForTreeNode(siblingNode);
-    }
-  }
-}
-
-function goToSprig(sprigId) {
-  var pathToSprig = mapPathToSprigInD3Tree(sprigId, g.root, 100);
-  if (pathToSprig.length > 1) {
-    pathToSprig.forEach(function expandSprig(sprig) {
-      expandChildren(sprig);
-    });
-    update(g.root, 0, function done() {
-      navigateToSprig(sprigId);
-    });
-  }
-}
 
 function setFocusEl(el) {
   g.focusEl = el;
@@ -509,7 +283,7 @@ function showDeleteSprigDialog() {
 function respondToEmphasisCheckClick(d) {
   if (g.focusNode) {
     g.focusNode.emphasize = (this.value === 'on');
-    update(g.root);
+    treeRenderer.update(g.root);
   }
 }
 
@@ -522,8 +296,8 @@ function respondToDocKeyDown() {
 
 function respondToDownArrow() {
   d3.event.stopPropagation();
-  if (nodeIsExpanded(g.focusNode)) {
-    followBranchOfNode(g.focusNode);
+  if (treenav.nodeIsExpanded(g.focusNode)) {
+    treenav.followBranchOfNode(g.focusNode);
   }
   else {
     clickOnEl(g.focusNode, d3.select('#' + g.focusNode.id).node());
@@ -533,22 +307,22 @@ function respondToDownArrow() {
 function respondToUpArrow() {
   d3.event.stopPropagation();
   if (nodeIsExpanded(g.focusNode)) {
-    collapseRecursively(g.focusNode);
-    update(g.focusNode);
+    treenav.collapseRecursively(g.focusNode);
+    sprigTree.update(g.focusNode);
   }
   else {
-    followParentOfNode(g.focusNode);
+    treenav.followParentOfNode(g.focusNode);
   }
 }
 
 function respondToLeftArrow() {
   d3.event.stopPropagation();
-  moveToSiblingNode(g.focusNode, -1);
+  treenav.moveToSiblingNode(g.focusNode, -1);
 }
 
 function respondToRightArrow() {
   d3.event.stopPropagation();
-  moveToSiblingNode(g.focusNode, 1);
+  treenav.moveToSiblingNode(g.focusNode, 1);
 }
 
 
@@ -618,7 +392,7 @@ function addChildSprig() {
     console.log('Parent sprig save status:', response[saveParentSprigId].status);
   });
 
-  update(g.root, settings.treeNodeAnimationDuration, function done() {
+  sprigTree.update(g.root, settings.treeNodeAnimationDuration, function done() {
     navigateToSprig(newSprig.id);
     showTextpaneForTreeNode(newSprig);
   });
@@ -668,12 +442,14 @@ function deleteSprig() {
     console.log('Parent sprig save status:', response[saveOpId].status);
   });
 
-  update(g.root, settings.treeNodeAnimationDuration, function doneUpdating() {
-    setTimeout(function clickOnParentOfDeletedNode() {
-      clickOnEl(parentNode, d3.select('#' + parentNode.id).node());
-    },
-    500);
-  });
+  sprigTreeupdate(g.root, settings.treeNodeAnimationDuration, 
+    function doneUpdating() {
+      setTimeout(function clickOnParentOfDeletedNode() {
+        clickOnEl(parentNode, d3.select('#' + parentNode.id).node());
+      },
+      500);
+    }
+  );
 }
 
 
@@ -782,18 +558,21 @@ function initNongraphPane(sprigotSel) {
 function initGraphWithNodeTree(nodeTree, focusSprigId) {
   g.root = nodeTree;
 
+  treeRenderer.init(g.root);
+  treenav.init(g.root);
+
   var height = g.board.node().clientHeight - margin.top - margin.bottom;
   g.root.x0 = height / 2;
   g.root.y0 = 0;
 
-  collapseRecursively(g.root);
+  treenav.collapseRecursively(g.root);
 
   if (focusSprigId) {
-    goToSprig(focusSprigId);
+    treenav.goToSprig(focusSprigId);
   }
   else {
     focusSprigId = g.root.id;
-    update(g.root);
+    treeRenderer.update(g.root);
   }
 
   setTimeout(function initialPan() {
@@ -815,14 +594,6 @@ function init(docId, focusSprigId) {
   g.docId = docId;
 
   initDOM();
-
-  // The tree generates a left-to-right tree, and we want a top-to-bottom tree, 
-  // so we flip x and y when we talk to it.
-  g.treeLayout = d3.layout.tree();
-  g.treeLayout.nodeSize([160, 160]);
-
-  g.diagonalProjection = d3.svg.diagonal()
-    .projection(function(d) { return [d.y, d.x]; });
 
   g.textcontent = d3.select('#textpane .textcontent');
   g.titleField = d3.select('#textpane .sprigTitleField');
