@@ -86,7 +86,6 @@ Graph.setGraphScale = function setGraphScale() {
   }
 }
 
-
 Graph.setFocusEl = function setFocusEl(el) {
   this.focusEl = el;
   this.focusNode = d3.select(this.focusEl).datum();
