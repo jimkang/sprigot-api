@@ -306,9 +306,9 @@ function respondToDownArrow() {
 
 function respondToUpArrow() {
   d3.event.stopPropagation();
-  if (nodeIsExpanded(g.focusNode)) {
+  if (treenav.nodeIsExpanded(g.focusNode)) {
     treenav.collapseRecursively(g.focusNode);
-    sprigTree.update(g.focusNode);
+    treeRenderer.update(g.focusNode);
   }
   else {
     treenav.followParentOfNode(g.focusNode);
@@ -392,7 +392,7 @@ function addChildSprig() {
     console.log('Parent sprig save status:', response[saveParentSprigId].status);
   });
 
-  sprigTree.update(g.root, settings.treeNodeAnimationDuration, function done() {
+  treeRenderer.update(g.root, settings.treeNodeAnimationDuration, function done() {
     navigateToSprig(newSprig.id);
     showTextpaneForTreeNode(newSprig);
   });
@@ -442,7 +442,7 @@ function deleteSprig() {
     console.log('Parent sprig save status:', response[saveOpId].status);
   });
 
-  sprigTreeupdate(g.root, settings.treeNodeAnimationDuration, 
+  treeRenderer.update(g.root, settings.treeNodeAnimationDuration, 
     function doneUpdating() {
       setTimeout(function clickOnParentOfDeletedNode() {
         clickOnEl(parentNode, d3.select('#' + parentNode.id).node());
