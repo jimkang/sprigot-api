@@ -31,7 +31,7 @@ function click(d) {
 }
 
 function clickOnEl(d, el) {
-  treenav.toggleChildren(d);
+  TreeNav.toggleChildren(d);
   navigateToTreeNode(d, el);
   showTextpaneForTreeNode(d);
 }
@@ -274,8 +274,8 @@ function respondToDocKeyDown() {
 
 function respondToDownArrow() {
   d3.event.stopPropagation();
-  if (treenav.nodeIsExpanded(g.focusNode)) {
-    treenav.followBranchOfNode(g.focusNode);
+  if (TreeNav.nodeIsExpanded(g.focusNode)) {
+    TreeNav.followBranchOfNode(g.focusNode);
   }
   else {
     clickOnEl(g.focusNode, d3.select('#' + g.focusNode.id).node());
@@ -284,23 +284,23 @@ function respondToDownArrow() {
 
 function respondToUpArrow() {
   d3.event.stopPropagation();
-  if (treenav.nodeIsExpanded(g.focusNode)) {
-    treenav.collapseRecursively(g.focusNode);
+  if (TreeNav.nodeIsExpanded(g.focusNode)) {
+    TreeNav.collapseRecursively(g.focusNode);
     treeRenderer.update(g.focusNode);
   }
   else {
-    treenav.followParentOfNode(g.focusNode);
+    TreeNav.followParentOfNode(g.focusNode);
   }
 }
 
 function respondToLeftArrow() {
   d3.event.stopPropagation();
-  treenav.moveToSiblingNode(g.focusNode, -1);
+  TreeNav.moveToSiblingNode(g.focusNode, -1);
 }
 
 function respondToRightArrow() {
   d3.event.stopPropagation();
-  treenav.moveToSiblingNode(g.focusNode, 1);
+  TreeNav.moveToSiblingNode(g.focusNode, 1);
 }
 
 
@@ -537,16 +537,16 @@ function initGraphWithNodeTree(nodeTree, focusSprigId) {
   g.root = nodeTree;
 
   treeRenderer.init(g.root, selections.graph);
-  treenav.init(g.root, Camera);
+  TreeNav.init(g.root, Camera);
 
   var height = selections.board.node().clientHeight - margin.top - margin.bottom;
   g.root.x0 = height / 2;
   g.root.y0 = 0;
 
-  treenav.collapseRecursively(g.root);
+  TreeNav.collapseRecursively(g.root);
 
   if (focusSprigId) {
-    treenav.goToSprig(focusSprigId);
+    TreeNav.goToSprig(focusSprigId);
   }
   else {
     focusSprigId = g.root.id;

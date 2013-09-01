@@ -1,14 +1,14 @@
-var treenav = {
+var TreeNav = {
   sprigTree: null,
   graphCamera: null
 };
 
-treenav.init = function init(sprigTree, camera) {
+TreeNav.init = function init(sprigTree, camera) {
   this.sprigTree = sprigTree;
   this.graphCamera = camera;
 }
 
-treenav.toggleChildren = function toggleChildren(treeNode) {
+TreeNav.toggleChildren = function toggleChildren(treeNode) {
   if (treeNode.children) {
     treeNode._children = treeNode.children;
     treeNode.children = null;
@@ -18,26 +18,26 @@ treenav.toggleChildren = function toggleChildren(treeNode) {
   }
 }
 
-treenav.expandChildren = function expandChildren(treeNode) {
+TreeNav.expandChildren = function expandChildren(treeNode) {
   if (treeNode._children) {
     treeNode.children = treeNode._children;
     treeNode._children = null;
   }
 }
 
-treenav.collapseRecursively = function collapseRecursively(treeNode) {
+TreeNav.collapseRecursively = function collapseRecursively(treeNode) {
   if (treeNode.children) {
     treeNode._children = treeNode.children;
-    treeNode._children.forEach(treenav.collapseRecursively);
+    treeNode._children.forEach(TreeNav.collapseRecursively);
     treeNode.children = null;
   }
 }
 
-treenav.nodeIsExpanded = function nodeIsExpanded(treeNode) {
+TreeNav.nodeIsExpanded = function nodeIsExpanded(treeNode) {
   return (treeNode.children && !treeNode._children);
 }
 
-treenav.followBranchOfNode = function followBranchOfNode(treeNode) {
+TreeNav.followBranchOfNode = function followBranchOfNode(treeNode) {
   // TODO: Define primary paths?
   var childIndex = 0;
   if (typeof treeNode.children === 'object' && 
@@ -49,7 +49,7 @@ treenav.followBranchOfNode = function followBranchOfNode(treeNode) {
   }
 }
 
-treenav.followParentOfNode = function followParentOfNode(treeNode) {
+TreeNav.followParentOfNode = function followParentOfNode(treeNode) {
   if (typeof treeNode.parent === 'object') {
     var parentSel = d3.select('#' + treeNode.parent.id);
     clickOnEl(treeNode.parent, parentSel.node());
@@ -58,7 +58,7 @@ treenav.followParentOfNode = function followParentOfNode(treeNode) {
 }
 
 // direction should be negative to go to the left, positive to go to the right.
-treenav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
+TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
   if (typeof treeNode.parent === 'object' &&
     typeof treeNode.parent.children === 'object') {
 
@@ -77,7 +77,7 @@ treenav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
   }
 }
 
-treenav.goToSprig = function goToSprig(sprigId) {
+TreeNav.goToSprig = function goToSprig(sprigId) {
   var pathToSprig = mapPathToSprigInD3Tree(sprigId, this.sprigTree, 100);
   if (pathToSprig.length > 1) {
     pathToSprig.forEach(function expandSprig(sprig) {
