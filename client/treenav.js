@@ -51,7 +51,7 @@ treenav.followParentOfNode = function followParentOfNode(treeNode) {
   if (typeof treeNode.parent === 'object') {
     var parentSel = d3.select('#' + treeNode.parent.id);
     clickOnEl(treeNode.parent, parentSel.node());
-    panToElement(parentSel);
+    camera.panToElement(parentSel);
   }
 }
 
