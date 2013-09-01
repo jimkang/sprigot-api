@@ -25,28 +25,6 @@ var g = {
   OKCancelDialog: null
 };
 
-function translateYFromSel(sel) {
-  return sel.attr('transform').split(',')[1].split('.')[0];
-}
-
-function translateXFromSel(sel) {
-  return sel.attr('transform').split(',')[0].split('.')[0].split('(')[1];
-}
-
-function panToElement(focusElementSel) {
-  var currentScale = BoardZoomer.zoomBehavior.scale();
-  var y = parseInt(translateYFromSel(focusElementSel)) * currentScale;
-  var x = parseInt(translateXFromSel(focusElementSel)) * currentScale;
-
-  BoardZoomer.panToCenterOnRect({
-    x: x,
-    y: y,
-    width: 1,
-    height: 1
-  },
-  750);
-}
-
 // Toggle children on click.
 function click(d) {
   clickOnEl(d, this);
@@ -65,7 +43,7 @@ function navigateToTreeNode(treeNode, el) {
 
   treeRenderer.update(g.root);
   
-  panToElement(d3.select(selections.focusEl));
+  camera.panToElement(d3.select(selections.focusEl));
 }
 
 function syncURLToSprigId(sprigId) {
@@ -262,7 +240,7 @@ function respondToDocKeyUp() {
       // equal key
       case 187:
         if (d3.event.shiftKey) {
-          addChildSprig();
+          respondToAddChildSprigCmd();
         }
         break;
     }
@@ -272,7 +250,7 @@ function respondToDocKeyUp() {
 function showDeleteSprigDialog() {
   g.OKCancelDialog = new OKCancelDialog('#questionDialog', 
     'Do you want to delete this?', 'Delete', 
-    deleteSprig,
+    respondToDeleteSprigCmd,
     function removeOKCancelDialog() {
       delete g.OKCancelDialog;
     }
@@ -342,7 +320,7 @@ function startEditing() {
   }
 }
 
-function addChildSprig() {
+function respondToAddChildSprigCmd() {
   d3.event.stopPropagation();
   if (selections.editZone.classed('editing')) {
     changeEditMode(false);
@@ -407,7 +385,7 @@ function navigateToSprig(sprigId) {
   500);
 }
 
-function deleteSprig() {
+function respondToDeleteSprigCmd() {
   d3.event.stopPropagation();
   if (selections.editZone.classed('editing')) {
     changeEditMode(false, true);
@@ -578,7 +556,7 @@ function initGraphWithNodeTree(nodeTree, focusSprigId) {
   setTimeout(function initialPan() {
     var focusSel = d3.select('#' + focusSprigId);
     setFocusEl(focusSel.node());
-    panToElement(focusSel);
+    camera.panToElement(focusSel);
 
     setTimeout(function initialTextPaneShow() {
       syncTextpaneWithTreeNode(focusSel.datum(), selections.focusEl);
@@ -603,7 +581,7 @@ function init(docId, focusSprigId) {
   selections.emphasizeCheckbox = d3.select('#textpane #emphasize');
   selections.expanderArrow = d3.select('#expanderArrow');
 
-  BoardZoomer.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
+  camera.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
     d3.select('g#graphRoot'));
 
   setGraphScale();
@@ -615,7 +593,7 @@ function init(docId, focusSprigId) {
   if (g.editAvailable) {
     selections.textcontent.on('click', startEditing);
     selections.titleField.on('click', startEditing);
-    selections.addButton.on('click', addChildSprig);
+    selections.addButton.on('click', respondToAddChildSprigCmd);
     selections.deleteButton.on('click', showDeleteSprigDialog);
     selections.emphasizeCheckbox.on('click', respondToEmphasisCheckClick)
   }
@@ -639,7 +617,7 @@ function init(docId, focusSprigId) {
       setTimeout(function focusOnSprig() {
         var focusSel = d3.select('#' + e.state.sprigId);
         setFocusEl(focusSel.node());
-        panToElement(focusSel);
+        camera.panToElement(focusSel);
       },
       100);
     }
@@ -677,11 +655,11 @@ function init(docId, focusSprigId) {
 }
 
 function setGraphScale() {
-  var actualBoardHeight = BoardZoomer.getActualHeight(selections.board.node());
+  var actualBoardHeight = camera.getActualHeight(selections.board.node());
 
   if (actualBoardHeight <= 230) {
-    BoardZoomer.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
-    BoardZoomer.zoomBehavior.scale(0.5);
+    camera.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
+    camera.zoomBehavior.scale(0.5);
   }
 }
 
@@ -713,6 +691,6 @@ function toggleGraphExpansion() {
   syncExpanderArrow();
 
   if (selections.focusEl) {
-    panToElement(d3.select(selections.focusEl));
+    camera.panToElement(d3.select(selections.focusEl));
   }
 }

@@ -1,4 +1,4 @@
-var BoardZoomer = {
+var camera = {
   locked: false,
   rootSelection: null,  
   boardSelection: null, 
@@ -19,17 +19,17 @@ var BoardZoomer = {
       .domain([0, height])
       .range([height, 0]);
 
-    BoardZoomer.zoomBehavior = 
+    camera.zoomBehavior = 
     d3.behavior.zoom().x(x).y(y).scaleExtent([1, 1])
-      .on("zoom", BoardZoomer.syncZoomEventToTransform);
+      .on("zoom", camera.syncZoomEventToTransform);
 
-    BoardZoomer.boardSelection = boardSel;
+    camera.boardSelection = boardSel;
     
     // When zoom and pan gestures happen inside of #boardSVG, have it call the 
     // zoom function to make changes.
-    BoardZoomer.boardSelection.call(BoardZoomer.zoomBehavior);
+    camera.boardSelection.call(camera.zoomBehavior);
 
-    BoardZoomer.rootSelection = rootGroupSel;
+    camera.rootSelection = rootGroupSel;
   },
   // This function applies the zoom changes to the <g> element rather than
   // the <svg> element because <svg>s do not have a transform attribute. 
@@ -37,44 +37,44 @@ var BoardZoomer = {
   // dragging-to-pan doesn't work otherwise. Maybe something cannot be 
   // transformed while it is receiving drag events?
   syncZoomEventToTransform: function() {
-    if (!BoardZoomer.locked) {
-      BoardZoomer.rootSelection.attr('transform', 
+    if (!camera.locked) {
+      camera.rootSelection.attr('transform', 
         "translate(" + d3.event.translate + ")" + 
         " scale(" + d3.event.scale + ")");
     }
   },
   resetZoom: function() { 
-    if (!BoardZoomer.locked) {
+    if (!camera.locked) {
       rootSelection.attr('transform', "translate(0, 0) scale(1)");
     }
   },
   lockZoomToDefault: function() {
     // console.log("locked to default!");
-    BoardZoomer.resetZoom();
-    BoardZoomer.locked = true;
+    camera.resetZoom();
+    camera.locked = true;
   },
   lockZoom: function() {
     // console.log("locked!");
-    BoardZoomer.locked = true;
+    camera.locked = true;
   },
   unlockZoom: function() {
-    BoardZoomer.locked = false;
+    camera.locked = false;
     // If parsedPreLockTransform is set, restore the zoom transform to that.
-    if (BoardZoomer.parsedPreLockTransform) {
-      BoardZoomer.tweenToNewZoom(BoardZoomer.parsedPreLockTransform.scale, 
-        BoardZoomer.parsedPreLockTransform.translate, 300);
-      BoardZoomer.parsedPreLockTransform = null;
+    if (camera.parsedPreLockTransform) {
+      camera.tweenToNewZoom(camera.parsedPreLockTransform.scale, 
+        camera.parsedPreLockTransform.translate, 300);
+      camera.parsedPreLockTransform = null;
     }
   },
   lockZoomToDefaultCenterPanAtDataCoords: function(d) {
     // unlockZoom will restore the zoom transform to this.
-    BoardZoomer.parsedPreLockTransform = 
-      BoardZoomer.parseScaleAndTranslateFromTransformString(
-        BoardZoomer.rootSelection.attr('transform'));
+    camera.parsedPreLockTransform = 
+      camera.parseScaleAndTranslateFromTransformString(
+        camera.rootSelection.attr('transform'));
 
-    BoardZoomer.panToCenterOnRect(d);
+    camera.panToCenterOnRect(d);
 
-    BoardZoomer.lockZoom();
+    camera.lockZoom();
   },
   panToCenterOnRect: function(rect, duration) {
     if (!duration) {
@@ -84,15 +84,15 @@ var BoardZoomer = {
     var boardHeight = this.getActualHeight(this.boardSelection.node());
 
     var scale = 1.0;
-    var oldTransform = BoardZoomer.rootSelection.attr('transform');
+    var oldTransform = camera.rootSelection.attr('transform');
 
     if (oldTransform) {
       var parsed = 
-        BoardZoomer.parseScaleAndTranslateFromTransformString(oldTransform);
+        camera.parseScaleAndTranslateFromTransformString(oldTransform);
       scale = parsed.scale;
     }
 
-    BoardZoomer.tweenToNewZoom(scale, 
+    camera.tweenToNewZoom(scale, 
       [(-rect.x - rect.width/2 + boardWidth/2), 
       (-rect.y - rect.height/2 + boardHeight/2)], duration);
   },
@@ -100,14 +100,14 @@ var BoardZoomer = {
   // newTranslate should be a two-element array corresponding to x and y in 
   // the translation.
   tweenToNewZoom: function(newScale, newTranslate, time) {
-    var oldTransform = BoardZoomer.rootSelection.attr('transform');
+    var oldTransform = camera.rootSelection.attr('transform');
 
     d3.transition().duration(time).tween("zoom", function() {
       var oldScale = 1.0;
       var oldTranslate = [0, 0];
       if (oldTransform) {
         var parsed = 
-          BoardZoomer.parseScaleAndTranslateFromTransformString(oldTransform);
+          camera.parseScaleAndTranslateFromTransformString(oldTransform);
         oldScale = parsed.scale;
         oldTranslate = parsed.translate;
       }
@@ -122,14 +122,14 @@ var BoardZoomer = {
         // The translate is applied after the scale is applied, so we need to
         // apply the scaling to the behavior ourselves.       
         var currentScale = interpolateScale(t);
-        BoardZoomer.zoomBehavior.scale(currentScale);
+        camera.zoomBehavior.scale(currentScale);
         // Same with the translate.
         var currentTranslate = interpolateTranslation(t);
-        BoardZoomer.zoomBehavior.translate(currentTranslate);
+        camera.zoomBehavior.translate(currentTranslate);
 
         // This sets the transform on the root <g> and changes the zoom and
         // panning.
-        BoardZoomer.rootSelection.attr('transform', 
+        camera.rootSelection.attr('transform', 
           "translate(" + currentTranslate[0] + ", " + currentTranslate[1] + ")" + 
           " scale(" + currentScale + ")");         
       };
@@ -176,6 +176,28 @@ var BoardZoomer = {
       height = el.parentNode.clientWidth;
     }
     return height;
+  },
+
+  translateYFromSel: function translateYFromSel(sel) {
+    return sel.attr('transform').split(',')[1].split('.')[0];
+  },
+
+  translateXFromSel: function translateXFromSel(sel) {
+    return sel.attr('transform').split(',')[0].split('.')[0].split('(')[1];
+  },
+
+  panToElement: function panToElement(focusElementSel) {
+    var currentScale = camera.zoomBehavior.scale();
+    var y = parseInt(camera.translateYFromSel(focusElementSel)) * currentScale;
+    var x = parseInt(camera.translateXFromSel(focusElementSel)) * currentScale;
+
+    camera.panToCenterOnRect({
+      x: x,
+      y: y,
+      width: 1,
+      height: 1
+    },
+    750);
   }
 
 }
