@@ -43,10 +43,6 @@ function panToElement(focusElementSel) {
   750);
 }
 
-function nodeHasFocus(treeNode) {
-  return (treeNode === g.focusNode);
-}
-
 // Toggle children on click.
 function click(d) {
   clickOnEl(d, this);

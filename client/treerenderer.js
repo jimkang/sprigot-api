@@ -16,6 +16,10 @@ treeRenderer.init = function init(sprigTree, graph) {
   this.graphSVGGroup = graph;
 }
 
+treeRenderer.nodeHasFocus = function nodeHasFocus(treeNode) {
+  return (treeNode === g.focusNode);
+}
+
 treeRenderer.update = function update(source, duration, done) {
   if (!duration) {
     duration = settings.treeNodeAnimationDuration;
@@ -80,7 +84,7 @@ treeRenderer.update = function update(source, duration, done) {
     .attr('r', 8)
     .style('fill', function(d) {
       var fillColor = '#08a';
-      if (nodeHasFocus(d)) {
+      if (this.nodeHasFocus(d)) {
         fillColor = '#e0362f';
       }
       else if (d.visited) {
@@ -88,14 +92,16 @@ treeRenderer.update = function update(source, duration, done) {
       }
       return fillColor;
       // return d._children ? 'lightsteelblue' : '#fff'; 
-    })
+    }
+    .bind(this))
     .style('fill-opacity', function(d) {
       var opacity = 0.7;
-      if (nodeHasFocus(d)) {
+      if (this.nodeHasFocus(d)) {
         opacity = 1.0;
       }
       return opacity;
-    })
+    }
+    .bind(this))
     .style('stroke-width', function(d) { 
       return (d._children && d._children.length > 0) ? '1.4em' : 0;
     });
