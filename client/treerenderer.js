@@ -1,17 +1,19 @@
 var treeRenderer = {
   treeLayout: null,
   diagonalProjection: null,
-  sprigTree: null
+  sprigTree: null,
+  graphSVGGroup: null
 };
 
-treeRenderer.init = function init(sprigTree) {
+treeRenderer.init = function init(sprigTree, graph) {
   // The tree layout generates a left-to-right tree by default, and we want a 
   // top-to-bottom tree, so we flip x and y when we talk to it.
   this.treeLayout = d3.layout.tree();
   this.treeLayout.nodeSize([160, 160]);
   this.sprigTree = sprigTree;
   this.diagonalProjection = d3.svg.diagonal()
-    .projection(function(d) { return [d.y, d.x]; });  
+    .projection(function(d) { return [d.y, d.x]; });
+  this.graphSVGGroup = graph;
 }
 
 treeRenderer.update = function update(source, duration, done) {
@@ -36,7 +38,7 @@ treeRenderer.update = function update(source, duration, done) {
   nodes.forEach(function(d) { d.x = d.depth * 180; });
 
   // Update the nodes.
-  var node = g.graph.selectAll('g.node')
+  var node = this.graphSVGGroup.selectAll('g.node')
     .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
   // Enter any new nodes at the parent's previous position.
@@ -114,7 +116,7 @@ treeRenderer.update = function update(source, duration, done) {
     .style('fill-opacity', 1e-6);
 
   // Update the links…
-  var link = g.graph.selectAll('path.link')
+  var link = this.graphSVGGroup.selectAll('path.link')
     .data(links, function(d) { return d.target.id; });
 
   // Enter any new links at the parent's previous position.

@@ -558,7 +558,7 @@ function initNongraphPane(sprigotSel) {
 function initGraphWithNodeTree(nodeTree, focusSprigId) {
   g.root = nodeTree;
 
-  treeRenderer.init(g.root);
+  treeRenderer.init(g.root, g.graph);
   treenav.init(g.root);
 
   var height = g.board.node().clientHeight - margin.top - margin.bottom;
