@@ -2,7 +2,8 @@ var TreeRenderer = {
   treeLayout: null,
   diagonalProjection: null,
   sprigTree: null,
-  graphSVGGroup: null
+  graphSVGGroup: null,
+  graph: null
 };
 
 TreeRenderer.init = function init(sprigTree, graph) {
@@ -13,11 +14,8 @@ TreeRenderer.init = function init(sprigTree, graph) {
   this.sprigTree = sprigTree;
   this.diagonalProjection = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
-  this.graphSVGGroup = graph;
-}
-
-TreeRenderer.nodeHasFocus = function nodeHasFocus(treeNode) {
-  return (treeNode === g.focusNode);
+  this.graph = graph;
+  this.graphSVGGroup = graph.svgRoot;
 }
 
 TreeRenderer.update = function update(source, duration, done) {
@@ -84,7 +82,7 @@ TreeRenderer.update = function update(source, duration, done) {
     .attr('r', 8)
     .style('fill', function(d) {
       var fillColor = '#08a';
-      if (this.nodeHasFocus(d)) {
+      if (this.graph.nodeHasFocus(d)) {
         fillColor = '#e0362f';
       }
       else if (d.visited) {
@@ -96,7 +94,7 @@ TreeRenderer.update = function update(source, duration, done) {
     .bind(this))
     .style('fill-opacity', function(d) {
       var opacity = 0.7;
-      if (this.nodeHasFocus(d)) {
+      if (this.graph.nodeHasFocus(d)) {
         opacity = 1.0;
       }
       return opacity;

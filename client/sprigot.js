@@ -7,9 +7,6 @@ var settings = {
 };
 
 var selections = {
-  board: null,
-  graph: null,
-  focusEl: null,
   textcontent: null,
   titleField: null,
   editZone: null,
@@ -20,30 +17,18 @@ var selections = {
 var g = {
   docId: null,
   root: null,
-  focusNode: null,
   editAvailable: true,
   OKCancelDialog: null
 };
 
-// Toggle children on click.
 function click(d) {
   clickOnEl(d, this);
 }
 
 function clickOnEl(d, el) {
   TreeNav.toggleChildren(d);
-  navigateToTreeNode(d, el);
+  Graph.focusOnTreeNode(d, el);
   showTextpaneForTreeNode(d);
-}
-
-function navigateToTreeNode(treeNode, el) {
-  setFocusEl(el);
-  treeNode.visited = true;
-  syncURLToSprigId(treeNode.id);
-
-  TreeRenderer.update(g.root);
-  
-  Camera.panToElement(d3.select(selections.focusEl));
 }
 
 function syncURLToSprigId(sprigId) {
@@ -85,7 +70,7 @@ function syncTextpaneWithTreeNode(treeNode) {
 
   selections.textcontent.html(treeNode.body);
   selections.titleField.html(treeNode.title);
-  selections.emphasizeCheckbox.attr('value', g.focusNode.emphasize ? 'on' : null);
+  selections.emphasizeCheckbox.attr('value', Graph.focusNode.emphasize ? 'on' : null);
 }
 
 function fadeInTextPane(transitionTime) {
@@ -111,11 +96,6 @@ function fadeInTextPane(transitionTime) {
   }
 }
 
-
-function setFocusEl(el) {
-  selections.focusEl = el;
-  g.focusNode = d3.select(selections.focusEl).datum();
-}
 
 /* Editing */
 
@@ -223,19 +203,19 @@ function respondToDocKeyUp() {
         break;
       // Down arrow.
       case 40:
-        respondToDownArrow();
+        TreeNav.respondToDownArrow();
         break;
       // Up arrow.
       case 38:
-        respondToUpArrow();
+        TreeNav.respondToUpArrow();
         break;
       // Left arrow.
       case 37:
-        respondToLeftArrow();
+        TreeNav.respondToLeftArrow();
         break;
       // Right arrow.
       case 39:
-        respondToRightArrow();
+        TreeNav.respondToRightArrow();
         break;
       // equal key
       case 187:
@@ -259,8 +239,8 @@ function showDeleteSprigDialog() {
 }
 
 function respondToEmphasisCheckClick(d) {
-  if (g.focusNode) {
-    g.focusNode.emphasize = (this.value === 'on');
+  if (Graph.focusNode) {
+    Graph.focusNode.emphasize = (this.value === 'on');
     TreeRenderer.update(g.root);
   }
 }
@@ -271,38 +251,6 @@ function respondToDocKeyDown() {
     showDeleteSprigDialog();
   }
 }
-
-function respondToDownArrow() {
-  d3.event.stopPropagation();
-  if (TreeNav.nodeIsExpanded(g.focusNode)) {
-    TreeNav.followBranchOfNode(g.focusNode);
-  }
-  else {
-    clickOnEl(g.focusNode, d3.select('#' + g.focusNode.id).node());
-  }
-}
-
-function respondToUpArrow() {
-  d3.event.stopPropagation();
-  if (TreeNav.nodeIsExpanded(g.focusNode)) {
-    TreeNav.collapseRecursively(g.focusNode);
-    TreeRenderer.update(g.focusNode);
-  }
-  else {
-    TreeNav.followParentOfNode(g.focusNode);
-  }
-}
-
-function respondToLeftArrow() {
-  d3.event.stopPropagation();
-  TreeNav.moveToSiblingNode(g.focusNode, -1);
-}
-
-function respondToRightArrow() {
-  d3.event.stopPropagation();
-  TreeNav.moveToSiblingNode(g.focusNode, 1);
-}
-
 
 function respondToEditZoneKeyDown() {
   if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 13) {
@@ -333,16 +281,16 @@ function respondToAddChildSprigCmd() {
     body: ''
   };
 
-  var currentChildren = g.focusNode.children;
+  var currentChildren = Graph.focusNode.children;
   if (!currentChildren) {
-    currentChildren = g.focusNode._children;
+    currentChildren = Graph.focusNode._children;
   }
   if (!currentChildren) {
     currentChildren = [];
   }
   currentChildren.push(newSprig);
 
-  g.focusNode.children = currentChildren;
+  Graph.focusNode.children = currentChildren;
 
   changeEditMode(true);
 
@@ -356,7 +304,7 @@ function respondToAddChildSprigCmd() {
   };
   body[saveParentSprigId] = {
     op: 'saveSprig',
-    params: serializeTreedNode(g.focusNode)
+    params: serializeTreedNode(Graph.focusNode)
   };
 
   request(settings.serverURL, body, 
@@ -371,19 +319,11 @@ function respondToAddChildSprigCmd() {
   });
 
   TreeRenderer.update(g.root, settings.treeNodeAnimationDuration, function done() {
-    navigateToSprig(newSprig.id);
+    Graph.focusOnSprig(newSprig.id);
     showTextpaneForTreeNode(newSprig);
   });
 }
 
-function navigateToSprig(sprigId) {
-  var sprigSel = d3.select('#' + sprigId);
-
-  setTimeout(function doNavigate() {
-    navigateToTreeNode(sprigSel.datum(), sprigSel.node());
-  },
-  500);
-}
 
 function respondToDeleteSprigCmd() {
   d3.event.stopPropagation();
@@ -391,8 +331,8 @@ function respondToDeleteSprigCmd() {
     changeEditMode(false, true);
   }
 
-  var parentNode = g.focusNode.parent;
-  var childIndex = parentNode.children.indexOf(g.focusNode);
+  var parentNode = Graph.focusNode.parent;
+  var childIndex = parentNode.children.indexOf(Graph.focusNode);
   parentNode.children.splice(childIndex, 1);
 
   var requestBody = {};
@@ -401,7 +341,7 @@ function respondToDeleteSprigCmd() {
   requestBody[deleteOpId] = {
     op: 'deleteSprig',
     params: {
-      id: g.focusNode.id,
+      id: Graph.focusNode.id,
       doc: g.docId
     }
   };
@@ -463,35 +403,11 @@ function createNewDoc() {
 
 function initDOM() {
   var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
-  initGraphPane(sprigotSel);
+  Graph.init(sprigotSel, Camera, TreeRenderer, TreeNav);
   initDivider(sprigotSel);
   initNongraphPane(sprigotSel);
 }
 
-function initGraphPane(sprigotSel) {
-  selections.graphPane = sprigotSel.append('div')
-    .attr('id', 'graphPane')
-    .classed('pane', true);
-
-  selections.board = selections.graphPane.append('svg')
-    .attr({
-      id: 'svgBoard',
-      width: '100%',
-      height: '100%'
-    });
-
-  selections.board.append('g').attr('id', 'background')
-    .append('rect').attr({
-      width: '100%',
-      height: '100%',
-      fill: 'rgba(0, 0, 16, 0.2)'
-    });
-
-  selections.graph = selections.board.append('g').attr({
-    id: 'graphRoot',
-    transform: 'translate(' + margin.left + ',' + margin.top + ')'
-  });
-}
 
 function initDivider(sprigotSel) {
   sprigotSel.append('div').classed('divider', true)
@@ -533,39 +449,6 @@ function initNongraphPane(sprigotSel) {
   }
 }
 
-function initGraphWithNodeTree(nodeTree, focusSprigId) {
-  g.root = nodeTree;
-
-  TreeRenderer.init(g.root, selections.graph);
-  TreeNav.init(g.root, Camera);
-
-  var height = selections.board.node().clientHeight - margin.top - margin.bottom;
-  g.root.x0 = height / 2;
-  g.root.y0 = 0;
-
-  TreeNav.collapseRecursively(g.root);
-
-  if (focusSprigId) {
-    TreeNav.goToSprig(focusSprigId);
-  }
-  else {
-    focusSprigId = g.root.id;
-    TreeRenderer.update(g.root);
-  }
-
-  setTimeout(function initialPan() {
-    var focusSel = d3.select('#' + focusSprigId);
-    setFocusEl(focusSel.node());
-    Camera.panToElement(focusSel);
-
-    setTimeout(function initialTextPaneShow() {
-      syncTextpaneWithTreeNode(focusSel.datum(), selections.focusEl);
-      fadeInTextPane(750);
-    },
-    725);
-  },
-  800);  
-}
 
 
 function init(docId, focusSprigId) {
@@ -580,11 +463,6 @@ function init(docId, focusSprigId) {
   selections.deleteButton = d3.select('#textpane .deletesprigbutton');
   selections.emphasizeCheckbox = d3.select('#textpane #emphasize');
   selections.expanderArrow = d3.select('#expanderArrow');
-
-  Camera.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
-    d3.select('g#graphRoot'));
-
-  setGraphScale();
 
   selections.editZone.style('display', 'none');
   selections.titleField.style('display', 'none');
@@ -616,7 +494,7 @@ function init(docId, focusSprigId) {
       goToSprig(e.state.sprigId);
       setTimeout(function focusOnSprig() {
         var focusSel = d3.select('#' + e.state.sprigId);
-        setFocusEl(focusSel.node());
+        Graph.setFocusEl(focusSel.node());
         Camera.panToElement(focusSel);
       },
       100);
@@ -642,7 +520,7 @@ function init(docId, focusSprigId) {
 
       if ('req1' in response && response.req1.status === 'got') {
         var sanitizedTree = sanitizeTreeForD3(response.req1.result.sprigTree);
-        initGraphWithNodeTree(sanitizedTree, focusSprigId);
+        Graph.loadNodeTreeToGraph(sanitizedTree, focusSprigId);
         console.log('Load result:', response.req1.result);
       }
       else {
@@ -654,14 +532,6 @@ function init(docId, focusSprigId) {
   // initGraphWithNodeTree(caseDataSource);
 }
 
-function setGraphScale() {
-  var actualBoardHeight = Camera.getActualHeight(selections.board.node());
-
-  if (actualBoardHeight <= 230) {
-    Camera.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
-    Camera.zoomBehavior.scale(0.5);
-  }
-}
 
 /* Widgets */
 
@@ -685,12 +555,12 @@ function toggleGraphExpansion() {
 
   selections.nongraphPane.classed('collapsedPane', shouldHideTextPane)
     .classed('pane', !shouldHideTextPane);
-  selections.graphPane.classed('expandedPane', shouldHideTextPane)
+  Graph.pane.classed('expandedPane', shouldHideTextPane)
     .classed('pane', !shouldHideTextPane);
 
   syncExpanderArrow();
 
   if (selections.focusEl) {
-    Camera.panToElement(d3.select(selections.focusEl));
+    Camera.panToElement(d3.select(Graph.focusEl));
   }
 }

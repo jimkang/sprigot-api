@@ -1,11 +1,15 @@
 var TreeNav = {
   sprigTree: null,
-  graphCamera: null
+  graphCamera: null,
+  treeRenderer: null,
+  graph: null
 };
 
-TreeNav.init = function init(sprigTree, camera) {
+TreeNav.init = function init(sprigTree, camera, treeRenderer, graph) {
   this.sprigTree = sprigTree;
   this.graphCamera = camera;
+  this.treeRenderer = treeRenderer;
+  this.graph = graph;
 }
 
 TreeNav.toggleChildren = function toggleChildren(treeNode) {
@@ -71,7 +75,7 @@ TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
       if (siblingNode._children) {
         this.expandChildren(siblingNode);
       }
-      navigateToTreeNode(siblingNode, siblingEl);
+      this.graph.focusOnTreeNode(siblingNode, siblingEl);
       showTextpaneForTreeNode(siblingNode);
     }
   }
@@ -85,8 +89,41 @@ TreeNav.goToSprig = function goToSprig(sprigId) {
     }
     .bind(this));
 
-    treeRenderer.update(this.sprigTree, 0, function done() {
-      navigateToSprig(sprigId);
-    });
+    this.treeRenderer.update(this.sprigTree, 0, function done() {
+      this.graph.focusOnSprig(sprigId);
+    }
+    .bind(this));
   }
+}
+
+TreeNav.respondToDownArrow = function respondToDownArrow() {
+  d3.event.stopPropagation();
+  if (this.nodeIsExpanded(this.graph.focusNode)) {
+    this.followBranchOfNode(this.graph.focusNode);
+  }
+  else {
+    clickOnEl(this.graph.focusNode, 
+      d3.select('#' + this.graph.focusNode.id).node());
+  }
+}
+
+TreeNav.respondToUpArrow = function respondToUpArrow() {
+  d3.event.stopPropagation();
+  if (this.nodeIsExpanded(this.graph.focusNode)) {
+    this.collapseRecursively(this.graph.focusNode);
+    this.treeRenderer.update(this.graph.focusNode);
+  }
+  else {
+    this.followParentOfNode(this.graph.focusNode);
+  }
+}
+
+TreeNav.respondToLeftArrow = function respondToLeftArrow() {
+  d3.event.stopPropagation();
+  this.moveToSiblingNode(this.graph.focusNode, -1);
+}
+
+TreeNav.respondToRightArrow = function respondToRightArrow() {
+  d3.event.stopPropagation();
+  this.moveToSiblingNode(this.graph.focusNode, 1);
 }
