@@ -41,7 +41,7 @@ function navigateToTreeNode(treeNode, el) {
   treeNode.visited = true;
   syncURLToSprigId(treeNode.id);
 
-  treeRenderer.update(g.root);
+  TreeRenderer.update(g.root);
   
   Camera.panToElement(d3.select(selections.focusEl));
 }
@@ -261,7 +261,7 @@ function showDeleteSprigDialog() {
 function respondToEmphasisCheckClick(d) {
   if (g.focusNode) {
     g.focusNode.emphasize = (this.value === 'on');
-    treeRenderer.update(g.root);
+    TreeRenderer.update(g.root);
   }
 }
 
@@ -286,7 +286,7 @@ function respondToUpArrow() {
   d3.event.stopPropagation();
   if (TreeNav.nodeIsExpanded(g.focusNode)) {
     TreeNav.collapseRecursively(g.focusNode);
-    treeRenderer.update(g.focusNode);
+    TreeRenderer.update(g.focusNode);
   }
   else {
     TreeNav.followParentOfNode(g.focusNode);
@@ -370,7 +370,7 @@ function respondToAddChildSprigCmd() {
     console.log('Parent sprig save status:', response[saveParentSprigId].status);
   });
 
-  treeRenderer.update(g.root, settings.treeNodeAnimationDuration, function done() {
+  TreeRenderer.update(g.root, settings.treeNodeAnimationDuration, function done() {
     navigateToSprig(newSprig.id);
     showTextpaneForTreeNode(newSprig);
   });
@@ -420,7 +420,7 @@ function respondToDeleteSprigCmd() {
     console.log('Parent sprig save status:', response[saveOpId].status);
   });
 
-  treeRenderer.update(g.root, settings.treeNodeAnimationDuration, 
+  TreeRenderer.update(g.root, settings.treeNodeAnimationDuration, 
     function doneUpdating() {
       setTimeout(function clickOnParentOfDeletedNode() {
         clickOnEl(parentNode, d3.select('#' + parentNode.id).node());
@@ -536,7 +536,7 @@ function initNongraphPane(sprigotSel) {
 function initGraphWithNodeTree(nodeTree, focusSprigId) {
   g.root = nodeTree;
 
-  treeRenderer.init(g.root, selections.graph);
+  TreeRenderer.init(g.root, selections.graph);
   TreeNav.init(g.root, Camera);
 
   var height = selections.board.node().clientHeight - margin.top - margin.bottom;
@@ -550,7 +550,7 @@ function initGraphWithNodeTree(nodeTree, focusSprigId) {
   }
   else {
     focusSprigId = g.root.id;
-    treeRenderer.update(g.root);
+    TreeRenderer.update(g.root);
   }
 
   setTimeout(function initialPan() {

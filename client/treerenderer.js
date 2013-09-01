@@ -1,11 +1,11 @@
-var treeRenderer = {
+var TreeRenderer = {
   treeLayout: null,
   diagonalProjection: null,
   sprigTree: null,
   graphSVGGroup: null
 };
 
-treeRenderer.init = function init(sprigTree, graph) {
+TreeRenderer.init = function init(sprigTree, graph) {
   // The tree layout generates a left-to-right tree by default, and we want a 
   // top-to-bottom tree, so we flip x and y when we talk to it.
   this.treeLayout = d3.layout.tree();
@@ -16,11 +16,11 @@ treeRenderer.init = function init(sprigTree, graph) {
   this.graphSVGGroup = graph;
 }
 
-treeRenderer.nodeHasFocus = function nodeHasFocus(treeNode) {
+TreeRenderer.nodeHasFocus = function nodeHasFocus(treeNode) {
   return (treeNode === g.focusNode);
 }
 
-treeRenderer.update = function update(source, duration, done) {
+TreeRenderer.update = function update(source, duration, done) {
   if (!duration) {
     duration = settings.treeNodeAnimationDuration;
   }
