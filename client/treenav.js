@@ -1,9 +1,11 @@
 var treenav = {
-  sprigTree: null 
+  sprigTree: null,
+  graphCamera: null
 };
 
-treenav.init = function init(sprigTree) {
+treenav.init = function init(sprigTree, camera) {
   this.sprigTree = sprigTree;
+  this.graphCamera = camera;
 }
 
 treenav.toggleChildren = function toggleChildren(treeNode) {
@@ -51,7 +53,7 @@ treenav.followParentOfNode = function followParentOfNode(treeNode) {
   if (typeof treeNode.parent === 'object') {
     var parentSel = d3.select('#' + treeNode.parent.id);
     clickOnEl(treeNode.parent, parentSel.node());
-    camera.panToElement(parentSel);
+    this.graphCamera.panToElement(parentSel);
   }
 }
 

@@ -43,7 +43,7 @@ function navigateToTreeNode(treeNode, el) {
 
   treeRenderer.update(g.root);
   
-  camera.panToElement(d3.select(selections.focusEl));
+  Camera.panToElement(d3.select(selections.focusEl));
 }
 
 function syncURLToSprigId(sprigId) {
@@ -537,7 +537,7 @@ function initGraphWithNodeTree(nodeTree, focusSprigId) {
   g.root = nodeTree;
 
   treeRenderer.init(g.root, selections.graph);
-  treenav.init(g.root);
+  treenav.init(g.root, Camera);
 
   var height = selections.board.node().clientHeight - margin.top - margin.bottom;
   g.root.x0 = height / 2;
@@ -556,7 +556,7 @@ function initGraphWithNodeTree(nodeTree, focusSprigId) {
   setTimeout(function initialPan() {
     var focusSel = d3.select('#' + focusSprigId);
     setFocusEl(focusSel.node());
-    camera.panToElement(focusSel);
+    Camera.panToElement(focusSel);
 
     setTimeout(function initialTextPaneShow() {
       syncTextpaneWithTreeNode(focusSel.datum(), selections.focusEl);
@@ -581,7 +581,7 @@ function init(docId, focusSprigId) {
   selections.emphasizeCheckbox = d3.select('#textpane #emphasize');
   selections.expanderArrow = d3.select('#expanderArrow');
 
-  camera.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
+  Camera.setUpZoomOnBoard(d3.select('svg#svgBoard'), 
     d3.select('g#graphRoot'));
 
   setGraphScale();
@@ -617,7 +617,7 @@ function init(docId, focusSprigId) {
       setTimeout(function focusOnSprig() {
         var focusSel = d3.select('#' + e.state.sprigId);
         setFocusEl(focusSel.node());
-        camera.panToElement(focusSel);
+        Camera.panToElement(focusSel);
       },
       100);
     }
@@ -655,11 +655,11 @@ function init(docId, focusSprigId) {
 }
 
 function setGraphScale() {
-  var actualBoardHeight = camera.getActualHeight(selections.board.node());
+  var actualBoardHeight = Camera.getActualHeight(selections.board.node());
 
   if (actualBoardHeight <= 230) {
-    camera.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
-    camera.zoomBehavior.scale(0.5);
+    Camera.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
+    Camera.zoomBehavior.scale(0.5);
   }
 }
 
@@ -691,6 +691,6 @@ function toggleGraphExpansion() {
   syncExpanderArrow();
 
   if (selections.focusEl) {
-    camera.panToElement(d3.select(selections.focusEl));
+    Camera.panToElement(d3.select(selections.focusEl));
   }
 }
