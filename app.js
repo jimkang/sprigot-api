@@ -5,7 +5,7 @@ var dbwrap = require('./dbwrap');
 var treegetting = require('./treegetting');
 
 var caseDataSource = require('./client/caseData');
-var port = 80;
+var port = process.env.PORT;
 
 if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() === 'dev') {
   port = 3000;
