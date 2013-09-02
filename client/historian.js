@@ -1,32 +1,35 @@
 var Historian = {
-  treeNav: null
+  treeNav: null,
+  docId: null
 };
 
-Historian.init = function init(treeNav) {
+Historian.init = function init(treeNav, docId) {
   this.treeNav = treeNav;
+  this.docId = docId;
   window.onpopstate = this.statePopped.bind(this);
 };
 
 Historian.statePopped = function statePopped(e) {
   if (e.state) {
-    g.docId = e.state.docId;
+    this.docId = e.state.docId;
     this.treeNav.goToSprig(e.state.sprigId, 100);
   }
 };
 
 Historian.syncURLToSprigId = function syncURLToSprigId(sprigId) {
   if (typeof window.history.state === 'object' &&
+    window.history.state &&
     typeof window.history.state.docId === 'string' &&
     typeof window.history.state.sprigId === 'string' && 
-    window.history.state.docId === g.docId &&
+    window.history.state.docId === this.docId &&
     window.history.state.sprigId === sprigId) {
     return;
   }
 
   var newURL = location.protocol + '//' + location.host + 
-    '#/' + g.docId + '/' + sprigId;
+    '#/' + this.docId + '/' + sprigId;
   window.history.pushState({
-    docId: g.docId,
+    docId: this.docId,
     sprigId: sprigId
   },
   null, newURL);  

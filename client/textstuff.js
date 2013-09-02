@@ -2,6 +2,8 @@ var TextStuff = {
   graph: null, 
   treeRenderer: null,
   store: null,
+  sprigot: null,
+
   pane: null,
   textpane: null,
   textcontent: null,
@@ -14,10 +16,13 @@ var TextStuff = {
   editAvailable: true
 };
 
-TextStuff.init = function init(sprigotSel, graph, treeRenderer, store) {
+TextStuff.init = function init(sprigotSel, graph, treeRenderer, store, 
+  sprigot) {
+
   this.graph = graph;
   this.treeRenderer = treeRenderer;
   this.store = store;
+  this.sprigot = sprigot;
 
   this.pane = sprigotSel.append('div')
     .classed('pane', true).attr('id', 'nongraphPane');
@@ -54,7 +59,7 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store) {
     this.titleField.on('click', this.startEditing.bind(this));
 
     // Globals!
-    this.addButton.on('click', respondToAddChildSprigCmd);
+    this.addButton.on('click', this.sprigot.respondToAddChildSprigCmd);
     this.deleteButton.on('click', this.showDeleteSprigDialog);
 
     this.emphasizeCheckbox.on('click', 
@@ -160,7 +165,8 @@ TextStuff.changeEditMode = function changeEditMode(editable, skipSave) {
     this.titleField.datum(editedNode);
 
     if (!skipSave) {
-      this.store.saveSprigFromTreeNode(this.textcontent.datum());
+      this.store.saveSprigFromTreeNode(this.textcontent.datum(), 
+        this.sprigot.docId);
     }
   }
 }
@@ -174,7 +180,7 @@ TextStuff.endEditing = function endEditing() {
 TextStuff.showDeleteSprigDialog = function showDeleteSprigDialog() {
   this.OKCancelDialog = new OKCancelDialog('#questionDialog', 
     'Do you want to delete this?', 'Delete', 
-    respondToDeleteSprigCmd,
+    this.sprigot.respondToDeleteSprigCmd,
     function removeOKCancelDialog() {
       delete this.OKCancelDialog;
     }
@@ -188,7 +194,7 @@ TextStuff.showDeleteSprigDialog = function showDeleteSprigDialog() {
 TextStuff.respondToEmphasisCheckClick = function respondToEmphasisCheckClick(d) {
   if (this.graph.focusNode) {
     this.graph.focusNode.emphasize = (this.value === 'on');
-    this.treeRenderer.update(g.root);
+    this.treeRenderer.update(this.graph.nodeRoot);
   }
 }
 

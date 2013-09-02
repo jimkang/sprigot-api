@@ -1,6 +1,6 @@
 var Store = {};
 
-Store.saveSprigFromTreeNode = function saveSprigFromTreeNode(node) {
+Store.saveSprigFromTreeNode = function saveSprigFromTreeNode(node, docId) {
   var serializedNode = null;
   if (node) {
     serializedNode = serializeTreedNode(node);
@@ -8,7 +8,7 @@ Store.saveSprigFromTreeNode = function saveSprigFromTreeNode(node) {
   if (serializedNode) {
     var saveId = TextStuff.makeId(4);
     var body = {};
-    serializedNode.doc = g.docId;
+    serializedNode.doc = docId;
     body[saveId] = {
       op: 'saveSprig',
       params: serializedNode

@@ -12,9 +12,8 @@ function direct(locationHash) {
       if (pathSegments.length > 1) {
         var sprigId = pathSegments[2];
       }
-
-      // TODO: Modularize sprigot.js, at least in an informal way.
-      init(docName, sprigId);
+      
+      Sprigot.init(docName, sprigId);
   }
 }
 

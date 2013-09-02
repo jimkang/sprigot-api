@@ -6,12 +6,50 @@ var settings = {
   treeNodeAnimationDuration: 750
 };
 
-var g = {
-  docId: null,
-  root: null  
+var Sprigot = {
+  docId: null
 };
 
-function respondToDocKeyUp() {
+Sprigot.init = function init(docId, focusSprigId) {
+  this.docId = docId;
+
+  var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
+
+  Graph.init(sprigotSel, Camera, TreeRenderer, TreeNav, TextStuff, Historian);
+  Divider.init(sprigotSel, Graph, TextStuff, Camera);
+  TextStuff.init(sprigotSel, Graph, TreeRenderer, Store, this);
+  Historian.init(TreeNav, this.docId);
+
+  Divider.syncExpanderArrow();
+  this.initDocEventResponders();
+
+  Store.getSprigTree(docId, function done(error, sprigTree) {
+    if (error) {
+      console.log('Error while getting sprig:', error);
+      return;
+    }
+
+    if (sprigTree) {
+      var sanitizedTree = sanitizeTreeForD3(sprigTree);
+      Graph.loadNodeTreeToGraph(sanitizedTree, focusSprigId);
+      console.log('Loaded tree:', sprigTree);
+    }
+    else {
+      console.log('Sprig tree not found.');
+    }
+  });
+}
+
+Sprigot.initDocEventResponders = function initDocEventResponders() {
+  var doc = d3.select(document);
+  if (TextStuff.editAvailable) {
+    doc.on('click', TextStuff.endEditing.bind(TextStuff));
+  }
+  doc.on('keyup', this.respondToDocKeyUp.bind(this));
+  doc.on('keydown', this.respondToDocKeyDown.bind(this));
+};
+
+Sprigot.respondToDocKeyUp = function respondToDocKeyUp() {
   // CONSIDER: Disabling all of this listening when editing is going on.
 
   // Esc
@@ -56,14 +94,14 @@ function respondToDocKeyUp() {
   }
 }
 
-function respondToDocKeyDown() {
+Sprigot.respondToDocKeyDown = function respondToDocKeyDown() {
   // cmd+delete keys
   if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 8) {
     TextStuff.showDeleteSprigDialog();
   }
 }
 
-function respondToAddChildSprigCmd() {
+Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {
   d3.event.stopPropagation();
   if (TextStuff.editZone.classed('editing')) {
     TextStuff.changeEditMode(false);
@@ -71,7 +109,7 @@ function respondToAddChildSprigCmd() {
 
   var newSprig = {
     id: TextStuff.makeId(8),
-    doc: g.docId,
+    doc: this.docId,
     title: 'New Sprig',
     body: ''
   };
@@ -91,13 +129,15 @@ function respondToAddChildSprigCmd() {
 
   Store.saveChildAndParentSprig(newSprig, serializeTreedNode(Graph.focusNode));
 
-  TreeRenderer.update(g.root, settings.treeNodeAnimationDuration, function done() {
-    Graph.focusOnSprig(newSprig.id);
-    TextStuff.showTextpaneForTreeNode(newSprig);
-  });
+  TreeRenderer.update(Graph.nodeRoot, settings.treeNodeAnimationDuration, 
+    function done() {
+      Graph.focusOnSprig(newSprig.id);
+      TextStuff.showTextpaneForTreeNode(newSprig);
+    }
+  );
 }
 
-function respondToDeleteSprigCmd() {
+Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
   d3.event.stopPropagation();
   if (TextStuff.editZone.classed('editing')) {
     TextStuff.changeEditMode(false, true);
@@ -109,13 +149,13 @@ function respondToDeleteSprigCmd() {
 
   var sprigToDelete = {
     id: Graph.focusNode.id,
-    doc: g.docId
+    doc: this.docId
   };
 
   Store.deleteChildAndSaveParentSprig(sprigToDelete, 
     serializeTreedNode(parentNode));
 
-  TreeRenderer.update(g.root, settings.treeNodeAnimationDuration, 
+  TreeRenderer.update(Graph.nodeRoot, settings.treeNodeAnimationDuration, 
     function doneUpdating() {
       setTimeout(function clickOnParentOfDeletedNode() {
         TreeNav.chooseTreeNode(parentNode, 
@@ -125,41 +165,4 @@ function respondToDeleteSprigCmd() {
     }
   );
 }
-
-function init(docId, focusSprigId) {
-  g.docId = docId;
-
-  var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
-
-  Graph.init(sprigotSel, Camera, TreeRenderer, TreeNav, TextStuff, Historian);
-  Divider.init(sprigotSel, Graph, TextStuff, Camera);
-  TextStuff.init(sprigotSel, Graph, TreeRenderer, Store);
-  Historian.init(TreeNav);
-
-  var doc = d3.select(document);
-  if (TextStuff.editAvailable) {
-    doc.on('click', TextStuff.endEditing.bind(TextStuff));
-  }
-  doc.on('keyup', respondToDocKeyUp);
-  doc.on('keydown', respondToDocKeyDown);
-
-  Divider.syncExpanderArrow();  
-
-  Store.getSprigTree(docId, function done(error, sprigTree) {
-    if (error) {
-      console.log('Error while getting sprig:', error);
-      return;
-    }
-
-    if (sprigTree) {
-      var sanitizedTree = sanitizeTreeForD3(sprigTree);
-      Graph.loadNodeTreeToGraph(sanitizedTree, focusSprigId);
-      console.log('Loaded tree:', sprigTree);
-    }
-    else {
-      console.log('Sprig tree not found.');
-    }
-  });
-}
-
 

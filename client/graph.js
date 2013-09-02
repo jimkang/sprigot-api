@@ -3,12 +3,14 @@ var Graph = {
   treeRenderer: null,
   treeNav: null,
   textStuff: null,
-  historian: null, 
+  historian: null,
+
   pane: null,
   board: null,
   svgRoot: null,
   focusEl: null,
-  focusNode: null
+  focusNode: null,
+  nodeRoot: null
 };
 
 Graph.init = function init(sprigotSel, camera, treeRenderer, treeNav, 
@@ -50,23 +52,23 @@ Graph.init = function init(sprigotSel, camera, treeRenderer, treeNav,
 Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree, 
   focusSprigId) {
 
-  g.root = nodeTree;
+  this.nodeRoot = nodeTree;
 
-  this.treeRenderer.init(g.root, this);
-  this.treeNav.init(g.root, Camera, TreeRenderer, this, this.textStuff);
+  this.treeRenderer.init(this.nodeRoot, this);
+  this.treeNav.init(this.nodeRoot, Camera, TreeRenderer, this, this.textStuff);
 
   var height = this.board.node().clientHeight - margin.top - margin.bottom;
-  g.root.x0 = height / 2;
-  g.root.y0 = 0;
+  this.nodeRoot.x0 = height / 2;
+  this.nodeRoot.y0 = 0;
 
-  this.treeNav.collapseRecursively(g.root);
+  this.treeNav.collapseRecursively(this.nodeRoot);
 
   if (focusSprigId) {
     this.treeNav.goToSprig(focusSprigId);
   }
   else {
-    focusSprigId = g.root.id;
-    this.treeRenderer.update(g.root);
+    focusSprigId = this.nodeRoot.id;
+    this.treeRenderer.update(this.nodeRoot);
   }
 
   setTimeout(function initialPan() {
@@ -98,7 +100,7 @@ Graph.focusOnTreeNode = function focusOnTreeNode(treeNode, el) {
   treeNode.visited = true;
   this.historian.syncURLToSprigId(treeNode.id);
 
-  TreeRenderer.update(g.root);
+  TreeRenderer.update(this.nodeRoot);
   
   Camera.panToElement(d3.select(this.focusEl));
 }
