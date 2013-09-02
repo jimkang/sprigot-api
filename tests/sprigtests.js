@@ -1,7 +1,7 @@
 var assert = require('assert');
 var _ = require('underscore');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var caseDataSource = require('../client/caseData');
+var caseDataSource = require('./caseData');
 var sprigTree = require('../client/sprig-d3_relations')
 var uid = require('../client/uid').uid;
 
