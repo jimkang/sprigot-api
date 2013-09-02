@@ -1,6 +1,7 @@
 var TextStuff = {
   graph: null, 
   treeRenderer: null,
+  store: null,
   pane: null,
   textpane: null,
   textcontent: null,
@@ -12,9 +13,10 @@ var TextStuff = {
   editAvailable: true
 };
 
-TextStuff.init = function init(sprigotSel, graph, treeRenderer) {
+TextStuff.init = function init(sprigotSel, graph, treeRenderer, store) {
   this.graph = graph;
   this.treeRenderer = treeRenderer;
+  this.store = store;
 
   this.pane = sprigotSel.append('div')
     .classed('pane', true).attr('id', 'nongraphPane');
@@ -157,7 +159,7 @@ TextStuff.changeEditMode = function changeEditMode(editable, skipSave) {
     this.titleField.datum(editedNode);
 
     if (!skipSave) {
-      saveNodeSprig(this.textcontent.datum());
+      this.store.saveSprigFromTreeNode(this.textcontent.datum());
     }
   }
 }

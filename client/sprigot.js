@@ -31,35 +31,6 @@ function syncURLToSprigId(sprigId) {
   null, newURL);  
 }
 
-function saveNodeSprig(node) {
-  var serializedNode = null;
-  if (node) {
-    serializedNode = serializeTreedNode(node);
-  }
-  if (serializedNode) {
-    var saveId = TextStuff.makeId(4);
-    var body = {};
-    serializedNode.doc = g.docId;
-    body[saveId] = {
-      op: 'saveSprig',
-      params: serializedNode
-    };
-    request(settings.serverURL, body, function done(error, response) {
-      if (error) {
-        console.log('Error while saving sprig:', error);
-        return;
-      }
-
-      if (saveId in response && response[saveId].status === 'saved') {
-        console.log('Sprig saved:', response);
-      }
-      else {
-        console.log('Sprig not saved.');
-      }
-    });
-  }
-}
-
 function respondToDocKeyUp() {
   // CONSIDER: Disabling all of this listening when editing is going on.
 
@@ -149,29 +120,7 @@ function respondToAddChildSprigCmd() {
 
   TextStuff.changeEditMode(true);
 
-  var saveNewSprigId = uid(4);
-  var saveParentSprigId = uid(4);
-  
-  var body = {};
-  body[saveNewSprigId] = {
-    op: 'saveSprig',
-    params: newSprig
-  };
-  body[saveParentSprigId] = {
-    op: 'saveSprig',
-    params: serializeTreedNode(Graph.focusNode)
-  };
-
-  request(settings.serverURL, body, 
-  function done(error, response) {
-    if (error) {
-      console.log('Error while saving sprigs:', error);
-      return;
-    }
-
-    console.log('New sprig save status:', response[saveNewSprigId].status);
-    console.log('Parent sprig save status:', response[saveParentSprigId].status);
-  });
+  Store.saveChildAndParentSprig(newSprig, serializeTreedNode(Graph.focusNode));
 
   TreeRenderer.update(g.root, settings.treeNodeAnimationDuration, function done() {
     Graph.focusOnSprig(newSprig.id);
@@ -189,30 +138,13 @@ function respondToDeleteSprigCmd() {
   var childIndex = parentNode.children.indexOf(Graph.focusNode);
   parentNode.children.splice(childIndex, 1);
 
-  var requestBody = {};
-  var deleteOpId = uid(4);
-  var saveOpId = uid(4);
-  requestBody[deleteOpId] = {
-    op: 'deleteSprig',
-    params: {
-      id: Graph.focusNode.id,
-      doc: g.docId
-    }
+  var sprigToDelete = {
+    id: Graph.focusNode.id,
+    doc: g.docId
   };
-  requestBody[saveOpId] = {
-    op: 'saveSprig',
-    params: serializeTreedNode(parentNode)
-  };
-  
-  request(settings.serverURL, requestBody, function done(error, response) {
-    if (error) {
-      console.log('Error while saving sprigs:', error);
-      return;
-    }
 
-    console.log('Sprig deletion status:', response[deleteOpId].status);
-    console.log('Parent sprig save status:', response[saveOpId].status);
-  });
+  Store.deleteChildAndSaveParentSprig(sprigToDelete, 
+    serializeTreedNode(parentNode));
 
   TreeRenderer.update(g.root, settings.treeNodeAnimationDuration, 
     function doneUpdating() {
@@ -224,41 +156,13 @@ function respondToDeleteSprigCmd() {
   );
 }
 
-/* Persistence */
-
-function createNewDoc() {
-  request(settings.serverURL, {
-    docPostReq1: {
-      op: 'saveDoc',
-      params: {
-        id: uid(4),
-        rootSprig: 'notonline',
-        authors: [
-          'ignignokt'
-        ],
-        admins: [
-          'ignignokt'
-        ]
-      }
-    }
-  },
-  function done(error, response) {
-    if (error) {
-      console.log('Error while saving doc:', error);
-    }
-    else {
-      console.log('Saved doc:', response);
-    }
-  });
-}
-
 /* Initialize */
 
 function initDOM() {
   var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
   Graph.init(sprigotSel, Camera, TreeRenderer, TreeNav, TextStuff);
   initDivider(sprigotSel);
-  TextStuff.init(sprigotSel, Graph, TreeRenderer);
+  TextStuff.init(sprigotSel, Graph, TreeRenderer, Store);
 }
 
 function initDivider(sprigotSel) {
@@ -305,31 +209,21 @@ function init(docId, focusSprigId) {
 
   syncExpanderArrow();
 
-  var sprigRequest = {
-    op: 'getDoc',
-    params: {
-      id: docId,
-      childDepth: 20
+  Store.getSprigTree(docId, function done(error, sprigTree) {
+    if (error) {
+      console.log('Error while getting sprig:', error);
+      return;
     }
-  };
 
-  request(settings.serverURL, {req1: sprigRequest},
-    function done(error, response) {
-      if (error) {
-        console.log('Error while getting sprig:', error);
-        return;
-      }
-
-      if ('req1' in response && response.req1.status === 'got') {
-        var sanitizedTree = sanitizeTreeForD3(response.req1.result.sprigTree);
-        Graph.loadNodeTreeToGraph(sanitizedTree, focusSprigId);
-        console.log('Load result:', response.req1.result);
-      }
-      else {
-        console.log('Sprig not found.');
-      }
+    if (sprigTree) {
+      var sanitizedTree = sanitizeTreeForD3(sprigTree);
+      Graph.loadNodeTreeToGraph(sanitizedTree, focusSprigId);
+      console.log('Loaded tree:', sprigTree);
     }
-  );
+    else {
+      console.log('Sprig tree not found.');
+    }
+  });
 
   // initGraphWithNodeTree(caseDataSource);
 }
