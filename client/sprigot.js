@@ -9,7 +9,6 @@ var settings = {
 var g = {
   docId: null,
   root: null,
-  OKCancelDialog: null,
   expanderArrow: null
 };
 
@@ -76,21 +75,10 @@ function respondToDocKeyUp() {
   }
 }
 
-function showDeleteSprigDialog() {
-  g.OKCancelDialog = new OKCancelDialog('#questionDialog', 
-    'Do you want to delete this?', 'Delete', 
-    respondToDeleteSprigCmd,
-    function removeOKCancelDialog() {
-      delete g.OKCancelDialog;
-    }
-  );
-  g.OKCancelDialog.show();  
-}
-
 function respondToDocKeyDown() {
   // cmd+delete keys
   if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 8) {
-    showDeleteSprigDialog();
+    TextStuff.showDeleteSprigDialog();
   }
 }
 

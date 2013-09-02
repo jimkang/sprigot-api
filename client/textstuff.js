@@ -10,6 +10,7 @@ var TextStuff = {
   addButton: null,
   deleteButton: null,
   emphasizeCheckbox: null,
+  OKCancelDialog: null,
   editAvailable: true
 };
 
@@ -54,7 +55,7 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store) {
 
     // Globals!
     this.addButton.on('click', respondToAddChildSprigCmd);
-    this.deleteButton.on('click', showDeleteSprigDialog);
+    this.deleteButton.on('click', this.showDeleteSprigDialog);
 
     this.emphasizeCheckbox.on('click', 
       this.respondToEmphasisCheckClick.bind(this))
@@ -168,6 +169,18 @@ TextStuff.endEditing = function endEditing() {
   if (this.editZone.classed('editing')) {
     this.changeEditMode(false);
   }
+}
+
+TextStuff.showDeleteSprigDialog = function showDeleteSprigDialog() {
+  this.OKCancelDialog = new OKCancelDialog('#questionDialog', 
+    'Do you want to delete this?', 'Delete', 
+    respondToDeleteSprigCmd,
+    function removeOKCancelDialog() {
+      delete this.OKCancelDialog;
+    }
+    .bind(this)
+  );
+  this.OKCancelDialog.show();  
 }
 
 /* Responders */
