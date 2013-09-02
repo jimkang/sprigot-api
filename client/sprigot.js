@@ -8,8 +8,7 @@ var settings = {
 
 var g = {
   docId: null,
-  root: null,
-  expanderArrow: null
+  root: null  
 };
 
 function syncURLToSprigId(sprigId) {
@@ -146,33 +145,13 @@ function respondToDeleteSprigCmd() {
 
 /* Initialize */
 
-function initDOM() {
-  var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
-  Graph.init(sprigotSel, Camera, TreeRenderer, TreeNav, TextStuff);
-  initDivider(sprigotSel);
-  TextStuff.init(sprigotSel, Graph, TreeRenderer, Store);
-}
-
-function initDivider(sprigotSel) {
-  sprigotSel.append('div').classed('divider', true)
-    .append('svg').classed('arrowboard', true)
-      .append('polygon').attr({
-        id: 'expanderArrow',
-        fill: 'rgba(0, 0, 64, 0.4)',
-        stroke: '#E0EBFF',
-        'stroke-width': 1,
-        points: '0,0 32,24 0,48',
-        transform: 'translate(0, 0)'
-      });
-}
-
 function init(docId, focusSprigId) {
   g.docId = docId;
 
-  initDOM();
-
-  g.expanderArrow = d3.select('#expanderArrow');
-  g.expanderArrow.on('click', toggleGraphExpansion);
+  var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
+  Graph.init(sprigotSel, Camera, TreeRenderer, TreeNav, TextStuff);
+  Divider.init(sprigotSel, Graph, TextStuff, Camera);
+  TextStuff.init(sprigotSel, Graph, TreeRenderer, Store);
 
   var doc = d3.select(document);
   if (TextStuff.editAvailable) {
@@ -195,7 +174,7 @@ function init(docId, focusSprigId) {
     }
   };
 
-  syncExpanderArrow();
+  Divider.syncExpanderArrow();  
 
   Store.getSprigTree(docId, function done(error, sprigTree) {
     if (error) {
@@ -218,32 +197,4 @@ function init(docId, focusSprigId) {
 
 /* Widgets */
 
-function syncExpanderArrow() {
-  var textPaneIsHidden = TextStuff.pane.classed('collapsedPane');
-  var xOffset = textPaneIsHidden ? 36 : 6;
-  var transformString = 'translate(' + xOffset + ', 0) ';
-  transformString += ('scale(' + (textPaneIsHidden ? '-1' : '1') + ', 1)');
 
-  g.expanderArrow
-    .transition()
-      .duration(500).ease('linear').attr('transform', transformString)
-      .attr('stroke-opacity', 0.5).attr('stroke-width', 2)
-    .transition().delay(501).duration(500)
-      .attr('stroke-opacity', 0.15).attr('stroke-width', 1);
-}
-
-function toggleGraphExpansion() {
-  var textPaneIsHidden = TextStuff.pane.classed('collapsedPane');
-  var shouldHideTextPane = !textPaneIsHidden;
-
-  TextStuff.pane.classed('collapsedPane', shouldHideTextPane)
-    .classed('pane', !shouldHideTextPane);
-  Graph.pane.classed('expandedPane', shouldHideTextPane)
-    .classed('pane', !shouldHideTextPane);
-
-  syncExpanderArrow();
-
-  if (Graph.focusEl) {
-    Camera.panToElement(d3.select(Graph.focusEl));
-  }
-}
