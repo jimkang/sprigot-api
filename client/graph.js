@@ -15,12 +15,12 @@ var Graph = {
   nodeRoot: null
 };
 
-Graph.init = function init(sprigotSel, camera, treeRenderer, treeNav, 
+Graph.init = function init(sprigotSel, camera, treeRenderer, 
   textStuff, historian) {
 
   this.camera = camera;
   this.treeRenderer = treeRenderer;
-  this.treeNav = treeNav;
+  this.treeNav = createTreeNav();
   this.textStuff = textStuff;
   this.historian = historian;
 

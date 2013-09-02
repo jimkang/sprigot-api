@@ -168,6 +168,6 @@ TreeRenderer.update = function update(source, duration, done) {
 
 TreeRenderer.respondToNodeClick = function respondToNodeClick(treeNode) {
   // Global!
-  TreeNav.chooseTreeNode(treeNode, this);
+  TreeRenderer.graph.treeNav.chooseTreeNode(treeNode, this);
 }
 

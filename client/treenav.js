@@ -1,3 +1,5 @@
+function createTreeNav() {
+
 var TreeNav = {
   sprigTree: null,
   graphCamera: null,
@@ -18,7 +20,7 @@ TreeNav.init = function init(sprigTree, camera, treeRenderer, graph,
 
 
 TreeNav.chooseTreeNode = function chooseTreeNode(treeNode, treeEl) {
-  TreeNav.toggleChildren(treeNode);
+  this.toggleChildren(treeNode);
   this.graph.focusOnTreeNode(treeNode, treeEl);
   TextStuff.showTextpaneForTreeNode(treeNode);
 }
@@ -137,4 +139,8 @@ TreeNav.respondToLeftArrow = function respondToLeftArrow() {
 TreeNav.respondToRightArrow = function respondToRightArrow() {
   d3.event.stopPropagation();
   this.moveToSiblingNode(this.graph.focusNode, 1);
+}
+
+
+return TreeNav;
 }

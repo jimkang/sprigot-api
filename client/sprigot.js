@@ -17,13 +17,11 @@ Sprigot.init = function init(docId, focusSprigId) {
   var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
 
   this.graph = createGraph();
-
-  this.graph.init(
-    sprigotSel, Camera, TreeRenderer, TreeNav, TextStuff, Historian);
+  this.graph.init(sprigotSel, Camera, TreeRenderer, TextStuff, Historian);
 
   Divider.init(sprigotSel, this.graph, TextStuff, Camera);
   TextStuff.init(sprigotSel, this.graph, TreeRenderer, Store, this, Divider);
-  Historian.init(TreeNav, this.docId);
+  Historian.init(this.graph.treeNav, this.docId);
 
   Divider.syncExpanderArrow();
   this.initDocEventResponders();
@@ -76,19 +74,19 @@ Sprigot.respondToDocKeyUp = function respondToDocKeyUp() {
         break;
       // Down arrow.
       case 40:
-        TreeNav.respondToDownArrow();
+        this.graph.treeNav.respondToDownArrow();
         break;
       // Up arrow.
       case 38:
-        TreeNav.respondToUpArrow();
+        this.graph.treeNav.respondToUpArrow();
         break;
       // Left arrow.
       case 37:
-        TreeNav.respondToLeftArrow();
+        this.graph.treeNav.respondToLeftArrow();
         break;
       // Right arrow.
       case 39:
-        TreeNav.respondToRightArrow();
+        this.graph.treeNav.respondToRightArrow();
         break;
       // equal key
       case 187:
@@ -164,7 +162,7 @@ Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
   TreeRenderer.update(this.graph.nodeRoot, settings.treeNodeAnimationDuration, 
     function doneUpdating() {
       setTimeout(function clickOnParentOfDeletedNode() {
-        TreeNav.chooseTreeNode(parentNode, 
+        this.graph.treeNav.chooseTreeNode(parentNode, 
           d3.select('#' + parentNode.id).node());
       },
       500);
