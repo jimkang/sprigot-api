@@ -12,7 +12,7 @@ var g = {
 };
 
 function syncURLToSprigId(sprigId) {
-  if (typeof typeof window.history.state === 'object' &&
+  if (typeof window.history.state === 'object' &&
     typeof window.history.state.docId === 'string' &&
     typeof window.history.state.sprigId === 'string' && 
     window.history.state.docId === g.docId &&
