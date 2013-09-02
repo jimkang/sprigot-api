@@ -50,6 +50,6 @@ Divider.toggleGraphExpansion = function toggleGraphExpansion() {
   this.syncExpanderArrow();
 
   if (this.graph.focusEl) {
-    this.camera.panToElement(d3.select(Graph.focusEl));
+    this.camera.panToElement(d3.select(this.graph.focusEl));
   }
 }

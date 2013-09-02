@@ -1,3 +1,5 @@
+function createGraph() {
+
 var Graph = {
   camera: null,
   treeRenderer: null,
@@ -47,6 +49,8 @@ Graph.init = function init(sprigotSel, camera, treeRenderer, treeNav,
 
   this.camera.setUpZoomOnBoard(this.board, this.svgRoot);
   this.setGraphScale();
+
+  return this;
 }
 
 Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree, 
@@ -121,3 +125,7 @@ Graph.focusOnSprig = function focusOnSprig(sprigId, delay) {
 Graph.nodeHasFocus = function nodeHasFocus(treeNode) {
   return (treeNode === this.focusNode);
 }
+
+return Graph;
+}
+

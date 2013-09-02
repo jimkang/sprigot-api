@@ -3,6 +3,7 @@ var TextStuff = {
   treeRenderer: null,
   store: null,
   sprigot: null,
+  divider: null,
 
   pane: null,
   textpane: null,
@@ -17,12 +18,13 @@ var TextStuff = {
 };
 
 TextStuff.init = function init(sprigotSel, graph, treeRenderer, store, 
-  sprigot) {
+  sprigot, divider) {
 
   this.graph = graph;
   this.treeRenderer = treeRenderer;
   this.store = store;
   this.sprigot = sprigot;
+  this.divider = divider;
 
   this.pane = sprigotSel.append('div')
     .classed('pane', true).attr('id', 'nongraphPane');
@@ -74,7 +76,8 @@ TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode)
 
   this.textcontent.html(treeNode.body);
   this.titleField.html(treeNode.title);
-  this.emphasizeCheckbox.attr('value', Graph.focusNode.emphasize ? 'on' : null);
+  this.emphasizeCheckbox.attr('value', 
+    this.graph.focusNode.emphasize ? 'on' : null);
 }
 
 TextStuff.showTextpaneForTreeNode = function showTextpaneForTreeNode(treeNode) {
@@ -118,7 +121,7 @@ TextStuff.initialTextPaneShow = function initialTextPaneShow(focusSel) {
 TextStuff.uncollapseTextpane = function uncollapseTextpane() {
   var textPaneIsCollapsed = this.pane.classed('collapsedPane');
   if (textPaneIsCollapsed) {
-    toggleGraphExpansion();
+    this.divider.toggleGraphExpansion();
   }
 }
 

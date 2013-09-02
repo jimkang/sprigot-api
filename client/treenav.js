@@ -19,7 +19,7 @@ TreeNav.init = function init(sprigTree, camera, treeRenderer, graph,
 
 TreeNav.chooseTreeNode = function chooseTreeNode(treeNode, treeEl) {
   TreeNav.toggleChildren(treeNode);
-  Graph.focusOnTreeNode(treeNode, treeEl);
+  this.graph.focusOnTreeNode(treeNode, treeEl);
   TextStuff.showTextpaneForTreeNode(treeNode);
 }
 
