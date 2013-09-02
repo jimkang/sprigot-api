@@ -11,24 +11,6 @@ var g = {
   root: null  
 };
 
-function syncURLToSprigId(sprigId) {
-  if (typeof window.history.state === 'object' &&
-    typeof window.history.state.docId === 'string' &&
-    typeof window.history.state.sprigId === 'string' && 
-    window.history.state.docId === g.docId &&
-    window.history.state.sprigId === sprigId) {
-    return;
-  }
-
-  var newURL = location.protocol + '//' + location.host + 
-    '#/' + g.docId + '/' + sprigId;
-  window.history.pushState({
-    docId: g.docId,
-    sprigId: sprigId
-  },
-  null, newURL);  
-}
-
 function respondToDocKeyUp() {
   // CONSIDER: Disabling all of this listening when editing is going on.
 
@@ -136,22 +118,23 @@ function respondToDeleteSprigCmd() {
   TreeRenderer.update(g.root, settings.treeNodeAnimationDuration, 
     function doneUpdating() {
       setTimeout(function clickOnParentOfDeletedNode() {
-        TreeNav.chooseTreeNode(parentNode, d3.select('#' + parentNode.id).node());
+        TreeNav.chooseTreeNode(parentNode, 
+          d3.select('#' + parentNode.id).node());
       },
       500);
     }
   );
 }
 
-/* Initialize */
-
 function init(docId, focusSprigId) {
   g.docId = docId;
 
   var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
-  Graph.init(sprigotSel, Camera, TreeRenderer, TreeNav, TextStuff);
+
+  Graph.init(sprigotSel, Camera, TreeRenderer, TreeNav, TextStuff, Historian);
   Divider.init(sprigotSel, Graph, TextStuff, Camera);
   TextStuff.init(sprigotSel, Graph, TreeRenderer, Store);
+  Historian.init(TreeNav);
 
   var doc = d3.select(document);
   if (TextStuff.editAvailable) {
@@ -159,20 +142,6 @@ function init(docId, focusSprigId) {
   }
   doc.on('keyup', respondToDocKeyUp);
   doc.on('keydown', respondToDocKeyDown);
-
-  window.onpopstate = function historyStatePopped(e) {
-    if (e.state) {
-      g.docId = e.state.docId;
-
-      goToSprig(e.state.sprigId);
-      setTimeout(function focusOnSprig() {
-        var focusSel = d3.select('#' + e.state.sprigId);
-        Graph.setFocusEl(focusSel.node());
-        Camera.panToElement(focusSel);
-      },
-      100);
-    }
-  };
 
   Divider.syncExpanderArrow();  
 
@@ -191,10 +160,6 @@ function init(docId, focusSprigId) {
       console.log('Sprig tree not found.');
     }
   });
-
-  // initGraphWithNodeTree(caseDataSource);
 }
-
-/* Widgets */
 
 

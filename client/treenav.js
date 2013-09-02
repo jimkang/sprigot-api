@@ -92,7 +92,7 @@ TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
   }
 }
 
-TreeNav.goToSprig = function goToSprig(sprigId) {
+TreeNav.goToSprig = function goToSprig(sprigId, delay) {
   var pathToSprig = mapPathToSprigInD3Tree(sprigId, this.sprigTree, 100);
   if (pathToSprig.length > 1) {
     pathToSprig.forEach(function expandSprig(sprig) {
@@ -101,7 +101,7 @@ TreeNav.goToSprig = function goToSprig(sprigId) {
     .bind(this));
 
     this.treeRenderer.update(this.sprigTree, 0, function done() {
-      this.graph.focusOnSprig(sprigId);
+      this.graph.focusOnSprig(sprigId, delay);
     }
     .bind(this));
   }

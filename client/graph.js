@@ -3,6 +3,7 @@ var Graph = {
   treeRenderer: null,
   treeNav: null,
   textStuff: null,
+  historian: null, 
   pane: null,
   board: null,
   svgRoot: null,
@@ -11,12 +12,13 @@ var Graph = {
 };
 
 Graph.init = function init(sprigotSel, camera, treeRenderer, treeNav, 
-  textStuff) {
+  textStuff, historian) {
 
   this.camera = camera;
   this.treeRenderer = treeRenderer;
   this.treeNav = treeNav;
   this.textStuff = textStuff;
+  this.historian = historian;
 
   this.pane = sprigotSel.append('div')
     .attr('id', 'graphPane')
@@ -94,21 +96,24 @@ Graph.setFocusEl = function setFocusEl(el) {
 Graph.focusOnTreeNode = function focusOnTreeNode(treeNode, el) {
   this.setFocusEl(el);
   treeNode.visited = true;
-  syncURLToSprigId(treeNode.id);
+  this.historian.syncURLToSprigId(treeNode.id);
 
   TreeRenderer.update(g.root);
   
   Camera.panToElement(d3.select(this.focusEl));
 }
 
-Graph.focusOnSprig = function focusOnSprig(sprigId) {
+Graph.focusOnSprig = function focusOnSprig(sprigId, delay) {
+  if (!delay) {
+    delay = 500;
+  }
   var sprigSel = d3.select('#' + sprigId);
 
   setTimeout(function doFocus() {
     this.focusOnTreeNode(sprigSel.datum(), sprigSel.node());
   }
   .bind(this),
-  500);
+  delay);
 }
 
 Graph.nodeHasFocus = function nodeHasFocus(treeNode) {
