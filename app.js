@@ -4,11 +4,7 @@ var _ = require('underscore');
 var dbwrap = require('./dbwrap');
 var treegetting = require('./treegetting');
 
-var port = process.env.PORT;
-
-if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() === 'dev') {
-  port = 3000;
-}
+var port = 3000;
 
 http.createServer(function takeRequest(req, res) {
   var headers = {
