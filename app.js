@@ -112,9 +112,8 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
         }
         break;
       case 'getDoc':
-      
-throw 'what';
 
+throw 'what';
 
 
         if (job.params.id) {
