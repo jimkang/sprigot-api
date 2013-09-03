@@ -65,7 +65,9 @@ utils.optionsAreValid = function optionsAreValid(options, expectedTypes) {
 /* Settings */
 
 var settings = {
-  baseURL: 'http://localhost:3000'
+  // baseURL: 'http://localhost:3000'
+  // baseURL: 'http://sprigot-8939.onmodulus.net'
+  baseURL: 'http://192.241.250.38'
 };
 
 /* Session */
