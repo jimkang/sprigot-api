@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "underscore": "~1.5.1",
-    "level": "~0.10.0"
+    "level": "~0.10.0",
+    "forever-monitor": "~1.2.2"
   }
 }
