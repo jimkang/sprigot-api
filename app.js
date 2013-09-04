@@ -112,10 +112,6 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
         }
         break;
       case 'getDoc':
-
-throw 'what';
-
-
         if (job.params.id) {
           if (typeof job.params.childDepth === 'number' && 
             job.params.childDepth > 0) {
