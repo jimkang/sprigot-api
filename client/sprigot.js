@@ -3,6 +3,8 @@ var margin = {top: 20, right: 10, bottom: 20, left: 10};
 var settings = {
   serverURL: 'http://127.0.0.1:3000',
   // serverURL: 'http://192.168.1.104:3000'
+  // serverURL: 'http://sprigot-8939.onmodulus.net',
+  // serverURL: 'http://192.241.250.38', // Digital Ocean
   treeNodeAnimationDuration: 750
 };
 
