@@ -43,9 +43,9 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
       .classed('newsprigbutton', true).classed('editcontrol', true);
     this.deleteButton = this.textpane.append('button').text('-')
       .classed('deletesprigbutton', true).classed('editcontrol', true);
-    this.emphasizeCheckbox = this.textpane.append('label').text('Emphasize')
+    this.textpane.append('label').text('Emphasize')
       .classed('editcontrol', true);
-    this.textpane.append('input').attr({
+    this.emphasizeCheckbox = this.textpane.append('input').attr({
       type: 'checkbox',
       id: 'emphasize'
     })
