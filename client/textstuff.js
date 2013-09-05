@@ -64,8 +64,8 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
     this.addButton.on('click', this.sprigot.respondToAddChildSprigCmd);
     this.deleteButton.on('click', this.showDeleteSprigDialog);
 
-    this.emphasizeCheckbox.on('click', 
-      this.respondToEmphasisCheckClick.bind(this))
+    this.emphasizeCheckbox.on('change', 
+      this.respondToEmphasisCheckChange.bind(this));
     this.editZone.on('keydown', this.respondToEditZoneKeyDown.bind(this));
   }
 }
@@ -76,8 +76,8 @@ TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode)
 
   this.textcontent.html(treeNode.body);
   this.titleField.html(treeNode.title);
-  this.emphasizeCheckbox.attr('value', 
-    this.graph.focusNode.emphasize ? 'on' : null);
+
+  this.emphasizeCheckbox.node().checked = this.graph.focusNode.emphasize;
 }
 
 TextStuff.showTextpaneForTreeNode = function showTextpaneForTreeNode(treeNode) {
@@ -129,7 +129,6 @@ TextStuff.showTitle = function showTitle() {
   this.titleField.text(this.titleField.datum().title);
   this.titleField.style('display', 'block');
 }
-
 
 /* Editing */
 
@@ -194,10 +193,11 @@ TextStuff.showDeleteSprigDialog = function showDeleteSprigDialog() {
 
 /* Responders */
 
-TextStuff.respondToEmphasisCheckClick = function respondToEmphasisCheckClick(d) {
+TextStuff.respondToEmphasisCheckChange = function respondToEmphasisCheckChange(d) {
   if (this.graph.focusNode) {
-    this.graph.focusNode.emphasize = (this.value === 'on');
+    this.graph.focusNode.emphasize = this.emphasizeCheckbox.node().checked;
     this.treeRenderer.update(this.graph.nodeRoot);
+    this.store.saveSprigFromTreeNode(this.graph.focusNode, this.sprigot.docId);
   }
 }
 
