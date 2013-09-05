@@ -8,7 +8,7 @@ else {
 }
 
 function serializeTreedNode(treedNode) {
-  var serialized = _.pick(treedNode, 'id', 'doc', 'title', 'body');
+  var serialized = _.pick(treedNode, 'id', 'doc', 'title', 'body', 'emphasize');
   var childSource = treedNode.children;
   if (!treedNode.children) {
     childSource = treedNode._children;
