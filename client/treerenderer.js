@@ -138,7 +138,7 @@ TreeRenderer.update = function update(source, duration, done) {
     .attr('d', this.diagonalProjection)
     .attr('stroke-width', function getLinkWidth(d) {
       if (typeof d.target.emphasize === 'boolean' && d.target.emphasize) {
-        return 4;
+        return 3;
       }
       else {
         return 1.5;
