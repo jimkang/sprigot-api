@@ -161,10 +161,12 @@ Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
   Store.deleteChildAndSaveParentSprig(sprigToDelete, 
     serializeTreedNode(parentNode));
 
+  var treeNav = this.graph.treeNav;
+
   TreeRenderer.update(this.graph.nodeRoot, settings.treeNodeAnimationDuration, 
     function doneUpdating() {
       setTimeout(function clickOnParentOfDeletedNode() {
-        this.graph.treeNav.chooseTreeNode(parentNode, 
+        treeNav.chooseTreeNode(parentNode, 
           d3.select('#' + parentNode.id).node());
       },
       500);

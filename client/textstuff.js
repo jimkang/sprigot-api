@@ -182,7 +182,7 @@ TextStuff.endEditing = function endEditing() {
 TextStuff.showDeleteSprigDialog = function showDeleteSprigDialog() {
   this.OKCancelDialog = new OKCancelDialog('#questionDialog', 
     'Do you want to delete this?', 'Delete', 
-    this.sprigot.respondToDeleteSprigCmd,
+    this.sprigot.respondToDeleteSprigCmd.bind(this.sprigot),
     function removeOKCancelDialog() {
       delete this.OKCancelDialog;
     }
