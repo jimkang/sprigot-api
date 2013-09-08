@@ -97,17 +97,19 @@ TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
 TreeNav.goToSprig = function goToSprig(sprigId, delay) {
   var pathToSprig = mapPathToSprigInD3Tree(sprigId, this.sprigTree, 100);
   if (pathToSprig.length > 1) {
-    pathToSprig.forEach(function expandSprig(sprig) {
-      this.expandChildren(sprig);
-    }
-    .bind(this));
-
-    this.treeRenderer.update(this.sprigTree, 0, function done() {
-      this.graph.focusOnSprig(sprigId, delay);
-    }
-    .bind(this));
+    this.followPathToSprig(pathToSprig, delay);
   }
 }
+
+TreeNav.followPathToSprig = function followPathToSprig(pathToSprig, delay) {
+  pathToSprig.forEach(function expandSprig(sprig) {
+    this.expandChildren(sprig);
+  }
+  .bind(this));
+
+  this.treeRenderer.update(this.sprigTree, 0);
+  this.graph.focusOnSprig(pathToSprig[pathToSprig.length-1].id, delay);
+ }
 
 TreeNav.respondToDownArrow = function respondToDownArrow() {
   d3.event.stopPropagation();
