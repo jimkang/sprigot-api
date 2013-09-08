@@ -18,7 +18,7 @@ TreeRenderer.init = function init(sprigTree, graph) {
   this.graphSVGGroup = graph.svgRoot;
 }
 
-TreeRenderer.update = function update(source, duration, done) {
+TreeRenderer.update = function update(source, duration) {
   if (!duration) {
     duration = settings.treeNodeAnimationDuration;
   }
@@ -160,10 +160,6 @@ TreeRenderer.update = function update(source, duration, done) {
     d.x0 = d.x;
     d.y0 = d.y;
   });
-
-  if (done) {
-    done();
-  }
 }
 
 TreeRenderer.respondToNodeClick = function respondToNodeClick(treeNode) {

@@ -135,12 +135,13 @@ Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {
 
   Store.saveChildAndParentSprig(newSprig, serializeTreedNode(this.graph.focusNode));
 
-  TreeRenderer.update(this.graph.nodeRoot, settings.treeNodeAnimationDuration, 
-    function done() {
-      this.graph.focusOnSprig(newSprig.id);
-      TextStuff.showTextpaneForTreeNode(newSprig);
-    }
-  );
+  TreeRenderer.update(this.graph.nodeRoot, settings.treeNodeAnimationDuration);
+  setTimeout(function afterUpdate() {
+    this.graph.focusOnSprig(newSprig.id);
+    TextStuff.showTextpaneForTreeNode(newSprig);
+  }
+  .bind(this),
+  settings.treeNodeAnimationDuration + 100);
 }
 
 Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
@@ -163,14 +164,10 @@ Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
 
   var treeNav = this.graph.treeNav;
 
-  TreeRenderer.update(this.graph.nodeRoot, settings.treeNodeAnimationDuration, 
-    function doneUpdating() {
-      setTimeout(function clickOnParentOfDeletedNode() {
-        treeNav.chooseTreeNode(parentNode, 
-          d3.select('#' + parentNode.id).node());
-      },
-      500);
-    }
-  );
+  TreeRenderer.update(this.graph.nodeRoot, settings.treeNodeAnimationDuration);
+  setTimeout(function clickOnParentOfDeletedNode() {
+    treeNav.chooseTreeNode(parentNode, d3.select('#' + parentNode.id).node());
+  },
+  settings.treeNodeAnimationDuration + 500);
 }
 
