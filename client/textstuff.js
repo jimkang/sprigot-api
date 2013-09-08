@@ -109,9 +109,9 @@ TextStuff.fadeInTextPane = function fadeInTextPane(transitionTime) {
   }
 }
 
-TextStuff.initialTextPaneShow = function initialTextPaneShow(focusSel) {
+TextStuff.initialTextPaneShow = function initialTextPaneShow(treeNode) {
   setTimeout(function doIt() {
-    this.syncTextpaneWithTreeNode(focusSel.datum(), this.graph.focusEl);
+    this.syncTextpaneWithTreeNode(treeNode);
     this.fadeInTextPane(750);
   }
   .bind(this),
