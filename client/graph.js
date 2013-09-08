@@ -66,23 +66,41 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
   this.nodeRoot.y0 = 0;
 
   this.treeNav.collapseRecursively(this.nodeRoot);
+  var focusSprig = this.nodeRoot;
+
+  this.treeRenderer.update(this.nodeRoot);
+
+  var shouldPanToRoot = true;
 
   if (focusSprigId) {
-    this.treeNav.goToSprig(focusSprigId);
-  }
-  else {
-    focusSprigId = this.nodeRoot.id;
-    this.treeRenderer.update(this.nodeRoot);
+    var pathToSprig = mapPathToSprigInD3Tree(focusSprigId, this.nodeRoot, 100);
+
+    if (pathToSprig.length > 0) {
+      this.treeNav.followPathToSprig(pathToSprig);
+      focusSprig = pathToSprig[pathToSprig.length - 1];
+      shouldPanToRoot = false;
+    }
   }
 
-  setTimeout(function initialPan() {
-    var focusSel = d3.select('#' + focusSprigId);
-    this.setFocusEl(focusSel.node());
-    this.camera.panToElement(focusSel);
-    this.textStuff.initialTextPaneShow(focusSel);
+  if (shouldPanToRoot) {
+    setTimeout(function initialPan() {
+      this.panToRoot();
+    }
+    .bind(this),
+    800);
+  }
+
+  setTimeout(function initialTextShow() {
+    this.textStuff.initialTextPaneShow(focusSprig);
   }
   .bind(this),
-  800);  
+  800);
+}
+
+Graph.panToRoot = function panToRoot() {
+  var focusSel = d3.select('#' + this.nodeRoot.id);
+  this.setFocusEl(focusSel.node());
+  this.camera.panToElement(focusSel);
 }
 
 Graph.setGraphScale = function setGraphScale() {
@@ -104,7 +122,7 @@ Graph.focusOnTreeNode = function focusOnTreeNode(treeNode, el) {
   treeNode.visited = true;
   this.historian.syncURLToSprigId(treeNode.id);
 
-  TreeRenderer.update(this.nodeRoot);
+  this.treeRenderer.update(this.nodeRoot);
   
   Camera.panToElement(d3.select(this.focusEl));
 }
