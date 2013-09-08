@@ -81,12 +81,12 @@ TreeRenderer.update = function update(source, duration) {
   nodeUpdate.select('circle')
     .attr('r', 8)
     .style('fill', function(d) {
-      var fillColor = '#08a';
+      var fillColor = 'lightsteelblue';
       if (this.graph.nodeHasFocus(d)) {
         fillColor = '#e0362f';
       }
-      else if (d.visited) {
-        fillColor = 'lightsteelblue';
+      else if (typeof d.emphasize === 'boolean' && d.emphasize) {
+        fillColor = '#08a';        
       }
       return fillColor;
       // return d._children ? 'lightsteelblue' : '#fff'; 
@@ -137,7 +137,7 @@ TreeRenderer.update = function update(source, duration) {
     // .duration(duration)
     .attr('d', this.diagonalProjection)
     .attr('stroke-width', function getLinkWidth(d) {
-      if (typeof d.target.emphasize === 'boolean' && d.target.emphasize) {
+      if (d.target.visited) {
         return 3;
       }
       else {
