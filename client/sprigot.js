@@ -1,16 +1,13 @@
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
 
 var settings = {
-  serverURL: 'http://127.0.0.1:3000',
-  // serverURL: 'http://192.168.1.104:3000'
-  // serverURL: 'http://sprigot-8939.onmodulus.net',
-  // serverURL: 'http://192.241.250.38', // Digital Ocean
   treeNodeAnimationDuration: 750
 };
 
 var Sprigot = {
   docId: null,
-  graph: null
+  graph: null,
+  store: null
 };
 
 Sprigot.init = function init(docId, focusSprigId) {
@@ -20,15 +17,17 @@ Sprigot.init = function init(docId, focusSprigId) {
 
   this.graph = createGraph();
   this.graph.init(sprigotSel, Camera, TreeRenderer, TextStuff, Historian);
+  this.store = createStore();
 
   Divider.init(sprigotSel, this.graph, TextStuff, Camera);
-  TextStuff.init(sprigotSel, this.graph, TreeRenderer, Store, this, Divider);
+  TextStuff.init(sprigotSel, this.graph, TreeRenderer, this.store, this, 
+      Divider);
   Historian.init(this.graph.treeNav, this.docId);
 
   Divider.syncExpanderArrow();
   this.initDocEventResponders();
 
-  Store.getSprigTree(docId, function done(error, sprigTree) {
+  this.store.getSprigTree(docId, function done(error, sprigTree) {
     if (error) {
       console.log('Error while getting sprig:', error);
       return;
@@ -133,7 +132,7 @@ Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {
 
   TextStuff.changeEditMode(true);
 
-  Store.saveChildAndParentSprig(newSprig, serializeTreedNode(this.graph.focusNode));
+  this.store.saveChildAndParentSprig(newSprig, serializeTreedNode(this.graph.focusNode));
 
   TreeRenderer.update(this.graph.nodeRoot, settings.treeNodeAnimationDuration);
   setTimeout(function afterUpdate() {
@@ -159,7 +158,7 @@ Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
     doc: this.docId
   };
 
-  Store.deleteChildAndSaveParentSprig(sprigToDelete, 
+  this.store.deleteChildAndSaveParentSprig(sprigToDelete, 
     serializeTreedNode(parentNode));
 
   var treeNav = this.graph.treeNav;

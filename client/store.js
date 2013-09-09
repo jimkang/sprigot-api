@@ -1,4 +1,12 @@
-var Store = {};
+function createStore() {
+
+var Store = {
+  apienvoy: createAPIEnvoy('http://127.0.0.1:3000')
+};
+// serverURL: 'http://192.168.1.104:3000'
+// serverURL: 'http://sprigot-8939.onmodulus.net',
+// serverURL: 'http://192.241.250.38', // Digital Ocean
+
 
 Store.saveSprigFromTreeNode = function saveSprigFromTreeNode(node, docId) {
   var serializedNode = null;
@@ -13,7 +21,7 @@ Store.saveSprigFromTreeNode = function saveSprigFromTreeNode(node, docId) {
       op: 'saveSprig',
       params: serializedNode
     };
-    request(settings.serverURL, body, function done(error, response) {
+    this.apienvoy.request(body, function done(error, response) {
       if (error) {
         console.log('Error while saving sprig:', error);
         return;
@@ -42,7 +50,7 @@ Store.saveChildAndParentSprig = function saveChildAndParentSprig(child,
     params: parent
   };
 
-  request(settings.serverURL, body, function done(error, response) {
+  this.apienvoy.request(body, function done(error, response) {
     if (error) {
       console.log('Error while saving sprigs:', error);
       return;
@@ -68,7 +76,7 @@ Store.deleteChildAndSaveParentSprig = function deleteChildAndSaveParentSprig(
     params: parent
   };
   
-  request(settings.serverURL, requestBody, function done(error, response) {
+  this.apienvoy.request(requestBody, function done(error, response) {
     if (error) {
       console.log('Error while saving sprigs:', error);
       return;
@@ -90,7 +98,7 @@ Store.getSprigTree = function getSprigTree(docId, outerDone) {
     }
   };
 
-  request(settings.serverURL, {getDocReq: sprigRequest}, 
+  this.apienvoy.request({getDocReq: sprigRequest}, 
     function done(error, response) {
       if (error) {
         if (outerDone) {
@@ -114,7 +122,7 @@ Store.getSprigTree = function getSprigTree(docId, outerDone) {
 }
 
 Store.createNewDoc = function createNewDoc() {
-  request(settings.serverURL, {
+  this.apienvoy.request({
     docPostReq1: {
       op: 'saveDoc',
       params: {
@@ -139,4 +147,6 @@ Store.createNewDoc = function createNewDoc() {
   });
 }
 
+return Store;
+}
 

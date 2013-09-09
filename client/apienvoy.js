@@ -1,6 +1,12 @@
-function request(url, jsonBody, done) {
+function createAPIEnvoy(serverURL) {
+
+var APIEnvoy = {
+  serverURL: serverURL
+};
+
+APIEnvoy.request = function request(jsonBody, done) {
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', settings.serverURL);
+  xhr.open('POST', this.serverURL);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.setRequestHeader('accept', 'application/json');
 
@@ -17,5 +23,12 @@ function request(url, jsonBody, done) {
   };
 
   xhr.send(JSON.stringify(jsonBody));
+};
+
+APIEnvoy.addRequestToQueue = function addRequestQueue(queueName, shouldFire) {
+
+};
+
+return APIEnvoy;
 }
 
