@@ -61,7 +61,8 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
     this.titleField.on('click', this.startEditing.bind(this));
 
     // Globals!
-    this.addButton.on('click', this.sprigot.respondToAddChildSprigCmd);
+    this.addButton.on('click', 
+      this.sprigot.respondToAddChildSprigCmd.bind(this.sprigot));
     this.deleteButton.on('click', this.showDeleteSprigDialog);
 
     this.emphasizeCheckbox.on('change', 
