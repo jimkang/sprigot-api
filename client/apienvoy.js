@@ -1,7 +1,8 @@
 function createAPIEnvoy(serverURL) {
 
 var APIEnvoy = {
-  serverURL: serverURL
+  serverURL: serverURL,
+  queuesForIntervals: {}
 };
 
 APIEnvoy.request = function request(jsonBody, done) {
@@ -16,7 +17,7 @@ APIEnvoy.request = function request(jsonBody, done) {
     if (this.status === 200) {
       var response = JSON.parse(this.responseText);
       done(null, response);
-    } 
+    }
     else {
       done(this.status, null);
     }
@@ -25,7 +26,23 @@ APIEnvoy.request = function request(jsonBody, done) {
   xhr.send(JSON.stringify(jsonBody));
 };
 
-APIEnvoy.addRequestToQueue = function addRequestQueue(queueName, shouldFire) {
+APIEnvoy.addRequestToQueue = function queueForBatchedRequest(
+  batchIntervalInSeconds, jsonBody, done) {
+
+  var queueKey = queuesForIntervals.toString();
+  var queue = null;
+  if (queueKey in this.queuesForIntervals) {
+    queue = this.queuesForIntervals[queueKey];
+  }
+  else {
+    queue = [];
+    this.queuesForIntervals[queueKey] = queue;
+  }
+
+  queue.push({
+    jsonBody: jsonBody,
+    done: done
+  });
 
 };
 
