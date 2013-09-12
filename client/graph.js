@@ -119,11 +119,12 @@ Graph.setFocusEl = function setFocusEl(el) {
 
 Graph.focusOnTreeNode = function focusOnTreeNode(treeNode, el) {
   this.setFocusEl(el);
-  treeNode.visited = true;
+  var previouslyVisited = this.noteNodeWasVisited(treeNode);
+  if (!previouslyVisited) {
+    this.noteNodeWasVisited(treeNode);
+  }
   this.historian.syncURLToSprigId(treeNode.id);
-
   this.treeRenderer.update(this.nodeRoot);
-  
   Camera.panToElement(d3.select(this.focusEl));
 }
 
@@ -143,6 +144,16 @@ Graph.focusOnSprig = function focusOnSprig(sprigId, delay) {
 Graph.nodeHasFocus = function nodeHasFocus(treeNode) {
   return (treeNode === this.focusNode);
 }
+
+Graph.noteNodeWasVisited = function noteNodeWasVisited(treeNode) {
+  var visitKey = 'visited_' + treeNode.id;
+  localStorage[visitKey] = true;
+};
+
+Graph.nodeWasVisited = function nodeWasVisited(treeNode) {
+  var visitKey = 'visited_' + treeNode.id;
+  return (visitKey in localStorage);
+};
 
 return Graph;
 }

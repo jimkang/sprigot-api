@@ -137,13 +137,14 @@ TreeRenderer.update = function update(source, duration) {
     // .duration(duration)
     .attr('d', this.diagonalProjection)
     .attr('stroke-width', function getLinkWidth(d) {
-      if (d.target.visited) {
+      if (this.graph.nodeWasVisited(d.target)) {
         return 3;
       }
       else {
         return 1.5;
       }
-    });
+    }
+    .bind(this));
 
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
