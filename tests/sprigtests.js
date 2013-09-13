@@ -2,7 +2,7 @@ var assert = require('assert');
 var _ = require('underscore');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var caseDataSource = require('./caseData');
-var sprigTree = require('../client/sprig-d3_relations')
+var sprigTree = require('../client/d3sprigbridge')
 var uid = require('../client/uid').uid;
 
 /* Utils */
@@ -65,9 +65,9 @@ utils.optionsAreValid = function optionsAreValid(options, expectedTypes) {
 /* Settings */
 
 var settings = {
-  // baseURL: 'http://localhost:3000'
+  baseURL: 'http://localhost:3000'
   // baseURL: 'http://sprigot-8939.onmodulus.net'
-  baseURL: 'http://192.241.250.38'
+  // baseURL: 'http://192.241.250.38'
 };
 
 /* Session */

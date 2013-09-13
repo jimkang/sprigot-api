@@ -1,8 +1,8 @@
 uglifyjs \
   camera.js \
-  sprig-d3_relations.js \
+  d3sprigbridge.js \
   uid.js \
-  network.js \
+  apienvoy.js \
   okcanceldialog.js \
   store.js \
   treerenderer.js \
