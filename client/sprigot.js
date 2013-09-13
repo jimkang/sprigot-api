@@ -34,7 +34,7 @@ Sprigot.init = function init(docId, focusSprigId) {
     }
 
     if (sprigTree) {
-      var sanitizedTree = sanitizeTreeForD3(sprigTree);
+      var sanitizedTree = D3SprigBridge.sanitizeTreeForD3(sprigTree);
       this.graph.loadNodeTreeToGraph(sanitizedTree, focusSprigId);
       console.log('Loaded tree:', sprigTree);
     }
@@ -132,7 +132,8 @@ Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {
 
   TextStuff.changeEditMode(true);
 
-  this.store.saveChildAndParentSprig(newSprig, serializeTreedNode(this.graph.focusNode));
+  this.store.saveChildAndParentSprig(newSprig, 
+    D3SprigBridge.serializeTreedNode(this.graph.focusNode));
 
   TreeRenderer.update(this.graph.nodeRoot, settings.treeNodeAnimationDuration);
   setTimeout(function afterUpdate() {

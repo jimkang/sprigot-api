@@ -2,12 +2,10 @@ if (typeof module === 'object') {
   // Node
   var _ = require('underscore');
 }
-else {
-  // Browser
-  module = {exports: {}};
-}
 
-function serializeTreedNode(treedNode) {
+D3SprigBridge = {};
+
+D3SprigBridge.serializeTreedNode = function serializeTreedNode(treedNode) {
   var serialized = _.pick(treedNode, 'id', 'doc', 'title', 'body', 'emphasize');
   var childSource = treedNode.children;
   if (!treedNode.children) {
@@ -20,7 +18,7 @@ function serializeTreedNode(treedNode) {
   return serialized;
 }
 
-function sanitizeTreeForD3(tree) {
+D3SprigBridge.sanitizeTreeForD3 = function sanitizeTreeForD3(tree) {
   if (typeof tree.children === 'object') {
     var childRefs = [];
     var validChildren = [];
@@ -44,6 +42,7 @@ function sanitizeTreeForD3(tree) {
   return tree;
 }
 
+D3SprigBridge.mapPathToSprigInD3Tree = 
 function mapPathToSprigInD3Tree(targetSprigId, sprigTree, depthLimit) {
   if (targetSprigId === sprigTree.id) {
     return [sprigTree.id];
@@ -110,8 +109,8 @@ function mapPathToSprigInD3Tree(targetSprigId, sprigTree, depthLimit) {
   return path;
 }
 
-module.exports = {
-  serializeTreedNode: serializeTreedNode,
-  sanitizeTreeForD3: sanitizeTreeForD3
-};
 
+if (typeof module === 'object') {
+  // Node
+  module.exports = D3SprigBridge;
+}

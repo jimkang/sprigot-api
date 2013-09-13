@@ -73,7 +73,8 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
   var shouldPanToRoot = true;
 
   if (focusSprigId) {
-    var pathToSprig = mapPathToSprigInD3Tree(focusSprigId, this.nodeRoot, 100);
+    var pathToSprig = D3SprigBridge.mapPathToSprigInD3Tree(
+      focusSprigId, this.nodeRoot, 100);
 
     if (pathToSprig.length > 0) {
       this.treeNav.followPathToSprig(pathToSprig);
