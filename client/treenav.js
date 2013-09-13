@@ -79,7 +79,6 @@ TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
   if (typeof treeNode.parent === 'object' &&
     typeof treeNode.parent.children === 'object') {
 
-    var parentSel = d3.select('#' + treeNode.parent.id);
     var focusIndex = treeNode.parent.children.indexOf(treeNode);
     var siblingIndex = focusIndex + direction;
     if (siblingIndex > -1 && siblingIndex < treeNode.parent.children.length) {
