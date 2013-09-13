@@ -14,5 +14,8 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-module.exports.uid = uid;
+if (typeof module === 'object') {
+  // Node
+  module.exports.uid = uid;
+}
 
