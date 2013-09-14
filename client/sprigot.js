@@ -171,3 +171,26 @@ Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
   settings.treeNodeAnimationDuration + 500);
 }
 
+Sprigot.respondToNewSprigotCmd = function respondToNewSprigotCmd() {
+  var newDoc = {
+    id: uid(8),
+    rootSprig: uid(8),
+    authors: [
+      'deathmtn'
+    ],
+    admins: [
+      'deathmtn'
+    ]    
+  };
+
+  var rootSprig = {
+    id: newDoc.rootSprig,
+    doc: newDoc.id,
+    title: 'Root',
+    body: 'Hello. Type some stuff here.',
+    children: []
+  };
+
+  this.store.createNewDoc(newDoc, rootSprig);
+};
+

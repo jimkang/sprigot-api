@@ -12,6 +12,7 @@ var TextStuff = {
   editZone: null,
   addButton: null,
   deleteButton: null,
+  newSprigotButton: null,
   emphasizeCheckbox: null,
   OKCancelDialog: null,
   editAvailable: true
@@ -50,6 +51,9 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
       id: 'emphasize'
     })
     .classed('editcontrol', true);
+
+    this.newSprigotButton = this.textpane.append('button').text('New Sprigot!')
+      .classed('editcontrol', true);
   }
 
   this.editZone.style('display', 'none');
@@ -60,7 +64,6 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
     this.textcontent.on('click', this.startEditing.bind(this));
     this.titleField.on('click', this.startEditing.bind(this));
 
-    // Globals!
     this.addButton.on('click', 
       this.sprigot.respondToAddChildSprigCmd.bind(this.sprigot));
     this.deleteButton.on('click', this.showDeleteSprigDialog);
@@ -68,6 +71,9 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
     this.emphasizeCheckbox.on('change', 
       this.respondToEmphasisCheckChange.bind(this));
     this.editZone.on('keydown', this.respondToEditZoneKeyDown.bind(this));
+
+    this.newSprigotButton.on('click', 
+      this.sprigot.respondToNewSprigotCmd.bind(this.sprigot));
   }
 }
 

@@ -121,23 +121,22 @@ Store.getSprigTree = function getSprigTree(docId, outerDone) {
   );
 }
 
-Store.createNewDoc = function createNewDoc() {
-  this.apienvoy.request({
-    docPostReq1: {
-      op: 'saveDoc',
-      params: {
-        id: uid(4),
-        rootSprig: 'notonline',
-        authors: [
-          'ignignokt'
-        ],
-        admins: [
-          'ignignokt'
-        ]
-      }
-    }
-  },
-  function done(error, response) {
+Store.createNewDoc = function createNewDoc(docParams, rootSprigParams) {
+  var requestBody = {}
+  var docCreateReqId = 'docCreateReq' + uid(4);
+  var rootSprigSaveReqId = 'rootSprigSaveReq' + uid(4);
+
+  requestBody[docCreateReqId] = {
+    op: 'saveDoc',
+    params: docParams
+  };
+
+  requestBody[rootSprigSaveReqId] = {
+    op: 'saveSprig',
+    params: rootSprigParams
+  };
+
+  this.apienvoy.request(requestBody, function done(error, response) {
     if (error) {
       console.log('Error while saving doc:', error);
     }
