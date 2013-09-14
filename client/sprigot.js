@@ -160,7 +160,7 @@ Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
   };
 
   this.store.deleteChildAndSaveParentSprig(sprigToDelete, 
-    serializeTreedNode(parentNode));
+    D3SprigBridge.serializeTreedNode(parentNode));
 
   var treeNav = this.graph.treeNav;
 

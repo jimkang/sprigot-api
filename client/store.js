@@ -11,7 +11,7 @@ var Store = {
 Store.saveSprigFromTreeNode = function saveSprigFromTreeNode(node, docId) {
   var serializedNode = null;
   if (node) {
-    serializedNode = serializeTreedNode(node);
+    serializedNode = D3SprigBridge.serializeTreedNode(node);
   }
   if (serializedNode) {
     var saveId = TextStuff.makeId(4);
