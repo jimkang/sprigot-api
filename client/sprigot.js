@@ -92,7 +92,7 @@ Sprigot.respondToDocKeyUp = function respondToDocKeyUp() {
       // equal key
       case 187:
         if (d3.event.shiftKey) {
-          respondToAddChildSprigCmd();
+          this.respondToAddChildSprigCmd();
         }
         break;
     }
