@@ -55,12 +55,18 @@ TreeNav.nodeIsExpanded = function nodeIsExpanded(treeNode) {
 }
 
 TreeNav.followBranchOfNode = function followBranchOfNode(treeNode) {
-  // TODO: Define primary paths?
-  var childIndex = 0;
-  if (typeof treeNode.children === 'object' && 
-    childIndex < treeNode.children.length) {
+  var childNode = null;
+  if (typeof treeNode.children === 'object') {
+    for (var i = treeNode.children.length - 1; i >= 0; --i) {
 
-    var childNode = treeNode.children[childIndex];
+      childNode = treeNode.children[i];
+      if (typeof childNode.emphasized === 'boolean' && childNode.emphasized) {
+        break;
+      }
+    }
+  }
+
+  if (childNode) {
     var childEl = d3.select('#' + childNode.id).node();
     this.chooseTreeNode(childNode, childEl);
   }
