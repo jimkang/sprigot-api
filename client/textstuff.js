@@ -14,6 +14,7 @@ var TextStuff = {
   deleteButton: null,
   newSprigotButton: null,
   emphasizeCheckbox: null,
+  nextUnreadLink: null,
   OKCancelDialog: null,
   editAvailable: true
 };
@@ -55,6 +56,12 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
     this.newSprigotButton = this.textpane.append('button').text('New Sprigot!')
       .classed('editcontrol', true);
   }
+
+  var hashWithoutSprig = 
+    location.hash.substring(0, location.hash.lastIndexOf('/'));
+  this.nextUnreadLink = this.pane.append('a').text('Next unread')
+    .classed('control-link', true)
+    .attr('href', hashWithoutSprig + '/nextunread');
 
   this.editZone.style('display', 'none');
   this.titleField.style('display', 'none');

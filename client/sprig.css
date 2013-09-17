@@ -105,6 +105,16 @@ svg#svgBoard {
   -webkit-border-radius: 1em; border-radius: 1em;
 }
 
+.control-link {
+  color: rgba(255, 255, 255, 0.6);
+  float: right;
+  margin-right: 8px;
+  margin-top: 8px;
+  cursor: pointer;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
 section {
   display: -webkit-box;   /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  
   display: -ms-flexbox;   /* MID: IE 10 */
