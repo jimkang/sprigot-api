@@ -18,3 +18,8 @@ function direct(locationHash) {
 }
 
 direct(location.hash);
+
+function respondToHashChange() {
+  direct(location.hash);
+}
+window.onhashchange = respondToHashChange;
