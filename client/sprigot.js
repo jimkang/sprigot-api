@@ -13,7 +13,12 @@ var Sprigot = {
 Sprigot.init = function init(docId, focusSprigId) {
   this.docId = docId;
 
-  var sprigotSel = d3.select('body').append('section').attr('id', 'sprigot');
+  var body = d3.select('body');
+  var sprigotSel = body.select('#sprigot');
+  if (!sprigotSel.empty()) {
+    sprigotSel.remove();
+  }
+  sprigotSel = body.append('section').attr('id', 'sprigot');
 
   this.graph = createGraph();
   this.graph.init(sprigotSel, Camera, TreeRenderer, TextStuff, Historian);
@@ -193,4 +198,5 @@ Sprigot.respondToNewSprigotCmd = function respondToNewSprigotCmd() {
 
   this.store.createNewDoc(newDoc, rootSprig);
 };
+
 
