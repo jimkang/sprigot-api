@@ -99,8 +99,16 @@ TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
   }
 }
 
-TreeNav.goToSprig = function goToSprig(sprigId, delay) {
+TreeNav.goToSprigId = function goToSprigId(sprigId, delay) {
   var pathToSprig = D3SprigBridge.mapPathToSprigId(sprigId, this.sprigTree, 100);
+  if (pathToSprig.length > 1) {
+    this.followPathToSprig(pathToSprig, delay);
+  }
+}
+
+TreeNav.goToSprig = function goToSprig(sprigPredicate, delay) {
+  var pathToSprig = D3SprigBridge.mapPathInD3Tree(sprigPredicate, 
+    this.sprigTree, 100);
   if (pathToSprig.length > 1) {
     this.followPathToSprig(pathToSprig, delay);
   }

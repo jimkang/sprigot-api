@@ -12,7 +12,7 @@ Historian.init = function init(treeNav, docId) {
 Historian.statePopped = function statePopped(e) {
   if (e.state) {
     this.docId = e.state.docId;
-    this.treeNav.goToSprig(e.state.sprigId, 100);
+    this.treeNav.goToSprigId(e.state.sprigId, 100);
   }
 };
 
