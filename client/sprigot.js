@@ -14,11 +14,36 @@ Sprigot.init = function init(docId, focusSprigId) {
   this.docId = docId;
 
   var body = d3.select('body');
-  var sprigotSel = body.select('#sprigot');
-  if (!sprigotSel.empty()) {
-    sprigotSel.remove();
+  var sprigotSel = body.select('.sprigot');
+
+  var identifySprig = null;
+  if (focusSprigId === 'nextunread') {
+    identifySprig = function matchUnreadSprig(sprig) {
+      return !this.graph.nodeWasVisited(sprig);
+    }
+    .bind(this);
   }
-  sprigotSel = body.append('section').attr('id', 'sprigot');
+  else {
+    identifySprig = function matchFocusSprigId(sprig) {
+      return (focusSprigId === sprig.id);
+    };
+  }
+
+  if (!sprigotSel.empty()) {
+    if (sprigotSel.attr('id') !== docId) {
+      sprigotSel.remove();
+    }
+  }
+
+  if (sprigotSel.empty()) {
+    sprigotSel = body.append('section')
+      .classed('sprigot', true)
+      .attr('id', docId);
+  }
+  else {
+    this.graph.treeNav.goToSprig(identifySprig, 100);
+    return;
+  }
 
   this.graph = createGraph();
   this.graph.init(sprigotSel, Camera, TreeRenderer, TextStuff, Historian);
@@ -40,20 +65,6 @@ Sprigot.init = function init(docId, focusSprigId) {
 
     if (sprigTree) {
       var sanitizedTree = D3SprigBridge.sanitizeTreeForD3(sprigTree);
-
-      var identifySprig = null;
-      if (focusSprigId === 'nextunread') {
-        identifySprig = function matchUnreadSprig(sprig) {
-          return !this.graph.nodeWasVisited(sprig);
-        }
-        .bind(this);
-      }
-      else {
-        identifySprig = function matchFocusSprigId(sprig) {
-          return (focusSprigId === sprig.id);
-        };
-      }
-      
       this.graph.loadNodeTreeToGraph(sanitizedTree, identifySprig);
       // console.log('Loaded tree:', sprigTree);
     }
