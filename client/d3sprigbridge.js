@@ -55,7 +55,7 @@ function mapPathToSprigId(targetSprigId, sprigTree, depthLimit) {
 D3SprigBridge.mapPathInD3Tree = 
 function mapPathInD3Tree(predicate, sprigTree, depthLimit) {
   if (predicate(sprigTree)) {
-    return [sprigTree.id];
+    return [sprigTree];
   }
 
   var path = [];
