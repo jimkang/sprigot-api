@@ -112,6 +112,9 @@ TreeNav.goToSprig = function goToSprig(sprigPredicate, delay) {
   if (pathToSprig.length > 1) {
     this.followPathToSprig(pathToSprig, delay);
   }
+  if (this.graph.focusNode) {
+    Historian.syncURLToSprigId(this.graph.focusNode.id);
+  }  
 }
 
 TreeNav.followPathToSprig = function followPathToSprig(pathToSprig, delay) {

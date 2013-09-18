@@ -86,6 +86,9 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
   if (shouldPanToRoot) {
     setTimeout(function initialPan() {
       this.panToRoot();
+      if (this.focusNode) {
+        Historian.syncURLToSprigId(this.focusNode.id);
+      }  
     }
     .bind(this),
     800);
