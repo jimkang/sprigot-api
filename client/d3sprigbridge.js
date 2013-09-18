@@ -119,11 +119,6 @@ function mapPathInD3Tree(predicate, sprigTree, depthLimit) {
   return path;
 }
 
-D3SprigBridge.mapPathToNextUndreadSprig = 
-function mapPathToNextUndreadSprig(sprigTree, depthLimit) {
-  // TODO!
-}
-
 if (typeof module === 'object') {
   // Node
   module.exports = D3SprigBridge;
