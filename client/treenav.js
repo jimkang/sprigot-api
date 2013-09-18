@@ -100,8 +100,7 @@ TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
 }
 
 TreeNav.goToSprig = function goToSprig(sprigId, delay) {
-  var pathToSprig = D3SprigBridge.mapPathToSprigInD3Tree(
-    sprigId, this.sprigTree, 100);
+  var pathToSprig = D3SprigBridge.mapPathToSprigId(sprigId, this.sprigTree, 100);
   if (pathToSprig.length > 1) {
     this.followPathToSprig(pathToSprig, delay);
   }

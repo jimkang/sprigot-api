@@ -40,8 +40,22 @@ Sprigot.init = function init(docId, focusSprigId) {
 
     if (sprigTree) {
       var sanitizedTree = D3SprigBridge.sanitizeTreeForD3(sprigTree);
-      this.graph.loadNodeTreeToGraph(sanitizedTree, focusSprigId);
-      console.log('Loaded tree:', sprigTree);
+
+      var identifySprig = null;
+      if (focusSprigId === 'nextunread') {
+        identifySprig = function matchUnreadSprig(sprig) {
+          return !this.graph.nodeWasVisited(sprig);
+        }
+        .bind(this);
+      }
+      else {
+        identifySprig = function matchFocusSprigId(sprig) {
+          return (focusSprigId === sprig.id);
+        };
+      }
+      
+      this.graph.loadNodeTreeToGraph(sanitizedTree, identifySprig);
+      // console.log('Loaded tree:', sprigTree);
     }
     else {
       console.log('Sprig tree not found.');

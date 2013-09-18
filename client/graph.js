@@ -54,7 +54,7 @@ Graph.init = function init(sprigotSel, camera, treeRenderer,
 }
 
 Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree, 
-  focusSprigId) {
+  identifyFocusSprig) {
 
   this.nodeRoot = nodeTree;
 
@@ -72,9 +72,9 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
 
   var shouldPanToRoot = true;
 
-  if (focusSprigId) {
-    var pathToSprig = D3SprigBridge.mapPathToSprigInD3Tree(
-      focusSprigId, this.nodeRoot, 100);
+  if (identifyFocusSprig) {
+    var pathToSprig = D3SprigBridge.mapPathInD3Tree(identifyFocusSprig, 
+      this.nodeRoot, 100);
 
     if (pathToSprig.length > 0) {
       this.treeNav.followPathToSprig(pathToSprig);

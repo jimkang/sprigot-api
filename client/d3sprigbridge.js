@@ -42,8 +42,8 @@ D3SprigBridge.sanitizeTreeForD3 = function sanitizeTreeForD3(tree) {
   return tree;
 }
 
-D3SprigBridge.mapPathToSprigInD3Tree = 
-function mapPathToSprigInD3Tree(targetSprigId, sprigTree, depthLimit) {
+D3SprigBridge.mapPathToSprigId = 
+function mapPathToSprigId(targetSprigId, sprigTree, depthLimit) {
   function matchesTarget(sprig) {
     return (sprig.id === targetSprigId);  
   }
