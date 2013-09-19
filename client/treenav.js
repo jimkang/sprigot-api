@@ -127,7 +127,7 @@ TreeNav.followPathToSprig = function followPathToSprig(pathToSprig, delay) {
 
   this.treeRenderer.update(this.sprigTree, 0);
   this.graph.focusOnSprig(pathToSprig[pathToSprig.length-1].id, delay);
- }
+}
 
 TreeNav.respondToDownArrow = function respondToDownArrow() {
   d3.event.stopPropagation();
