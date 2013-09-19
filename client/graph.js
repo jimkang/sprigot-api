@@ -95,6 +95,7 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
   }
 
   setTimeout(function initialTextShow() {
+    this.noteNodeWasVisited(focusSprig);
     this.textStuff.initialTextPaneShow(focusSprig);
   }
   .bind(this),
