@@ -18,10 +18,7 @@ Sprigot.init = function init(docId, focusSprigId) {
 
   var identifySprig = null;
   if (focusSprigId === 'nextunread') {
-    identifySprig = function matchUnreadSprig(sprig) {
-      return !this.graph.nodeWasVisited(sprig);
-    }
-    .bind(this);
+    identifySprig = this.graph.nodeIsUnvisited.bind(this.graph);
   }
   else {
     identifySprig = function matchFocusSprigId(sprig) {

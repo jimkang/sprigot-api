@@ -159,6 +159,10 @@ Graph.nodeWasVisited = function nodeWasVisited(treeNode) {
   return (visitKey in localStorage);
 };
 
+Graph.nodeIsUnvisited = function nodeIsUnvisited(sprig) {
+  return !this.nodeWasVisited(sprig);
+}
+
 return Graph;
 }
 
