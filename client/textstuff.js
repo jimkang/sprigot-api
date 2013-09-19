@@ -9,7 +9,7 @@ var TextStuff = {
   textpane: null,
   textcontent: null,
   titleField: null,
-  editZone: null,
+  contentZone: null,
   addButton: null,
   deleteButton: null,
   newSprigotButton: null,
@@ -35,10 +35,10 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
   
   this.textpane = this.pane.append('div').attr('id', 'textpane');
   
-  this.editZone = this.textpane.append('div').classed('editZone', true);
-  this.titleField = this.editZone.append('span').classed('sprigTitleField', true);
+  this.contentZone = this.textpane.append('div').classed('contentZone', true);
+  this.titleField = this.contentZone.append('span').classed('sprigTitleField', true);
   this.textcontent = 
-    this.editZone.append('div').classed('textcontent', true).attr('tabindex', 0);
+    this.contentZone.append('div').classed('textcontent', true).attr('tabindex', 0);
 
   if (this.editAvailable) {
     this.addButton = this.textpane.append('button').text('+')
@@ -59,7 +59,7 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
 
   this.initNextUnreadLink();
 
-  this.editZone.style('display', 'none');
+  this.contentZone.style('display', 'none');
   this.titleField.style('display', 'none');
   d3.selectAll('#textpane *').style('display', 'none');
 
@@ -73,7 +73,7 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
 
     this.emphasizeCheckbox.on('change', 
       this.respondToEmphasisCheckChange.bind(this));
-    this.editZone.on('keydown', this.respondToEditZoneKeyDown.bind(this));
+    this.contentZone.on('keydown', this.respondTocontentZoneKeyDown.bind(this));
 
     this.newSprigotButton.on('click', 
       this.sprigot.respondToNewSprigotCmd.bind(this.sprigot));
@@ -99,29 +99,31 @@ TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode)
   this.textcontent.html(treeNode.body);
   this.titleField.html(treeNode.title);
 
-  this.emphasizeCheckbox.node().checked = this.graph.focusNode.emphasize;
+  if (this.editAvailable) {
+    this.emphasizeCheckbox.node().checked = this.graph.focusNode.emphasize;
+  }
 }
 
 TextStuff.showTextpaneForTreeNode = function showTextpaneForTreeNode(treeNode) {
   this.syncTextpaneWithTreeNode(treeNode);
 
   d3.selectAll('#textpane :not(.sprigTitleField)').style('display', 'block');
-  this.editZone.style('display', 'block');    
+  this.contentZone.style('display', 'block');    
   this.uncollapseTextpane();
 }
 
 TextStuff.fadeInTextPane = function fadeInTextPane(transitionTime) {
-  if (this.editZone.style('display') === 'none') {
+  if (this.contentZone.style('display') === 'none') {
     var textpaneEditControls = d3.selectAll('#textpane :not(.sprigTitleField)');
     this.textpane.style('opacity', 0);
     textpaneEditControls.style('opacity', 0);
-    this.editZone.style('opacity', 0);
+    this.contentZone.style('opacity', 0);
 
     textpaneEditControls.style('display', 'block')
       .transition().duration(transitionTime)
       .style('opacity', 1);
 
-    this.editZone.style('display', 'block')
+    this.contentZone.style('display', 'block')
       .transition().duration(transitionTime)
       .style('opacity', 1);
 
@@ -165,7 +167,7 @@ TextStuff.changeEditMode = function changeEditMode(editable, skipSave) {
 
   this.textcontent.attr('contenteditable', editable);
   this.titleField.attr('contenteditable', editable);
-  this.editZone.classed('editing', editable);
+  this.contentZone.classed('editing', editable);
 
   if (editable) {
     this.showTitle();
@@ -196,7 +198,7 @@ TextStuff.changeEditMode = function changeEditMode(editable, skipSave) {
 }
 
 TextStuff.endEditing = function endEditing() {
-  if (this.editZone.classed('editing')) {
+  if (this.contentZone.classed('editing')) {
     this.changeEditMode(false);
   }
 }
@@ -223,10 +225,10 @@ TextStuff.respondToEmphasisCheckChange = function respondToEmphasisCheckChange(d
   }
 }
 
-TextStuff.respondToEditZoneKeyDown = function respondToEditZoneKeyDown() {
+TextStuff.respondTocontentZoneKeyDown = function respondTocontentZoneKeyDown() {
   if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 13) {
     d3.event.stopPropagation();
-    if (this.editZone.classed('editing')) {
+    if (this.contentZone.classed('editing')) {
       this.changeEditMode(false);
     } 
   }
@@ -234,7 +236,7 @@ TextStuff.respondToEditZoneKeyDown = function respondToEditZoneKeyDown() {
 
 TextStuff.startEditing = function startEditing() {
   d3.event.stopPropagation();
-  if (!this.editZone.classed('editing')) {
+  if (!this.contentZone.classed('editing')) {
     this.changeEditMode(true);
   }
 }

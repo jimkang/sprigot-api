@@ -87,16 +87,16 @@ Sprigot.respondToDocKeyUp = function respondToDocKeyUp() {
   // Esc
   if (d3.event.keyCode === 27) {
     d3.event.stopPropagation();
-    if (TextStuff.editZone.classed('editing')) {
+    if (TextStuff.contentZone.classed('editing')) {
       TextStuff.changeEditMode(false);
     }
   }
-  else if (!TextStuff.editZone.classed('editing')) {
+  else if (!TextStuff.contentZone.classed('editing')) {
     switch (d3.event.which) {
       // 'e'.
       case 69:
         d3.event.stopPropagation();
-        if (TextStuff.editZone.style('display') === 'block') {
+        if (TextStuff.contentZone.style('display') === 'block') {
           TextStuff.changeEditMode(true);
         }
         break;
@@ -135,7 +135,7 @@ Sprigot.respondToDocKeyDown = function respondToDocKeyDown() {
 
 Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {
   d3.event.stopPropagation();
-  if (TextStuff.editZone.classed('editing')) {
+  if (TextStuff.contentZone.classed('editing')) {
     TextStuff.changeEditMode(false);
   }
 
@@ -173,7 +173,7 @@ Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {
 
 Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
   d3.event.stopPropagation();
-  if (TextStuff.editZone.classed('editing')) {
+  if (TextStuff.contentZone.classed('editing')) {
     TextStuff.changeEditMode(false, true);
   }
 
