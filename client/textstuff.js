@@ -57,11 +57,13 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
       .classed('editcontrol', true);
   }
 
-  var hashWithoutSprig = 
-    location.hash.substring(0, location.hash.lastIndexOf('/'));
-  this.nextUnreadLink = this.pane.append('a').text('Next unread')
-    .classed('control-link', true)
-    .attr('href', hashWithoutSprig + '/nextunread');
+  var hashParts = location.hash.split('/');
+  if (hashParts.length > 1) {
+    var hashWithoutSprig = hashParts[0] + '/' + hashParts[1] + '/';
+    this.nextUnreadLink = this.pane.append('a').text('Next unread')
+      .classed('control-link', true)
+      .attr('href', hashWithoutSprig + 'nextunread');
+  }
 
   this.editZone.style('display', 'none');
   this.titleField.style('display', 'none');
