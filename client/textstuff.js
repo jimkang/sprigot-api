@@ -57,13 +57,7 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
       .classed('editcontrol', true);
   }
 
-  var hashParts = location.hash.split('/');
-  if (hashParts.length > 1) {
-    var hashWithoutSprig = hashParts[0] + '/' + hashParts[1] + '/';
-    this.nextUnreadLink = this.pane.append('a').text('Next unread')
-      .classed('control-link', true)
-      .attr('href', hashWithoutSprig + 'nextunread');
-  }
+  this.initNextUnreadLink();
 
   this.editZone.style('display', 'none');
   this.titleField.style('display', 'none');
@@ -83,6 +77,18 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
 
     this.newSprigotButton.on('click', 
       this.sprigot.respondToNewSprigotCmd.bind(this.sprigot));
+  }
+}
+
+TextStuff.initNextUnreadLink = function initNextUnreadLink() {
+  var hashParts = location.hash.split('/');
+  if (hashParts.length > 1) {
+    var hashWithoutSprig = hashParts[0] + '/' + hashParts[1] + '/';
+    this.nextUnreadLink = this.pane.append('a')
+      .attr('id', 'nextunreadlink')
+      .attr('href', hashWithoutSprig + 'nextunread')
+      .classed('control-link', true)
+      .text('Next Unread');
   }
 }
 
