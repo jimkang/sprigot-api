@@ -13,4 +13,5 @@ uglifyjs \
   historian.js \
   sprigot.js \
   direct.js \
- -c -m -o ~/gcw/gcwsite/sprigot/sprigotclient.js
+ -c -m -o ~/gcw/sprigotclientbuild/sprigotclient.js
+# -c -m -o ~/gcw/gcwsite/sprigot/sprigotclient.js
