@@ -67,6 +67,19 @@ svg#svgBoard {
   border-radius: 0.4em;
 }
 
+#textpane a {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#textpane a:link {
+  color: #025;
+}
+
+#textpane a:visited {
+  color: #346;
+}
+
 .collapsedPane #textpane {
   display: none;
 }
