@@ -46,6 +46,8 @@ Divider.toggleGraphExpansion = function toggleGraphExpansion() {
     .classed('pane', !shouldHideTextPane);
   this.graph.pane.classed('expandedPane', shouldHideTextPane)
     .classed('pane', !shouldHideTextPane);
+  this.textStuff.nextUnreadLink.style('display', 
+    shouldHideTextPane ? 'none' : 'block');
 
   this.syncExpanderArrow();
 
