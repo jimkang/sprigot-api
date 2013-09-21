@@ -15,6 +15,7 @@ var TextStuff = {
   newSprigotButton: null,
   emphasizeCheckbox: null,
   nextUnreadLink: null,
+  downLink: null,
   OKCancelDialog: null,
   editAvailable: true
 };
@@ -35,10 +36,13 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
   
   this.textpane = this.pane.append('div').attr('id', 'textpane');
   
-  this.contentZone = this.textpane.append('div').classed('contentZone', true);
-  this.titleField = this.contentZone.append('span').classed('sprigTitleField', true);
-  this.textcontent = 
-    this.contentZone.append('div').classed('textcontent', true).attr('tabindex', 0);
+  this.contentZone = this.textpane.append('div').classed('contentZone', true)
+    .style('display', 'none');
+
+  this.titleField = this.contentZone.append('span')
+    .classed('sprigTitleField', true).style('display', 'none');
+  this.textcontent = this.contentZone.append('div').classed('textcontent', true)
+    .attr('tabindex', 0);
 
   if (this.editAvailable) {
     this.addButton = this.textpane.append('button').text('+')
@@ -58,9 +62,13 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
   }
 
   this.initNextUnreadLink();
+  // this.downLink = this.pane.append('a')
+  //   .html('&nbsp;&#9660;&nbsp;')
+  //   .classed('control-link', true)
+  //   .classed('down-link', true)
+  //   .style('display', 'none')
+  //   .on('click', this.graph.treeNav.respondToDownArrow.bind(this.graph.treeNav));
 
-  this.contentZone.style('display', 'none');
-  this.titleField.style('display', 'none');
   d3.selectAll('#textpane *').style('display', 'none');
 
   if (this.editAvailable) {
@@ -88,7 +96,9 @@ TextStuff.initNextUnreadLink = function initNextUnreadLink() {
       .attr('id', 'nextunreadlink')
       .attr('href', hashWithoutSprig + 'nextunread')
       .classed('control-link', true)
-      .text('Next Unread');
+      .classed('nextunread-link', true)
+      .text('Next Unread')
+      .style('display', 'none');
   }
 }
 
@@ -133,10 +143,19 @@ TextStuff.fadeInTextPane = function fadeInTextPane(transitionTime) {
   }
 }
 
-TextStuff.initialTextPaneShow = function initialTextPaneShow(treeNode) {
+TextStuff.fadeInControlLinks = function fadeInControlLinks(transitionTime) {
+  var controlLinks = d3.selectAll('#nongraphPane .control-link');
+  controlLinks.style('opacity', 0);
+  controlLinks.style('display', 'block')
+    .transition().duration(transitionTime)
+    .style('opacity', 1);
+}
+
+TextStuff.initialShow = function initialShow(treeNode) {
   setTimeout(function doIt() {
     this.syncTextpaneWithTreeNode(treeNode);
     this.fadeInTextPane(750);
+    this.fadeInControlLinks(800);
   }
   .bind(this),
   725);

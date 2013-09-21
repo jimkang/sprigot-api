@@ -107,12 +107,22 @@ svg#svgBoard {
 
 .control-link {
   color: rgba(255, 255, 255, 0.6);
-  float: right;
   margin-right: 8px;
   margin-top: 8px;
   cursor: pointer;
+}
+
+.nextunread-link {
+  float: right;  
   padding-left: 8px;
   padding-right: 8px;
+}
+
+.down-link {
+  display: block;
+  margin-top: 8px;
+  margin-left: 4px;
+  font-size: 22px;
 }
 
 section {
