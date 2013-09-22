@@ -69,7 +69,7 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
   //   .style('display', 'none')
   //   .on('click', this.graph.treeNav.respondToDownArrow.bind(this.graph.treeNav));
 
-  d3.selectAll('#textpane *').style('display', 'none');
+  d3.selectAll('#textpane .contentZone,.editcontrol').style('display', 'none');
 
   if (this.editAvailable) {
     this.textcontent.on('click', this.startEditing.bind(this));
@@ -117,14 +117,15 @@ TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode)
 TextStuff.showTextpaneForTreeNode = function showTextpaneForTreeNode(treeNode) {
   this.syncTextpaneWithTreeNode(treeNode);
 
-  d3.selectAll('#textpane :not(.sprigTitleField)').style('display', 'block');
+  d3.selectAll('#textpane .contentZone,.editcontrol').style('display', 'block');
   this.contentZone.style('display', 'block');    
   this.uncollapseTextpane();
 }
 
 TextStuff.fadeInTextPane = function fadeInTextPane(transitionTime) {
   if (this.contentZone.style('display') === 'none') {
-    var textpaneEditControls = d3.selectAll('#textpane :not(.sprigTitleField)');
+    var textpaneEditControls = 
+      d3.selectAll('#textpane .contentZone,.editcontrol');
     this.textpane.style('opacity', 0);
     textpaneEditControls.style('opacity', 0);
     this.contentZone.style('opacity', 0);
