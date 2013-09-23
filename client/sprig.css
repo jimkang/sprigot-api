@@ -109,6 +109,10 @@ svg#svgBoard {
   padding-bottom: 1em;
 }
 
+.textcontent ul {
+  list-style-type: circle;
+}
+
 .editing {
   border: 4px red dashed;
 }
