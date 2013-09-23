@@ -122,6 +122,10 @@ Sprigot.respondToDocKeyUp = function respondToDocKeyUp() {
           this.respondToAddChildSprigCmd();
         }
         break;
+        // 'u'
+      case 85:
+        this.respondToFindUnreadCmd();
+        break;
     }
   }
 }
@@ -221,4 +225,8 @@ Sprigot.respondToNewSprigotCmd = function respondToNewSprigotCmd() {
   this.store.createNewDoc(newDoc, rootSprig);
 };
 
+Sprigot.respondToFindUnreadCmd = function respondToFindUnreadCmd() {
+  var identifySprig = this.graph.nodeIsUnvisited.bind(this.graph);
+  this.graph.treeNav.goToSprig(identifySprig, 100);
+};
 
