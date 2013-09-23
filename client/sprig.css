@@ -129,7 +129,7 @@ svg#svgBoard {
   cursor: pointer;
 }
 
-.nextunread-link {
+.findunread-link {
   float: right;  
   padding-left: 8px;
   padding-right: 8px;

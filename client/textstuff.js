@@ -61,7 +61,7 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
       .classed('editcontrol', true);
   }
 
-  this.initNextUnreadLink();
+  this.initFindUnreadLink();
   // this.downLink = this.pane.append('a')
   //   .html('&nbsp;&#9660;&nbsp;')
   //   .classed('control-link', true)
@@ -88,16 +88,16 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
   }
 }
 
-TextStuff.initNextUnreadLink = function initNextUnreadLink() {
+TextStuff.initFindUnreadLink = function initFindUnreadLink() {
   var hashParts = location.hash.split('/');
   if (hashParts.length > 1) {
     var hashWithoutSprig = hashParts[0] + '/' + hashParts[1] + '/';
     this.nextUnreadLink = this.pane.append('a')
-      .attr('id', 'nextunreadlink')
-      .attr('href', hashWithoutSprig + 'nextunread')
+      .attr('id', 'findunreadlink')
+      .attr('href', hashWithoutSprig + 'findunread')
       .classed('control-link', true)
-      .classed('nextunread-link', true)
-      .text('Next Unread')
+      .classed('findunread-link', true)
+      .text('Find Unread')
       .style('display', 'none');
   }
 }

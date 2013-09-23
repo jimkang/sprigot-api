@@ -17,7 +17,7 @@ Sprigot.init = function init(docId, focusSprigId) {
   var sprigotSel = body.select('.sprigot');
 
   var identifySprig = null;
-  if (focusSprigId === 'nextunread') {
+  if (focusSprigId === 'findunread') {
     identifySprig = this.graph.nodeIsUnvisited.bind(this.graph);
   }
   else {
