@@ -1,11 +1,12 @@
 function direct(locationHash) {
   var pathSegments = locationHash.split('/');
   if (pathSegments.length < 2) {
+    Sprigot.init('About');
     return;
   }
 
   switch (pathSegments[1]) {
-    case 'index': 
+    case 'index':
       break;
     default:
       var docName = pathSegments[1];
