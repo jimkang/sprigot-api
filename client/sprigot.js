@@ -10,35 +10,18 @@ var Sprigot = {
   store: null
 };
 
-Sprigot.init = function init(docId, focusSprigId) {
-  this.docId = docId;
-
+Sprigot.init = function init(forceRebuild) {
   var body = d3.select('body');
   var sprigotSel = body.select('.sprigot');
 
-  var identifySprig = null;
-  if (focusSprigId === 'findunread') {
-    identifySprig = this.graph.nodeIsUnvisited.bind(this.graph);
-  }
-  else {
-    identifySprig = function matchFocusSprigId(sprig) {
-      return (focusSprigId === sprig.id);
-    };
-  }
-
-  if (!sprigotSel.empty()) {
-    if (sprigotSel.attr('id') !== docId) {
-      sprigotSel.remove();
-    }
+  if (forceRebuild && !sprigotSel.empty()) {
+    sprigotSel.remove();
   }
 
   if (sprigotSel.empty()) {
-    sprigotSel = body.append('section')
-      .classed('sprigot', true)
-      .attr('id', docId);
+    sprigotSel = body.append('section').classed('sprigot', true);
   }
   else {
-    this.graph.treeNav.goToSprig(identifySprig, 100);
     return;
   }
 
@@ -49,24 +32,29 @@ Sprigot.init = function init(docId, focusSprigId) {
   Divider.init(sprigotSel, this.graph, TextStuff, Camera);
   TextStuff.init(sprigotSel, this.graph, TreeRenderer, this.store, this, 
       Divider);
-  Historian.init(this.graph.treeNav, this.docId);
 
   Divider.syncExpanderArrow();
   this.initDocEventResponders();
+}
 
-  this.store.getSprigTree(docId, function done(error, sprigTree) {
+Sprigot.load = function load(docId, identifyFocusSprig, done) {
+  this.docId = docId;
+  Historian.init(this.graph.treeNav, this.docId);
+
+  var identifySprig = null;
+  var navDelay = 0;
+
+  this.store.getSprigTree(docId, function doneGettingTree(error, sprigTree) {
     if (error) {
-      console.log('Error while getting sprig:', error);
-      return;
+      done(error, null);
     }
 
     if (sprigTree) {
       var sanitizedTree = D3SprigBridge.sanitizeTreeForD3(sprigTree);
-      this.graph.loadNodeTreeToGraph(sanitizedTree, identifySprig);
-      // console.log('Loaded tree:', sprigTree);
+      this.graph.loadNodeTreeToGraph(sanitizedTree, identifyFocusSprig, done);
     }
     else {
-      console.log('Sprig tree not found.');
+      done('Sprig tree not found.');
     }
   }
   .bind(this));

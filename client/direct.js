@@ -1,4 +1,6 @@
-function direct(locationHash) {
+var Director = {};
+
+Director.direct = function direct(locationHash) {
   var pathSegments = locationHash.split('/');
   if (pathSegments.length < 2) {
     Sprigot.init('About');
@@ -14,13 +16,42 @@ function direct(locationHash) {
         var sprigId = pathSegments[2];
       }
       
-      Sprigot.init(docName, sprigId);
+      Sprigot.init();
+
+      var identifyFocusSprig = function matchFocusSprigId(sprig) {
+        return (sprigId === sprig.id);
+      };
+      if (sprigId === 'findunread') {
+        identifyFocusSprig = function matchAny() { return true; };
+      }
+
+      if (Sprigot.graph.nodeRoot) {
+        if (sprigId === 'findunread') {
+          Sprigot.respondToFindUnreadCmd();
+        }        
+      }
+      else {
+        Sprigot.load(docName, identifyFocusSprig, function doneLoading(error) {
+          if (error) {
+            console.log('Error while getting sprig:', error);
+          }
+          else {
+            if (sprigId === 'findunread') {
+              Sprigot.respondToFindUnreadCmd();
+            }
+          }
+        });
+      }
   }
+};
+
+Director.respondToHashChange = function respondToHashChange() {
+  this.direct(location.hash);
+};
+
+Director.init = function init() {
+  this.direct(location.hash);
+  window.onhashchange = this.respondToHashChange.bind(this);
 }
 
-direct(location.hash);
-
-function respondToHashChange() {
-  direct(location.hash);
-}
-window.onhashchange = respondToHashChange;
+Director.init();
