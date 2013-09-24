@@ -54,7 +54,7 @@ Graph.init = function init(sprigotSel, camera, treeRenderer,
 }
 
 Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree, 
-  identifyFocusSprig) {
+  identifyFocusSprig, done) {
 
   this.nodeRoot = nodeTree;
 
@@ -97,6 +97,7 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
   setTimeout(function initialTextShow() {
     this.noteNodeWasVisited(focusSprig);
     this.textStuff.initialShow(focusSprig);
+    done();
   }
   .bind(this),
   800);
