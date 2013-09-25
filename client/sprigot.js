@@ -210,6 +210,7 @@ Sprigot.respondToNewSprigotCmd = function respondToNewSprigotCmd() {
 };
 
 Sprigot.respondToFindUnreadCmd = function respondToFindUnreadCmd() {
+  // TODO: Map a direct route between the two nodes.
   var pathToSprig = D3SprigBridge.mapPathInD3Tree(
     this.graph.nodeIsUnvisited.bind(this.graph),
     this.graph.treeNav.sprigTree, 100);
@@ -217,8 +218,8 @@ Sprigot.respondToFindUnreadCmd = function respondToFindUnreadCmd() {
   if (pathToSprig.length > 0) {
     if (pathToSprig.length > 1 || 
       pathToSprig[0].id !== this.graph.focusNode.id) {
-      
-      this.graph.treeNav.followPathToSprig(pathToSprig, 150);
+
+      this.graph.treeNav.followPathToSprig(pathToSprig);
     }
     var destSprig = pathToSprig[pathToSprig.length-1];
     Historian.syncURLToSprigId(destSprig.id);

@@ -109,12 +109,17 @@ TreeNav.goToSprigId = function goToSprigId(sprigId, delay) {
 }
 
 TreeNav.followPathToSprig = function followPathToSprig(pathToSprig, delay) {
+  if (!delay) {
+    var delay = this.treeRenderer.treeNodeAnimationDuration - 200;
+  }
+
   pathToSprig.forEach(function expandSprig(sprig) {
     this.expandChildren(sprig);
   }
   .bind(this));
 
   this.treeRenderer.update(this.sprigTree, 0);
+
   this.graph.focusOnSprig(pathToSprig[pathToSprig.length-1].id, delay);
 }
 
