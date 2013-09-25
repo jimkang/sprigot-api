@@ -218,11 +218,12 @@ Sprigot.respondToFindUnreadCmd = function respondToFindUnreadCmd() {
     this.graph.nodeIsUnvisited.bind(this.graph),
     this.graph.treeNav.sprigTree, 100);
 
-  if (pathToSprig.length > 1) {
-    this.graph.treeNav.followPathToSprig(pathToSprig, 150);
-  }
-
   if (pathToSprig.length > 0) {
+    if (pathToSprig.length > 1 || 
+      pathToSprig[0].id !== this.graph.focusNode.id) {
+      
+      this.graph.treeNav.followPathToSprig(pathToSprig, 150);
+    }
     var destSprig = pathToSprig[pathToSprig.length-1];
     Historian.syncURLToSprigId(destSprig.id);
     TextStuff.syncTextpaneWithTreeNode(destSprig);
