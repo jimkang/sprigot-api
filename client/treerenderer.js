@@ -3,7 +3,8 @@ var TreeRenderer = {
   diagonalProjection: null,
   sprigTree: null,
   graphSVGGroup: null,
-  graph: null
+  graph: null,
+  treeNodeAnimationDuration: 750
 };
 
 TreeRenderer.init = function init(sprigTree, graph) {
@@ -20,7 +21,7 @@ TreeRenderer.init = function init(sprigTree, graph) {
 
 TreeRenderer.update = function update(source, duration) {
   if (!duration) {
-    duration = settings.treeNodeAnimationDuration;
+    duration = this.treeNodeAnimationDuration;
   }
 
   // Compute the new tree layout.

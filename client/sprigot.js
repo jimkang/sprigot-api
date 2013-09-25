@@ -1,9 +1,5 @@
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
 
-var settings = {
-  treeNodeAnimationDuration: 750
-};
-
 var Sprigot = {
   docId: null,
   graph: null,
