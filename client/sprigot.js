@@ -214,7 +214,21 @@ Sprigot.respondToNewSprigotCmd = function respondToNewSprigotCmd() {
 };
 
 Sprigot.respondToFindUnreadCmd = function respondToFindUnreadCmd() {
-  var identifySprig = this.graph.nodeIsUnvisited.bind(this.graph);
-  this.graph.treeNav.goToSprig(identifySprig, 100);
+  var pathToSprig = D3SprigBridge.mapPathInD3Tree(
+    this.graph.nodeIsUnvisited.bind(this.graph),
+    this.graph.treeNav.sprigTree, 100);
+
+  if (pathToSprig.length > 1) {
+    this.graph.treeNav.followPathToSprig(pathToSprig, 150);
+  }
+
+  if (pathToSprig.length > 0) {
+    var destSprig = pathToSprig[pathToSprig.length-1];
+    Historian.syncURLToSprigId(destSprig.id);
+    TextStuff.syncTextpaneWithTreeNode(destSprig);
+  }
+  else {
+    TextStuff.disableFindUnreadLink();
+  }
 };
 

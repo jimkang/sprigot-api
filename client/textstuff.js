@@ -175,6 +175,17 @@ TextStuff.showTitle = function showTitle() {
   this.titleField.style('display', 'block');
 }
 
+TextStuff.disableFindUnreadLink = function disableFindUnreadLink() {
+  this.findUnreadLink.text('You\'ve read all the sprigs!');
+  this.findUnreadLink.transition().duration(700)
+    .style('opacity', 0.3)
+    .style('cursor', 'default')
+    .attr('href', null);
+
+  this.findUnreadLink.transition().delay(3000).duration(2000)
+    .style('opacity', 0);
+};
+
 /* Editing */
 
 TextStuff.makeId = function makeId(lengthOfRandomPart) {

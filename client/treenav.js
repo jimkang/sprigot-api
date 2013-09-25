@@ -100,22 +100,11 @@ TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
 }
 
 TreeNav.goToSprigId = function goToSprigId(sprigId, delay) {
-  var pathToSprig = D3SprigBridge.mapPathToSprigId(sprigId, this.sprigTree, 100);
-  if (pathToSprig.length > 1) {
-    this.followPathToSprig(pathToSprig, delay);
-  }
-}
+  var pathToSprig = 
+    D3SprigBridge.mapPathToSprigId(sprigId, this.sprigTree, 100);
 
-TreeNav.goToSprig = function goToSprig(sprigPredicate, delay) {
-  var pathToSprig = D3SprigBridge.mapPathInD3Tree(sprigPredicate, 
-    this.sprigTree, 100);
   if (pathToSprig.length > 1) {
     this.followPathToSprig(pathToSprig, delay);
-  }
-  if (pathToSprig.length > 0) {
-    var destSprig = pathToSprig[pathToSprig.length-1];
-    Historian.syncURLToSprigId(destSprig.id);
-    this.textStuff.syncTextpaneWithTreeNode(destSprig);
   }
 }
 
