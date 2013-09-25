@@ -103,7 +103,9 @@ TreeNav.goToSprigId = function goToSprigId(sprigId, delay) {
   var pathToSprig = 
     D3SprigBridge.mapPathToSprigId(sprigId, this.sprigTree, 100);
 
-  if (pathToSprig.length > 1) {
+  if (pathToSprig.length > 0 && 
+    pathToSprig[pathToSprig.length-1].id !== this.graph.focusNode.id) {
+    
     this.followPathToSprig(pathToSprig, delay);
   }
 }

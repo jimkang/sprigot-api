@@ -29,7 +29,10 @@ Director.direct = function direct(locationHash) {
       if (Sprigot.graph.nodeRoot) {
         if (sprigId === 'findunread') {
           Sprigot.respondToFindUnreadCmd();
-        }        
+        }
+        else if (sprigId) {
+          Sprigot.graph.treeNav.goToSprigId(sprigId, 100);
+        }
       }
       else {
         Sprigot.load(docName, identifyFocusSprig, function doneLoading(error) {
