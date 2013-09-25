@@ -3,7 +3,8 @@ var Director = {};
 Director.direct = function direct(locationHash) {
   var pathSegments = locationHash.split('/');
   if (pathSegments.length < 2) {
-    Sprigot.init('About');
+    Sprigot.init();
+    Sprigot.load('About', this.matchAny);
     return;
   }
 
@@ -22,7 +23,7 @@ Director.direct = function direct(locationHash) {
         return (sprigId === sprig.id);
       };
       if (sprigId === 'findunread') {
-        identifyFocusSprig = function matchAny() { return true; };
+        identifyFocusSprig = this.matchAny;
       }
 
       if (Sprigot.graph.nodeRoot) {
@@ -43,6 +44,10 @@ Director.direct = function direct(locationHash) {
         });
       }
   }
+};
+
+Director.matchAny = function matchAny() {
+  return true;
 };
 
 Director.respondToHashChange = function respondToHashChange() {
