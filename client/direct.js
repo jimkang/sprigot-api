@@ -4,7 +4,11 @@ Director.direct = function direct(locationHash) {
   var pathSegments = locationHash.split('/');
   if (pathSegments.length < 2) {
     Sprigot.init();
-    Sprigot.load('About', this.matchAny);
+    Sprigot.load('About', this.matchAny, function doneLoading(error) {
+      if (error) {
+        console.log('Error while getting sprig:', error);
+      }
+    });
     return;
   }
 
