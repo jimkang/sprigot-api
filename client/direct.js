@@ -16,7 +16,7 @@ Director.direct = function direct(locationHash) {
     case 'index':
       break;
     default:
-      var docName = pathSegments[1];
+      var docId = pathSegments[1];
       if (pathSegments.length > 1) {
         var sprigId = pathSegments[2];
       }
@@ -30,7 +30,7 @@ Director.direct = function direct(locationHash) {
         identifyFocusSprig = this.matchAny;
       }
 
-      if (Sprigot.graph.nodeRoot) {
+      if (Sprigot.graph.nodeRoot && Sprigot.docId === docId) {
         if (sprigId === 'findunread') {
           Sprigot.respondToFindUnreadCmd();
         }
@@ -39,7 +39,7 @@ Director.direct = function direct(locationHash) {
         }
       }
       else {
-        Sprigot.load(docName, identifyFocusSprig, function doneLoading(error) {
+        Sprigot.load(docId, identifyFocusSprig, function doneLoading(error) {
           if (error) {
             console.log('Error while getting sprig:', error);
           }
