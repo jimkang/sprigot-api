@@ -106,7 +106,10 @@ TreeRenderer.update = function update(source, duration) {
     });
 
   nodeUpdate.select('text')
-    .style('fill-opacity', 1);
+    .style('fill-opacity', function (d) { 
+      return this.graph.nodeHasFocus(d) ? 1.0 : 0.78; 
+    }
+    .bind(this));
 
   // Transition exiting nodes to the parent's new position.
   var nodeExit = node.exit().transition()
