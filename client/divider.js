@@ -28,7 +28,13 @@ Divider.syncExpanderArrow = function syncExpanderArrow() {
   var textPaneIsHidden = this.textStuff.pane.classed('collapsedPane');
   var xOffset = textPaneIsHidden ? 36 : 6;
   var transformString = 'translate(' + xOffset + ', 0) ';
-  transformString += ('scale(' + (textPaneIsHidden ? '-1' : '1') + ', 1)');
+
+  var flipHorizontal = textPaneIsHidden;
+  var flipVertical = false;
+
+  transformString += ('scale(' + 
+    (flipHorizontal ? '-1' : '1') + ', ' + 
+    (flipVertical ? '-1' : '1') + ') ');
 
   this.expanderArrow
     .transition()
