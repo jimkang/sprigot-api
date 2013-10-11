@@ -169,6 +169,21 @@ section {
   width: 100% /* needed for Firefox */   
 }
 
+#graphPane {
+  order: 1;
+  -webkit-box-ordinal-group: 1;
+}
+
+.divider {
+  order: 2;
+  -webkit-box-ordinal-group: 2;
+}
+
+#nongraphPane {
+  order: 3;
+  -webkit-box-ordinal-group: 3;
+}
+
 
 @media only screen and (max-width: 640px) {
   section {
@@ -182,7 +197,6 @@ section {
 
   .pane {
     width: 100%;
-    height: 44%;
   }
 
   .collapsedPane {
@@ -192,28 +206,74 @@ section {
 
   .expandedPane {
     height: 90%;
-    min-height: 200px;
   }
 
   .divider {
     transform-origin: center;
-    transform: rotate(90deg);
+    transform: rotate(-90deg);
     -webkit-transform-origin: center;
-    -webkit-transform: rotate(90deg);
+    -webkit-transform: rotate(-90deg);
     -ms-transform-origin: center;
-    -ms-transform: rotate(90deg);
+    -ms-transform: rotate(-90deg);
   }
+
+  #graphPane {
+    order: 3;
+    -webkit-box-ordinal-group: 3;
+  }
+
+  .divider {
+    order: 2;
+    -webkit-box-ordinal-group: 2;
+  }
+
+  #nongraphPane {
+    order: 1;
+    -webkit-box-ordinal-group: 1;
+  } 
 }
 
 @media only screen and (max-device-height: 568px) {
   section {
     height: 568px;
   }
-  .pane {
-    height: 220px;
+
+  #graphPane {
+    order: 3;
+    -webkit-box-ordinal-group: 3;
+    flex: 1 6 100px;
+    -webkit-flex: 1 6 100px;    
   }
+
+  .divider {
+    order: 2;
+    -webkit-box-ordinal-group: 2;
+    flex: 1 6 44px;
+    -webkit-flex: 1 6 44px;
+  }
+
+  #nongraphPane {
+    order: 1;
+    -webkit-box-ordinal-group: 1;
+    margin-top: 8px;
+    flex: 3 1 80%;
+    -webkit-flex: 3 1 80%;
+  }
+
+  #svgBoard {
+    height: 200px;
+  }
+
   .expandedPane {
-    height: 360px;
+    flex-basis: 300px;
+    -webkit-flex-basis: 300px;
+  }
+
+  .collapsedPane {
+    max-height: 0;
+    height: 0;
+    flex-basis: 0;
+    -webkit-flex-basis: 0;
   }
 }
 
