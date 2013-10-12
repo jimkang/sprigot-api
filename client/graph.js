@@ -113,7 +113,7 @@ Graph.setGraphScale = function setGraphScale() {
   var actualBoardHeight = this.camera.getActualHeight(this.board.node());
 
   if (actualBoardHeight <= 230) {
-    this.camera.rootSelection.attr('transform', 'translate(0, 0) scale(0.5)');
+    this.camera.rootSelection.attr('transform', 'translate(0, 0) scale(0.75)');
     this.camera.zoomBehavior.scale(0.5);
   }
 }
