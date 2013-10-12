@@ -91,7 +91,7 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
       }  
     }
     .bind(this),
-    800);
+    900);
   }
 
   setTimeout(function initialTextShow() {
