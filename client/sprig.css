@@ -185,7 +185,7 @@ section {
 }
 
 
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 640px) and (min-device-height: 569px) {
   section {
     flex-direction: column;
 
@@ -236,7 +236,18 @@ section {
 @media only screen and (max-device-height: 568px) {
   section {
     height: 568px;
+
+    flex-direction: column;
+    -webkit-flex-direction: column;
+
+    /* Without this, Safari won't respect -webkit-flex-direction. */
+    -webkit-box-orient: vertical;
   }
+
+  .pane {
+    width: 100%;
+  }
+
 
   #graphPane {
     order: 3;
@@ -250,6 +261,13 @@ section {
     -webkit-box-ordinal-group: 2;
     flex: 1 6 44px;
     -webkit-flex: 1 6 44px;
+
+    transform-origin: center;
+    transform: rotate(-90deg);
+    -webkit-transform-origin: center;
+    -webkit-transform: rotate(-90deg);
+    -ms-transform-origin: center;
+    -ms-transform: rotate(-90deg);    
   }
 
   #nongraphPane {
