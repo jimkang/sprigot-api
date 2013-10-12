@@ -234,15 +234,18 @@ section {
   }
 
   .expandedPane {
-    flex-basis: 300px;
-    -webkit-flex-basis: 300px;
+    -webkit-flex: 1 1 auto;
+  }
+
+  .expandedPane #svgBoard {
+    height: 100%;
   }
 
   .collapsedPane {
     max-height: 0;
     height: 0;
-    flex-basis: 0;
-    -webkit-flex-basis: 0;
+    flex: 1 1 0;
+    -webkit-flex: 1 1 0;
   }
 }
 
