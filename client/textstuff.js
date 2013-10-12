@@ -113,6 +113,11 @@ TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode)
   if (this.editAvailable) {
     this.emphasizeCheckbox.node().checked = this.graph.focusNode.emphasize;
   }
+
+  var isMobileMediaQuery = 'only screen and (max-device-height: 568px)';
+  if (window.matchMedia(isMobileMediaQuery).matches) {
+    window.scrollTo(0, 0);
+  }
 }
 
 TextStuff.showTextpaneForTreeNode = function showTextpaneForTreeNode(treeNode) {
