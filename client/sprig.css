@@ -184,59 +184,6 @@ section {
   -webkit-box-ordinal-group: 3;
 }
 
-
-@media only screen and (max-width: 640px) and (min-device-height: 569px) {
-  section {
-    flex-direction: column-reverse;
-    -webkit-flex-direction: column-reverse;    
-    flex-wrap: nowrap;
-    height: auto;
-
-    /* Without this, Safari won't respect -webkit-flex-direction. */
-    -webkit-box-orient: vertical;
-  }
-
-  .pane {
-    width: 100%;
-  }
-
-  .collapsedPane {
-    height: 0;
-    min-width: 0px;
-  }
-
-  .expandedPane {
-    height: 90%;
-  }
-
-  #graphPane {
-    -webkit-flex: 1 1 240px;
-  }
-
-  #svgBoard {
-    height: 240px;
-  }
-
-  .divider {
-    flex: 1 1 auto;
-    -webkit-flex: 1 1 44px;
-    /* Since this element is rotated, height is effectively going to be the 
-    width. */
-    height: 100%;
-
-    transform-origin: center;
-    transform: rotate(-90deg);
-    -webkit-transform-origin: center;
-    -webkit-transform: rotate(-90deg);
-    -ms-transform-origin: center;
-    -ms-transform: rotate(-90deg);
-  }
-
-  #nongraphPane {
-    -webkit-flex: 1 1 auto;
-  } 
-}
-
 @media only screen and (max-device-height: 568px) {
   section {
     height: 568px;
