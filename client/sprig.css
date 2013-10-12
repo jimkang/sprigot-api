@@ -234,6 +234,7 @@ section {
   }
 
   .expandedPane {
+    flex: 1 1 auto;
     -webkit-flex: 1 1 auto;
   }
 
