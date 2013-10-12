@@ -187,12 +187,13 @@ section {
 
 @media only screen and (max-width: 640px) and (min-device-height: 569px) {
   section {
-    flex-direction: column;
+    flex-direction: column-reverse;
+    -webkit-flex-direction: column-reverse;    
+    flex-wrap: nowrap;
+    height: auto;
 
     /* Without this, Safari won't respect -webkit-flex-direction. */
     -webkit-box-orient: vertical;
-
-    -webkit-flex-direction: column;
   }
 
   .pane {
@@ -209,13 +210,19 @@ section {
   }
 
   #graphPane {
-    order: 3;
-    -webkit-box-ordinal-group: 3;
+    -webkit-flex: 1 1 240px;
+  }
+
+  #svgBoard {
+    height: 240px;
   }
 
   .divider {
-    order: 2;
-    -webkit-box-ordinal-group: 2;
+    flex: 1 1 auto;
+    -webkit-flex: 1 1 44px;
+    /* Since this element is rotated, height is effectively going to be the 
+    width. */
+    height: 100%;
 
     transform-origin: center;
     transform: rotate(-90deg);
@@ -226,8 +233,7 @@ section {
   }
 
   #nongraphPane {
-    order: 1;
-    -webkit-box-ordinal-group: 1;
+    -webkit-flex: 1 1 auto;
   } 
 }
 
