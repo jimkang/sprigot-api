@@ -1,14 +1,18 @@
+function createDivider() {
+
 var Divider = {
   expanderArrow: null,
   graph: null,
   textStuff: null,
-  camera: null
+  camera: null,
+  sprigot: null
 };
 
-Divider.init = function init(sprigotSel, graph, textStuff, camera) {
+Divider.init = function init(sprigotSel, graph, textStuff, camera, sprigot) {
   this.graph = graph;
   this.textStuff = textStuff;
   this.camera = camera;
+  this.sprigot = sprigot;
 
   this.expanderArrow = sprigotSel.append('div').classed('divider', true)
     .append('svg').classed('arrowboard', true)
@@ -50,8 +54,15 @@ Divider.toggleGraphExpansion = function toggleGraphExpansion() {
 
   this.textStuff.pane.classed('collapsedPane', shouldHideTextPane)
     .classed('pane', !shouldHideTextPane);
+
   this.graph.pane.classed('expandedPane', shouldHideTextPane)
     .classed('pane', !shouldHideTextPane);
+
+  // Do not collapse the graph pane unless it's the mobile view.
+  if (this.sprigot.isMobile()) {
+    this.graph.pane.classed('collapsedPane', !shouldHideTextPane);
+  }
+
   this.textStuff.findUnreadLink.style('display', 
     shouldHideTextPane ? 'none' : 'block');
 
@@ -60,4 +71,12 @@ Divider.toggleGraphExpansion = function toggleGraphExpansion() {
   if (this.graph.focusEl) {
     this.camera.panToElement(d3.select(this.graph.focusEl));
   }
+}
+
+Divider.hideGraph = function hideGraph() {
+  this.graph.pane.classed('expandedPane', false);
+  this.graph.pane.classed('collapsedPane', true);  
+};
+
+return Divider;
 }

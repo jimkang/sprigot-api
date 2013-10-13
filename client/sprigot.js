@@ -3,7 +3,8 @@ var margin = {top: 20, right: 10, bottom: 20, left: 10};
 var Sprigot = {
   docId: null,
   graph: null,
-  store: null
+  store: null,
+  divider: null
 };
 
 Sprigot.init = function init(forceRebuild) {
@@ -24,12 +25,13 @@ Sprigot.init = function init(forceRebuild) {
   this.graph = createGraph();
   this.graph.init(sprigotSel, Camera, TreeRenderer, TextStuff, Historian);
   this.store = createStore();
+  this.divider = createDivider();
 
-  Divider.init(sprigotSel, this.graph, TextStuff, Camera);
+  this.divider.init(sprigotSel, this.graph, TextStuff, Camera, this);
   TextStuff.init(sprigotSel, this.graph, TreeRenderer, this.store, this, 
-      Divider);
+      this.divider);
 
-  Divider.syncExpanderArrow();
+  this.divider.syncExpanderArrow();
   this.initDocEventResponders();
 }
 
@@ -232,4 +234,15 @@ Sprigot.respondToFindUnreadCmd = function respondToFindUnreadCmd() {
     TextStuff.disableFindUnreadLink();
   }
 };
+
+Sprigot.respondToSwitchToGraphCmd = function respondToSwitchToGraphCmd() {
+  if (!this.graph.pane.classed('expandedPane')) {
+    this.divider.toggleGraphExpansion();
+  }
+};
+
+Sprigot.isMobile = function isMobile() {
+  var isMobileMediaQuery = 'only screen and (max-device-height: 568px)';
+  return (window.matchMedia(isMobileMediaQuery).matches);
+}
 

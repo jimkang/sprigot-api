@@ -4,6 +4,7 @@ var TextStuff = {
   store: null,
   sprigot: null,
   divider: null,
+  sprigot: null,
 
   pane: null,
   textpane: null,
@@ -15,6 +16,7 @@ var TextStuff = {
   newSprigotButton: null,
   emphasizeCheckbox: null,
   findUnreadLink: null,
+  showGraphLink: null,
   downLink: null,
   OKCancelDialog: null,
   // editAvailable: true
@@ -63,6 +65,11 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
   }
 
   this.initFindUnreadLink();
+
+  if (this.sprigot.isMobile()) {
+    this.initShowGraphLink();
+  }
+
   // this.downLink = this.pane.append('a')
   //   .html('&nbsp;&#9660;&nbsp;')
   //   .classed('control-link', true)
@@ -103,6 +110,17 @@ TextStuff.initFindUnreadLink = function initFindUnreadLink() {
   }
 }
 
+TextStuff.initShowGraphLink = function initShowGraphLink() {
+  this.showGraphLink = this.pane.append('a')
+    .attr('id', 'showGraphLink')
+    .attr('href', location)
+    .classed('control-link', true)
+    .classed('showgraph-link', true)
+    .text('Go')
+    .style('display', 'none')
+    .on('click', this.sprigot.respondToSwitchToGraphCmd.bind(this.sprigot));
+};
+
 TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode) {
   this.textcontent.datum(treeNode);
   this.titleField.datum(treeNode);
@@ -114,8 +132,8 @@ TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode)
     this.emphasizeCheckbox.node().checked = this.graph.focusNode.emphasize;
   }
 
-  var isMobileMediaQuery = 'only screen and (max-device-height: 568px)';
-  if (window.matchMedia(isMobileMediaQuery).matches) {
+  if (this.sprigot.isMobile()) {
+    this.divider.hideGraph();
     window.scrollTo(0, 0);
   }
 }
