@@ -29,7 +29,8 @@ Sprigot.init = function init(forceRebuild) {
   }
   this.camera = createCamera(cameraScaleExtent);
   this.graph = createGraph();
-  this.graph.init(sprigotSel, this.camera, TreeRenderer, TextStuff, Historian);
+  this.graph.init(sprigotSel, this.camera, TreeRenderer, TextStuff, Historian,
+    this);
   this.store = createStore();
   this.divider = createDivider();
 

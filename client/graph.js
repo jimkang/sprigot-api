@@ -6,6 +6,7 @@ var Graph = {
   treeNav: null,
   textStuff: null,
   historian: null,
+  sprigot: null,
 
   pane: null,
   board: null,
@@ -16,13 +17,14 @@ var Graph = {
 };
 
 Graph.init = function init(sprigotSel, camera, treeRenderer, 
-  textStuff, historian) {
+  textStuff, historian, sprigot) {
 
   this.camera = camera;
   this.treeRenderer = treeRenderer;
   this.treeNav = createTreeNav();
   this.textStuff = textStuff;
   this.historian = historian;
+  this.sprigot = sprigot;
 
   this.pane = sprigotSel.append('div')
     .attr('id', 'graphPane')
@@ -49,6 +51,16 @@ Graph.init = function init(sprigotSel, camera, treeRenderer,
 
   this.camera.setUpZoomOnBoard(this.board, this.svgRoot);
   this.setGraphScale();
+
+  var note = this.pane.append('div').attr('id', 'zoom-note')
+      .classed('info-note', true);
+
+  if (this.sprigot.isMobile()) {
+    note.text('You can pinch to zoom in and out of the graph. Drag to pan.');
+  }
+  else {
+    note.text('You can use the mouse wheel to zoom in and out of the graph. Drag to pan.');    
+  }
 
   return this;
 }

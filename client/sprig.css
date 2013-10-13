@@ -140,6 +140,11 @@ svg#svgBoard {
   padding-right: 8px;
 }
 
+.info-note {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.25);
+}
+
 section {
   display: -webkit-box;   /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  
   display: -ms-flexbox;   /* MID: IE 10 */
