@@ -23,7 +23,11 @@ Sprigot.init = function init(forceRebuild) {
     return;
   }
 
-  this.camera = createCamera();
+  var cameraScaleExtent = [0.5, 1];
+  if (this.isMobile()) {
+    cameraScaleExtent = [0.25, 1];
+  }
+  this.camera = createCamera(cameraScaleExtent);
   this.graph = createGraph();
   this.graph.init(sprigotSel, this.camera, TreeRenderer, TextStuff, Historian);
   this.store = createStore();

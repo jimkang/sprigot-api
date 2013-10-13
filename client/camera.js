@@ -1,4 +1,4 @@
-function createCamera() {
+function createCamera(scaleExtent) {
 
 var Camera = {
   locked: false,
@@ -6,6 +6,7 @@ var Camera = {
   boardSelection: null, 
   zoomBehavior: null,
   parsedPreLockTransform: null,
+  scaleExtent: scaleExtent,
 
   setUpZoomOnBoard: function(boardSel, rootGroupSel) {
     // Make x and y scaling functions that just returns whatever is passed into 
@@ -21,8 +22,11 @@ var Camera = {
       .domain([0, height])
       .range([height, 0]);
 
-    Camera.zoomBehavior = 
-    d3.behavior.zoom().x(x).y(y).scaleExtent([1, 1])
+    var scaleMin = 0.5;
+    if (Sprigot)
+
+    Camera.zoomBehavior = d3.behavior.zoom().x(x).y(y)
+      .scaleExtent(this.scaleExtent)
       .on("zoom", Camera.syncZoomEventToTransform);
 
     Camera.boardSelection = boardSel;
