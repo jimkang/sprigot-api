@@ -190,6 +190,22 @@ section {
   -webkit-box-ordinal-group: 3;
 }
 
+/* iPad */
+
+@media only screen and (min-device-width : 768px) and (max-device-height: 1024px) {
+  #svgBoard {
+    height: 768px;
+  }
+}
+
+@media only screen and (min-device-width : 1024px) and (max-device-height: 768px) {
+  #svgBoard {
+    height: 512px;
+  }
+}
+
+/* Mobile */
+
 @media only screen and (max-device-height: 568px) {
   section {
     height: 568px;
