@@ -59,7 +59,8 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
   this.nodeRoot = nodeTree;
 
   this.treeRenderer.init(this.nodeRoot, this);
-  this.treeNav.init(this.nodeRoot, Camera, TreeRenderer, this, this.textStuff);
+  this.treeNav.init(this.nodeRoot, this.camera, TreeRenderer, this, 
+    this.textStuff);
 
   var height = this.board.node().clientHeight - margin.top - margin.bottom;
   this.nodeRoot.x0 = height / 2;
@@ -131,7 +132,7 @@ Graph.focusOnTreeNode = function focusOnTreeNode(treeNode, el) {
   }
   this.historian.syncURLToSprigId(treeNode.id);
   this.treeRenderer.update(this.nodeRoot);
-  Camera.panToElement(d3.select(this.focusEl));
+  this.camera.panToElement(d3.select(this.focusEl));
 }
 
 Graph.focusOnSprig = function focusOnSprig(sprigId, delay) {

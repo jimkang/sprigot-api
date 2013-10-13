@@ -1,3 +1,5 @@
+function createCamera() {
+
 var Camera = {
   locked: false,
   rootSelection: null,  
@@ -200,3 +202,6 @@ var Camera = {
     750);
   }
 };
+
+return Camera;
+}

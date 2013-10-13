@@ -4,7 +4,8 @@ var Sprigot = {
   docId: null,
   graph: null,
   store: null,
-  divider: null
+  divider: null,
+  camera: null
 };
 
 Sprigot.init = function init(forceRebuild) {
@@ -22,12 +23,13 @@ Sprigot.init = function init(forceRebuild) {
     return;
   }
 
+  this.camera = createCamera();
   this.graph = createGraph();
-  this.graph.init(sprigotSel, Camera, TreeRenderer, TextStuff, Historian);
+  this.graph.init(sprigotSel, this.camera, TreeRenderer, TextStuff, Historian);
   this.store = createStore();
   this.divider = createDivider();
 
-  this.divider.init(sprigotSel, this.graph, TextStuff, Camera, this);
+  this.divider.init(sprigotSel, this.graph, TextStuff, this.camera, this);
   TextStuff.init(sprigotSel, this.graph, TreeRenderer, this.store, this, 
       this.divider);
 
