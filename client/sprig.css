@@ -193,15 +193,12 @@ section {
     -webkit-box-orient: vertical;
   }
 
-  .pane {
-    width: 100%;
-  }
-
   #graphPane {
     order: 3;
     -webkit-box-ordinal-group: 3;
     flex: 1 6 100px;
-    -webkit-flex: 1 6 100px;    
+    -webkit-flex: 1 6 100px;
+    width: 95%;
   }
 
   .divider {
@@ -213,6 +210,7 @@ section {
   }
 
   #nongraphPane {
+    width: 100%;
     order: 1;
     -webkit-box-ordinal-group: 1;
     margin-top: 8px;
