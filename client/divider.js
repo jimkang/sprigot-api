@@ -58,11 +58,6 @@ Divider.toggleGraphExpansion = function toggleGraphExpansion() {
   this.graph.pane.classed('expandedPane', shouldHideTextPane)
     .classed('pane', !shouldHideTextPane);
 
-  // Do not collapse the graph pane unless it's the mobile view.
-  if (this.sprigot.isMobile()) {
-    this.graph.pane.classed('collapsedPane', !shouldHideTextPane);
-  }
-
   this.textStuff.findUnreadLink.style('display', 
     shouldHideTextPane ? 'none' : 'block');
 

@@ -140,19 +140,6 @@ svg#svgBoard {
   padding-right: 8px;
 }
 
-.showgraph-link {
-  float: left;  
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.down-link {
-  display: block;
-  margin-top: 8px;
-  margin-left: 4px;
-  font-size: 22px;
-}
-
 section {
   display: -webkit-box;   /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  
   display: -ms-flexbox;   /* MID: IE 10 */
