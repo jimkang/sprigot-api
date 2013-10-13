@@ -210,7 +210,6 @@ section {
     width: 100%;
   }
 
-
   #graphPane {
     order: 3;
     -webkit-box-ordinal-group: 3;
@@ -219,17 +218,11 @@ section {
   }
 
   .divider {
+    display: none;
     order: 2;
     -webkit-box-ordinal-group: 2;
-    flex: 1 6 44px;
-    -webkit-flex: 1 6 44px;
-
-    transform-origin: center;
-    transform: rotate(-90deg);
-    -webkit-transform-origin: center;
-    -webkit-transform: rotate(-90deg);
-    -ms-transform-origin: center;
-    -ms-transform: rotate(-90deg);    
+    flex: 0 0 0px;
+    -webkit-flex: 0 0 0px;
   }
 
   #nongraphPane {
