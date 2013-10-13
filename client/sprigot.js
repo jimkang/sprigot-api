@@ -39,9 +39,6 @@ Sprigot.load = function load(docId, identifyFocusSprig, done) {
   this.docId = docId;
   Historian.init(this.graph.treeNav, this.docId);
 
-  var identifySprig = null;
-  var navDelay = 0;
-
   this.store.getSprigTree(docId, function doneGettingTree(error, sprigTree) {
     if (error) {
       done(error, null);

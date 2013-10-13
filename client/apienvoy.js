@@ -12,8 +12,6 @@ APIEnvoy.request = function request(jsonBody, done) {
   xhr.setRequestHeader('accept', 'application/json');
 
   xhr.onload = function gotSprig() {
-    var retrieved = false;
-
     if (this.status === 200) {
       var response = JSON.parse(this.responseText);
       done(null, response);

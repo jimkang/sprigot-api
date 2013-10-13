@@ -272,7 +272,7 @@ TextStuff.showDeleteSprigDialog = function showDeleteSprigDialog() {
 
 /* Responders */
 
-TextStuff.respondToEmphasisCheckChange = function respondToEmphasisCheckChange(d) {
+TextStuff.respondToEmphasisCheckChange = function respondToEmphasisCheckChange() {
   if (this.graph.focusNode) {
     this.graph.focusNode.emphasize = this.emphasizeCheckbox.node().checked;
     this.treeRenderer.update(this.graph.nodeRoot);

@@ -47,7 +47,7 @@ TreeRenderer.update = function update(source, duration) {
   // Enter any new nodes at the parent's previous position.
   var nodeEnter = node.enter().append('g')
     .attr('class', 'node')
-    .attr('transform', function(d) { 
+    .attr('transform', function() { 
       return 'translate(' + source.y0 + ',' + source.x0 + ')'; 
     })
     .attr('id', function(d) { return d.id; })
@@ -114,7 +114,9 @@ TreeRenderer.update = function update(source, duration) {
   // Transition exiting nodes to the parent's new position.
   var nodeExit = node.exit().transition()
     .duration(duration)
-    .attr('transform', function(d) { return 'translate(' + source.y + ',' + source.x + ')'; })
+    .attr('transform', function() { 
+      return 'translate(' + source.y + ',' + source.x + ')'; 
+    })
     .remove();
 
   nodeExit.select('circle')
@@ -130,7 +132,7 @@ TreeRenderer.update = function update(source, duration) {
   // Enter any new links at the parent's previous position.
   link.enter().insert('path', 'g')
     .attr('class', 'link')
-    .attr('d', function(d) {
+    .attr('d', function() {
       var o = {x: source.x0, y: source.y0};
       return this.diagonalProjection({source: o, target: o});
     }
@@ -153,7 +155,7 @@ TreeRenderer.update = function update(source, duration) {
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
     .duration(duration)
-    .attr('d', function getLinkData(d) {
+    .attr('d', function getLinkData() {
       var o = {x: source.x, y: source.y};
       return this.diagonalProjection({source: o, target: o});
     }
