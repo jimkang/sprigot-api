@@ -34,7 +34,7 @@ Graph.init = function init(sprigotSel, camera, treeRenderer,
     .attr({
       id: 'svgBoard',
       width: '100%',
-      height: '100%'
+      height: '85%'
     });
 
   this.board.append('g').attr('id', 'background')
