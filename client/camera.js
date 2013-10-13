@@ -22,9 +22,6 @@ var Camera = {
       .domain([0, height])
       .range([height, 0]);
 
-    var scaleMin = 0.5;
-    if (Sprigot)
-
     Camera.zoomBehavior = d3.behavior.zoom().x(x).y(y)
       .scaleExtent(this.scaleExtent)
       .on("zoom", Camera.syncZoomEventToTransform);
