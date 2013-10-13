@@ -143,6 +143,9 @@ svg#svgBoard {
 .info-note {
   font-size: 18px;
   color: rgba(255, 255, 255, 0.25);
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-bottom: 1em;
 }
 
 section {
