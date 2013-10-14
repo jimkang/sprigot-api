@@ -190,6 +190,16 @@ section {
   -webkit-box-ordinal-group: 3;
 }
 
+
+/* Firefox */
+@-moz-document url-prefix(http) {
+  #nongraphPane {
+    /* When the content is taller than the window, this will let it scroll. */
+    height: 100%;
+  }
+}
+
+
 /* iPad */
 
 @media only screen and (min-device-width : 768px) and (max-device-height: 1024px) {
