@@ -1,3 +1,5 @@
+// treerenderer is where the click events are actually set up.
+
 function createTreeNav() {
 
 var TreeNav = {
@@ -8,9 +10,7 @@ var TreeNav = {
   textStuff: null
 };
 
-TreeNav.init = function init(sprigTree, camera, treeRenderer, graph, 
-  textStuff) {
-
+TreeNav.init = function init(sprigTree, camera, treeRenderer, graph, textStuff) {
   this.sprigTree = sprigTree;
   this.graphCamera = camera;
   this.treeRenderer = treeRenderer;
@@ -24,11 +24,11 @@ TreeNav.chooseTreeNode = function chooseTreeNode(treeNode, treeEl) {
   TextStuff.showTextpaneForTreeNode(treeNode);
 }
 
-TreeNav.toggleChildren = function toggleChildren(treeNode) {
+TreeNav.toggleChildren = function toggleChildren(treeNode) {  
   if (treeNode.children) {
     treeNode._children = treeNode.children;
     treeNode.children = null;
-  } 
+  }
   else {
     this.expandChildren(treeNode);
   }
