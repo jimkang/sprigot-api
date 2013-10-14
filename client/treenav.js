@@ -18,9 +18,8 @@ TreeNav.init = function init(sprigTree, camera, treeRenderer, graph,
   this.textStuff = textStuff;
 }
 
-
 TreeNav.chooseTreeNode = function chooseTreeNode(treeNode, treeEl) {
-  this.toggleChildren(treeNode);
+  this.expandChildren(treeNode);
   this.graph.focusOnTreeNode(treeNode, treeEl);
   TextStuff.showTextpaneForTreeNode(treeNode);
 }
@@ -138,13 +137,7 @@ TreeNav.respondToDownArrow = function respondToDownArrow() {
 
 TreeNav.respondToUpArrow = function respondToUpArrow() {
   d3.event.stopPropagation();
-  if (this.nodeIsExpanded(this.graph.focusNode)) {
-    this.collapseRecursively(this.graph.focusNode);
-    this.treeRenderer.update(this.graph.focusNode);
-  }
-  else {
-    this.followParentOfNode(this.graph.focusNode);
-  }
+  this.followParentOfNode(this.graph.focusNode);
 }
 
 TreeNav.respondToLeftArrow = function respondToLeftArrow() {
