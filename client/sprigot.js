@@ -122,7 +122,9 @@ Sprigot.respondToDocKeyUp = function respondToDocKeyUp() {
 
 Sprigot.respondToDocKeyDown = function respondToDocKeyDown() {
   // cmd+delete keys
-  if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 8) {
+
+  if (TextStuff.editAvailable && 
+    (d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 8) {
     TextStuff.showDeleteSprigDialog();
   }
 }
