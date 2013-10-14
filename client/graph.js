@@ -136,7 +136,7 @@ Graph.setFocusEl = function setFocusEl(el) {
   this.focusNode = d3.select(this.focusEl).datum();
 }
 
-Graph.focusOnTreeNode = function focusOnTreeNode(treeNode, el) {
+Graph.focusOnTreeNode = function focusOnTreeNode(treeNode, el, done) {
   this.setFocusEl(el);
   var previouslyVisited = this.noteNodeWasVisited(treeNode);
   if (!previouslyVisited) {
@@ -144,17 +144,17 @@ Graph.focusOnTreeNode = function focusOnTreeNode(treeNode, el) {
   }
   this.historian.syncURLToSprigId(treeNode.id);
   this.treeRenderer.update(this.nodeRoot);
-  this.camera.panToElement(d3.select(this.focusEl));
+  this.camera.panToElement(d3.select(this.focusEl), done);
 }
 
-Graph.focusOnSprig = function focusOnSprig(sprigId, delay) {
+Graph.focusOnSprig = function focusOnSprig(sprigId, delay, done) {
   if (!delay) {
     delay = 500;
   }
   var sprigSel = d3.select('#' + sprigId);
 
   setTimeout(function doFocus() {
-    this.focusOnTreeNode(sprigSel.datum(), sprigSel.node());
+    this.focusOnTreeNode(sprigSel.datum(), sprigSel.node(), done);
   }
   .bind(this),
   delay);

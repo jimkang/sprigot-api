@@ -79,7 +79,7 @@ var Camera = {
 
     Camera.lockZoom();
   },
-  panToCenterOnRect: function(rect, duration) {
+  panToCenterOnRect: function(rect, duration, done) {
     if (!duration) {
       duration = 300;
     }
@@ -97,15 +97,18 @@ var Camera = {
 
     Camera.tweenToNewZoom(scale, 
       [(-rect.x - rect.width/2 + boardWidth/2), 
-      (-rect.y - rect.height/2 + boardHeight/2)], duration);
+      (-rect.y - rect.height/2 + boardHeight/2)], 
+      duration,
+      done
+    );
   },
 
   // newTranslate should be a two-element array corresponding to x and y in 
   // the translation.
-  tweenToNewZoom: function(newScale, newTranslate, time) {
+  tweenToNewZoom: function(newScale, newTranslate, time, done) {
     var oldTransform = Camera.rootSelection.attr('transform');
 
-    d3.transition().duration(time).tween("zoom", function() {
+    var tween = d3.transition().duration(time).tween("zoom", function() {
       var oldScale = 1.0;
       var oldTranslate = [0, 0];
       if (oldTransform) {
@@ -134,9 +137,13 @@ var Camera = {
         // panning.
         Camera.rootSelection.attr('transform', 
           "translate(" + currentTranslate[0] + ", " + currentTranslate[1] + ")" + 
-          " scale(" + currentScale + ")");         
+          " scale(" + currentScale + ")");
       };
-    });   
+    });
+
+    if (done) {
+      tween.each('end', done);
+    }
   },
 
   // Returns dict in the form 
@@ -189,7 +196,7 @@ var Camera = {
     return sel.attr('transform').split(',')[0].split('.')[0].split('(')[1];
   },
 
-  panToElement: function panToElement(focusElementSel) {
+  panToElement: function panToElement(focusElementSel, done) {
     var currentScale = Camera.zoomBehavior.scale();
     var y = parseInt(Camera.translateYFromSel(focusElementSel)) * currentScale;
     var x = parseInt(Camera.translateXFromSel(focusElementSel)) * currentScale;
@@ -200,7 +207,7 @@ var Camera = {
       width: 1,
       height: 1
     },
-    750);
+    750, done);
   }
 };
 

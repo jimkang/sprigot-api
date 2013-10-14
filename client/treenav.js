@@ -18,10 +18,10 @@ TreeNav.init = function init(sprigTree, camera, treeRenderer, graph, textStuff) 
   this.textStuff = textStuff;
 }
 
-TreeNav.chooseTreeNode = function chooseTreeNode(treeNode, treeEl) {
+TreeNav.chooseTreeNode = function chooseTreeNode(treeNode, treeEl, done) {
   this.expandChildren(treeNode);
-  this.graph.focusOnTreeNode(treeNode, treeEl);
-  TextStuff.showTextpaneForTreeNode(treeNode);
+  this.graph.focusOnTreeNode(treeNode, treeEl, done);
+  this.textStuff.showTextpaneForTreeNode(treeNode);
 }
 
 TreeNav.toggleChildren = function toggleChildren(treeNode) {  
@@ -71,16 +71,17 @@ TreeNav.followBranchOfNode = function followBranchOfNode(treeNode) {
   }
 }
 
-TreeNav.followParentOfNode = function followParentOfNode(treeNode) {
+TreeNav.followParentOfNode = function followParentOfNode(treeNode, done) {
   if (typeof treeNode.parent === 'object') {
     var parentSel = d3.select('#' + treeNode.parent.id);
     this.chooseTreeNode(treeNode.parent, parentSel.node());
-    this.graphCamera.panToElement(parentSel);
+    this.graphCamera.panToElement(parentSel, done);
   }
 }
 
 // direction should be negative to go to the left, positive to go to the right.
-TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
+TreeNav.moveToSiblingNode = 
+function moveToSiblingNode(treeNode, direction, done) {
   if (typeof treeNode.parent === 'object' &&
     typeof treeNode.parent.children === 'object') {
 
@@ -92,7 +93,7 @@ TreeNav.moveToSiblingNode = function moveToSiblingNode(treeNode, direction) {
       if (siblingNode._children) {
         this.expandChildren(siblingNode);
       }
-      this.graph.focusOnTreeNode(siblingNode, siblingEl);
+      this.graph.focusOnTreeNode(siblingNode, siblingEl, done);
       this.textStuff.showTextpaneForTreeNode(siblingNode);
     }
   }
@@ -102,14 +103,19 @@ TreeNav.goToSprigId = function goToSprigId(sprigId, delay) {
   var pathToSprig = 
     D3SprigBridge.mapPathToSprigId(sprigId, this.sprigTree, 100);
 
-  if (pathToSprig.length > 0 && 
-    pathToSprig[pathToSprig.length-1].id !== this.graph.focusNode.id) {
-    
-    this.followPathToSprig(pathToSprig, delay);
+  if (pathToSprig.length > 0) {
+    var destNode = pathToSprig[pathToSprig.length-1];
+    if (destNode.id !== this.graph.focusNode.id) {    
+      this.followPathToSprig(pathToSprig, delay, function done() {
+        this.textStuff.showTextpaneForTreeNode(destNode);
+      }
+      .bind(this));
+    }
   }
 }
 
-TreeNav.followPathToSprig = function followPathToSprig(pathToSprig, delay) {
+TreeNav.followPathToSprig = 
+function followPathToSprig(pathToSprig, delay, done) {
   if (!delay) {
     var delay = this.treeRenderer.treeNodeAnimationDuration - 200;
   }
@@ -120,8 +126,7 @@ TreeNav.followPathToSprig = function followPathToSprig(pathToSprig, delay) {
   .bind(this));
 
   this.treeRenderer.update(this.sprigTree, 0);
-
-  this.graph.focusOnSprig(pathToSprig[pathToSprig.length-1].id, delay);
+  this.graph.focusOnSprig(pathToSprig[pathToSprig.length-1].id, delay, done);
 }
 
 TreeNav.respondToDownArrow = function respondToDownArrow() {
