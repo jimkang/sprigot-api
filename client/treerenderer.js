@@ -102,8 +102,9 @@ TreeRenderer.update = function update(source, duration) {
       return opacity;
     }
     .bind(this))
-    .style('stroke-width', function(d) { 
-      return (d._children && d._children.length > 0) ? '1.4em' : 0;
+    .style('stroke-width', function(d) {
+      // If you use em to specify the size, Firefox will animate all weirdly.
+      return (d._children && d._children.length > 0) ? '32px' : 0;
     });
 
   nodeUpdate.select('text')
