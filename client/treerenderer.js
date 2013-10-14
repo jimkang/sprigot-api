@@ -51,7 +51,8 @@ TreeRenderer.update = function update(source, duration) {
       return 'translate(' + source.y0 + ',' + source.x0 + ')'; 
     })
     .attr('id', function(d) { return d.id; })
-    .on('click', TreeRenderer.respondToNodeClick);
+    .on('click', TreeRenderer.respondToNodeClick)
+    .on('dblclick', this.onNodeDoubleClick.bind(this));
 
   nodeEnter.append('circle')
     .attr('r', 1e-6)
@@ -174,3 +175,7 @@ TreeRenderer.respondToNodeClick = function respondToNodeClick(treeNode) {
   TreeRenderer.graph.treeNav.chooseTreeNode(treeNode, this);
 }
 
+TreeRenderer.onNodeDoubleClick = function onNodeDoubleClick(treeNode) {
+  this.graph.treeNav.toggleChildren(treeNode);
+  this.update(treeNode);
+}
