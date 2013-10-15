@@ -40,6 +40,8 @@ Sprigot.init = function init(forceRebuild) {
 
   this.divider.syncExpanderArrow();
   this.initDocEventResponders();
+
+  this.tagElementsWithCSSHackClasses();
 }
 
 Sprigot.load = function load(docId, identifyFocusSprig, done) {
@@ -251,4 +253,14 @@ Sprigot.isMobile = function isMobile() {
   var isMobileMediaQuery = 'only screen and (max-device-height: 568px)';
   return (window.matchMedia(isMobileMediaQuery).matches);
 }
+
+Sprigot.tagElementsWithCSSHackClasses = function tagElementsWithCSSHackClasses() {
+  if (this.isMobile() &&
+    !navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
+    d3.select('.sprigot').classed('is-not-ios-seven', true);
+    d3.select('#graphPane').classed('is-not-ios-seven', true);
+    d3.select('.divider').classed('is-not-ios-seven', true);
+    d3.select('#nongraphPane').classed('is-not-ios-seven', true);
+  }
+};
 
