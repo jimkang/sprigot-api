@@ -221,7 +221,6 @@ section {
   section {
     /*height: 568px;*/
     width: 320px;
-    background-color: green;
   }
 
   #graphPane {
@@ -254,7 +253,6 @@ section {
 
   /* Works on iOS 6 */
   section.is-not-ios-seven {
-    background-color: pink;
     height: 568px;
 
     flex-direction: column;
