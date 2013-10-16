@@ -5,14 +5,16 @@ var Sprigot = {
   graph: null,
   store: null,
   divider: null,
-  camera: null
+  camera: null,
+  opts: null
 };
 
-Sprigot.init = function init(forceRebuild) {
+Sprigot.init = function init(opts) {
+  this.opts = opts ? opts : {};
   var body = d3.select('body');
   var sprigotSel = body.select('.sprigot');
 
-  if (forceRebuild && !sprigotSel.empty()) {
+  if (this.opts.forceRebuild && !sprigotSel.empty()) {
     sprigotSel.remove();
   }
 
