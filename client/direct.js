@@ -1,4 +1,27 @@
-var Director = {};
+var Director = {
+  sprigController: null
+};
+
+Director.createController = function createController(opts) {
+  var controller = null;
+
+  if (opts.output === 'spriglog') {
+    controller = createSpriglog(opts);
+  }
+  else {
+    controller = createSprigot(opts);
+  }
+  return controller;
+};
+
+Director.initController = function initController(opts) {
+  var expectedType = opts.output ? opts.output : 'sprigot';
+  if (!this.sprigController || 
+    this.sprigController.controllerType !== expectedType) {
+
+    this.sprigController = this.createController(opts);
+  }
+};
 
 Director.direct = function direct(locationHash, queryString) {
   var queryOpts = 
@@ -6,8 +29,8 @@ Director.direct = function direct(locationHash, queryString) {
 
   var pathSegments = locationHash.split('/');
   if (pathSegments.length < 2) {
-    Sprigot.init(queryOpts);
-    Sprigot.load('About', this.matchAny, function doneLoading(error) {
+    this.sprigController = this.createController(queryOpts);
+    this.sprigController.load('About', this.matchAny, function doneLoading(error) {
       if (error) {
         console.log('Error while getting sprig:', error);
       }
@@ -22,9 +45,9 @@ Director.direct = function direct(locationHash, queryString) {
       var docId = pathSegments[1];
       if (pathSegments.length > 1) {
         var sprigId = pathSegments[2];
-      }
-      
-      Sprigot.init(queryOpts);
+      }      
+
+      this.initController(queryOpts);
 
       var identifyFocusSprig = function matchFocusSprigId(sprig) {
         return (sprigId === sprig.id);
@@ -33,22 +56,24 @@ Director.direct = function direct(locationHash, queryString) {
         identifyFocusSprig = this.matchAny;
       }
 
-      if (Sprigot.graph.nodeRoot && Sprigot.docId === docId) {
+      if (this.sprigController.graph.nodeRoot && 
+        this.sprigController.docId === docId) {
+
         if (sprigId === 'findunread') {
-          Sprigot.respondToFindUnreadCmd();
+          this.sprigController.respondToFindUnreadCmd();
         }
         else if (sprigId) {
-          Sprigot.graph.treeNav.goToSprigId(sprigId, 100);
+          this.sprigController.graph.treeNav.goToSprigId(sprigId, 100);
         }
       }
       else {
-        Sprigot.load(docId, identifyFocusSprig, function doneLoading(error) {
+        this.sprigController.load(docId, identifyFocusSprig, function doneLoading(error) {
           if (error) {
             console.log('Error while getting sprig:', error);
           }
           else {
             if (sprigId === 'findunread') {
-              Sprigot.respondToFindUnreadCmd();
+              this.sprigController.respondToFindUnreadCmd();
             }
           }
         });

@@ -1,4 +1,4 @@
-var margin = {top: 20, right: 10, bottom: 20, left: 10};
+function createSprigot(opts) {
 
 var Sprigot = {
   docId: null,
@@ -6,11 +6,11 @@ var Sprigot = {
   store: null,
   divider: null,
   camera: null,
-  opts: null
+  opts: opts,
+  controllerType: 'sprigot'
 };
 
-Sprigot.init = function init(opts) {
-  this.opts = opts ? opts : {};
+Sprigot.init = function init() {
   var body = d3.select('body');
   var sprigotSel = body.select('.sprigot');
 
@@ -266,3 +266,7 @@ Sprigot.tagElementsWithCSSHackClasses = function tagElementsWithCSSHackClasses()
   }
 };
 
+Sprigot.init();
+
+return Sprigot;
+}

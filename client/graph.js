@@ -13,7 +13,8 @@ var Graph = {
   svgRoot: null,
   focusEl: null,
   focusNode: null,
-  nodeRoot: null
+  nodeRoot: null,
+  margin: {top: 20, right: 10, bottom: 20, left: 10}
 };
 
 Graph.init = function init(sprigotSel, camera, treeRenderer, 
@@ -46,7 +47,7 @@ Graph.init = function init(sprigotSel, camera, treeRenderer,
 
   this.svgRoot = this.board.append('g').attr({
     id: 'graphRoot',
-    transform: 'translate(' + margin.left + ',' + margin.top + ')'
+    transform: 'translate(' + this.margin.left + ',' + this.margin.top + ')'
   });
 
   this.camera.setUpZoomOnBoard(this.board, this.svgRoot);
@@ -74,7 +75,8 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
   this.treeNav.init(this.nodeRoot, this.camera, TreeRenderer, this, 
     this.textStuff);
 
-  var height = this.board.node().clientHeight - margin.top - margin.bottom;
+  var height = 
+    this.board.node().clientHeight - this.margin.top - this.margin.bottom;
   this.nodeRoot.x0 = height / 2;
   this.nodeRoot.y0 = 0;
 
