@@ -119,6 +119,46 @@ function mapPathInD3Tree(predicate, sprigTree, depthLimit) {
   return path;
 }
 
+D3SprigBridge.flattenTreeBreadthFirst = 
+function flattenTreeBreadthFirst(sprigTree, depthLimit) {
+  if (!depthLimit) {
+    depthLimit = 1000;
+  }
+
+  var sprigs = [];
+
+  var currentDepth = 0;
+  var sprigsAtNextDepth = null;
+  var sprigsAtDepth = [sprigTree];
+
+  while (currentDepth <= depthLimit && sprigsAtDepth.length > 0) {
+    sprigsAtNextDepth = [];
+
+    for (var i = 0; i < sprigsAtDepth.length; ++i) {
+      var sprig = sprigsAtDepth[i];
+      sprigs.push(sprig);
+
+      if (currentDepth + 1 <= depthLimit && sprig) {
+        var theChildren = [];
+        if (typeof sprig.children === 'object' && sprig.children) {
+          theChildren = sprig.children;
+        }
+        else if (typeof sprig._children === 'object' && sprig._children) {
+          theChildren = sprig._children;
+        }
+
+        sprigsAtNextDepth = sprigsAtNextDepth.concat(theChildren);
+      }
+    }
+
+    currentDepth++;
+    sprigsAtDepth = sprigsAtNextDepth;
+  }
+
+  return sprigs;
+}
+
+
 if (typeof module === 'object') {
   // Node
   module.exports = D3SprigBridge;
