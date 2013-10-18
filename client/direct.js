@@ -5,7 +5,7 @@ var Director = {
 Director.createController = function createController(opts) {
   var controller = null;
 
-  if (opts.output === 'spriglog') {
+  if (opts.format === 'glog') {
     controller = createSpriglog(opts);
   }
   else {
@@ -15,7 +15,7 @@ Director.createController = function createController(opts) {
 };
 
 Director.initController = function initController(opts) {
-  var expectedType = opts.output ? opts.output : 'sprigot';
+  var expectedType = opts.format ? opts.format : 'sprigot';
   if (!this.sprigController || 
     this.sprigController.controllerType !== expectedType) {
 
