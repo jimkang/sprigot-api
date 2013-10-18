@@ -13,22 +13,19 @@ var margin = {top: 20, right: 10, bottom: 20, left: 10};
 Spriglog.init = function init() {
   this.opts = opts ? opts : {};
   var body = d3.select('body');
-  // this.SpriglogSel = body.select('.sprigot');
+  this.spriglogSel = body.select('.sprigot');
 
-  // if (this.opts.forceRebuild && !this.SpriglogSel.empty()) {
-  //   this.SpriglogSel.remove();
-  // }
+  if (this.opts.forceRebuild && !this.spriglogSel.empty()) {
+    this.spriglogSel.remove();
+  }
 
-  // if (this.SpriglogSel.empty()) {
-  //   this.SpriglogSel = body.append('section').classed('Spriglog', true);
-  // }
-  // else {
-  //   return;
-  // }
+  if (this.spriglogSel.empty()) {
+    this.spriglogSel = body.append('section').classed('spriglog', true);
+  }
 
   this.store = createStore();
 
-  // TextStuff.init(this.SpriglogSel, this.graph, TreeRenderer, this.store, this);
+  // TextStuff.init(this.spriglogSel, this.graph, TreeRenderer, this.store, this);
 };
 
 Spriglog.load = function load(docId, identifyFocusSprig, done) {
@@ -43,6 +40,16 @@ Spriglog.load = function load(docId, identifyFocusSprig, done) {
     if (sprigTree) {
       var sprigs = D3SprigBridge.flattenTreeBreadthFirst(sprigTree);
 
+      var sprigs = this.spriglogSel.selectAll('.sprig')
+        .data(sprigs, function(d) { return d.id });
+
+      sprigs.enter().append('div').html(
+        function getText(d) {
+          return d.body;
+        }
+      );
+
+      sprigs.exit().remove();
 
     }
     else {
