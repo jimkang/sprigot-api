@@ -56,7 +56,8 @@ Director.direct = function direct(locationHash, queryString) {
         identifyFocusSprig = this.matchAny;
       }
 
-      if (this.sprigController.graph.nodeRoot && 
+      if (this.sprigController.controllerType === 'sprigot' &&
+        this.sprigController.graph.nodeRoot && 
         this.sprigController.docId === docId) {
 
         if (sprigId === 'findunread') {
