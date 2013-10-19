@@ -19,8 +19,8 @@ var TextStuff = {
   showGraphLink: null,
   downLink: null,
   OKCancelDialog: null,
-  // editAvailable: true
-  editAvailable: false
+  editAvailable: true
+  // editAvailable: false
 };
 
 TextStuff.init = function init(sprigotSel, graph, treeRenderer, store, 
@@ -37,7 +37,8 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
   
   this.pane.append('div').attr('id', 'questionDialog');
   
-  this.textpane = this.pane.append('div').attr('id', 'textpane');
+  this.textpane = this.pane.append('div').attr('id', 'textpane')
+    .classed('textpane', true);
   
   this.contentZone = this.textpane.append('div').classed('contentZone', true)
     .style('display', 'none');

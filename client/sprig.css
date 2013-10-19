@@ -63,7 +63,7 @@ svg#svgBoard {
   min-width: 200px;
 }
 
-#textpane {
+.textpane {
   font-family: adelle, Georgia, serif;
   background-color: #ffe;
   color: #403838;
@@ -72,20 +72,20 @@ svg#svgBoard {
   border-radius: 0.4em;
 }
 
-#textpane a {
+.textpane a {
   text-decoration: none;
   font-weight: bold;
 }
 
-#textpane a:link {
+.textpane a:link {
   color: #e03020;
 }
 
-#textpane a:visited {
+.textpane a:visited {
   color: #346;
 }
 
-.collapsedPane #textpane {
+.collapsedPane .textpane {
   display: none;
 }
 
