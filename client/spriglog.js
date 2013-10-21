@@ -20,7 +20,7 @@ Spriglog.init = function init() {
   }
 
   if (this.spriglogSel.empty()) {
-    this.spriglogSel = body.append('section').classed('spriglog', true);
+    this.spriglogSel = body.append('section').classed('glog', true);
   }
 
   this.store = createStore();
@@ -47,7 +47,8 @@ Spriglog.load = function load(docId, identifyFocusSprig, done) {
         function getText(d) {
           return d.body;
         }
-      );
+      )
+      .classed('textpane', true);
 
       sprigs.exit().remove();
 

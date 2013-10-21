@@ -72,6 +72,13 @@ svg#svgBoard {
   border-radius: 0.4em;
 }
 
+.glog .textpane {
+  width: 66%;
+  margin-top: 0.7em;
+  margin-bottom: 0.7em;
+  padding: 1em;
+}
+
 .textpane a {
   text-decoration: none;
   font-weight: bold;
