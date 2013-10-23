@@ -3,10 +3,14 @@ if (typeof module === 'object') {
   var _ = require('underscore');
 }
 
-D3SprigBridge = {};
+D3SprigBridge = {
+  validSprigPropertyList: [
+    'id', 'doc', 'title', 'body', 'emphasize', 'created', 'modified'
+  ]
+};
 
 D3SprigBridge.serializeTreedNode = function serializeTreedNode(treedNode) {
-  var serialized = _.pick(treedNode, 'id', 'doc', 'title', 'body', 'emphasize');
+  var serialized = _.pick(treedNode, this.validSprigPropertyList);
   var childSource = treedNode.children;
   if (!treedNode.children) {
     childSource = treedNode._children;

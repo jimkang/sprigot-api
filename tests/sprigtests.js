@@ -347,6 +347,8 @@ describe('A visitor', function getASprig() {
         doc: session.secondDocId,
         title: 'Sprig One',
         body: 'First, there was one sprig.',
+        created: (new Date(1382448629053)).toJSON(),
+        modified: (new Date()).toJSON(),
         children: [sprigTwoId, sprigThreeId]
       };
 
@@ -354,7 +356,9 @@ describe('A visitor', function getASprig() {
         id: sprigTwoId,
         doc: session.secondDocId,
         title: 'Sprig Two',
-        body: 'Then, there was a second sprig.'
+        body: 'Then, there was a second sprig.',
+        created: (new Date(1382448629053)).toJSON(),
+        modified: (new Date()).toJSON()
       };
 
       session.sprigThree = {
@@ -362,6 +366,8 @@ describe('A visitor', function getASprig() {
         doc: session.secondDocId,
         title: 'Sprig Three',
         body: 'Soon after, a third sprig appeared.',
+        created: (new Date(1382448629053)).toJSON(),
+        modified: (new Date()).toJSON(),        
         children: [sprigFourId]
       };
 
@@ -369,7 +375,9 @@ describe('A visitor', function getASprig() {
         id: sprigFourId,
         doc: session.secondDocId,
         title: 'Sprig Four',
-        body: 'Finally, the fourth sprig showed.'
+        body: 'Finally, the fourth sprig showed.',
+        created: (new Date(1382448629053)).toJSON(),
+        modified: (new Date()).toJSON()
       };
 
       utils.sendJSONRequest({
@@ -427,34 +435,12 @@ describe('A visitor', function getASprig() {
   });
 
   it('should get a sprig hierarchy', function getSprigHierarchy(testDone) {
-    var sprigTree = {
-      id: session.sprigOne.id,
-      doc: session.secondDocId,
-      title: 'Sprig One',
-      body: 'First, there was one sprig.',
-      children: [
-        {
-          id: session.sprigTwo.id,
-          doc: session.secondDocId,
-          title: 'Sprig Two',
-          body: 'Then, there was a second sprig.'
-        },
-        {
-          id: session.sprigThree.id,
-          doc: session.secondDocId,
-          title: 'Sprig Three',
-          body: 'Soon after, a third sprig appeared.',
-          children: [
-            {
-              id: session.sprigFour.id,
-              doc: session.secondDocId,
-              title: 'Sprig Four',
-              body: 'Finally, the fourth sprig showed.'
-            }
-          ]
-        }
-      ]
-    };
+    var sprigTree = session.sprigOne;
+    sprigTree.children = [
+      session.sprigTwo,
+      session.sprigThree
+    ];
+    sprigTree.children[1].children = [session.sprigFour];
 
     utils.sendJSONRequest({
       url: settings.baseURL,
