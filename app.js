@@ -6,6 +6,8 @@ var treegetting = require('./treegetting');
 var sprigBridge = require('./client/d3sprigbridge');
 var port = 3000;
 
+var packageJSON = require('./package.json');
+
 http.createServer(function takeRequest(req, res) {
   var headers = {
     'Access-Control-Allow-Origin': '*',
@@ -145,7 +147,10 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
         else {
           jobComplete('Not understood', jobKey,  null);
         }
-        break; 
+        break;
+      case 'getVersion':
+        jobComplete('got', jobKey, packageJSON.version);
+        break;        
       default:
         jobComplete('Not understood', jobKey, null);
         break;

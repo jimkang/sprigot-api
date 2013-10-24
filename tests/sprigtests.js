@@ -602,7 +602,6 @@ describe('A visitor', function getASprig() {
 
   });
 
-
   it('should delete a sprig', function deleteSprig(testDone) {
     // console.log('deleting', session.secondDocId, session.sprigOne.id);
 
@@ -629,7 +628,25 @@ describe('A visitor', function getASprig() {
         testDone();
       }
     });
-    testDone();
+  });
+
+
+  it('should get a version', function getVersion(testDone) {
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        sprigVersionReq: {
+          op: 'getVersion'
+        }
+      },
+      done: function doneGettingVersion(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        debugger;
+        assert.ok(typeof response.sprigVersionReq.result === 'string');
+        testDone();
+      }
+    });
   });
 
 });
