@@ -60,7 +60,17 @@ utils.optionsAreValid = function optionsAreValid(options, expectedTypes) {
     var value = options[key];
     return (typeof value === expectedType);
   });
-}
+};
+
+utils.addDocRefToNodesInTree = function addDocRefToNodesInTree(tree, docId) {
+  tree.doc = docId;
+  for (var i = 0; i < tree.children; ++i) {
+    var child = tree.children[i];
+    utils.addDocRefToNodesInTree(child, docId);
+  }
+};
+
+
 
 /* Settings */
 
@@ -509,14 +519,7 @@ describe('A visitor', function getASprig() {
 
   it('should get a deep tree hierarchy via the doc', function getSprigTree(
     testDone) {
-
-    function addDocRefToNodesInTree(tree) {
-      tree.doc = session.deepDocParams.id;
-      if (tree.children) {
-        tree.children.forEach(addDocRefToNodesInTree);
-      }
-    }
-    addDocRefToNodesInTree(caseDataSource);    
+    utils.addDocRefToNodesInTree(caseDataSource, session.deepDocParams.id);    
 
     utils.sendJSONRequest({
       url: settings.baseURL,
@@ -539,8 +542,66 @@ describe('A visitor', function getASprig() {
         testDone();
       }
     });
+  });
+
+  it('should get a list via the doc', function getSprigList(
+    testDone) {
+
+    utils.addDocRefToNodesInTree(caseDataSource, session.deepDocParams.id);
+
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        sprig1req: {
+          op: 'getDoc',
+          params: {            
+            id: session.deepDocParams.id,
+            flatten: true
+          }
+        }
+      },
+      done: function doneGettingSprig(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+
+        // Check doc params.
+        assert.deepEqual(_.omit(response.sprig1req.result, 'sprigList'), 
+          session.deepDocParams);
+
+        // Walk tree, make sure everything in the tree is in the fetched list.
+        var fetchedList = response.sprig1req.result.sprigList;
+        var nodesAtDepth = [caseDataSource];
+        debugger;
+        do {
+          var nodesAtNextDepth = [];
+          for (var i = 0; i < nodesAtDepth.length; ++i) {
+            var currentTreeNode = nodesAtDepth[i];
+            var matches = _.where(fetchedList, {id: currentTreeNode.id});
+            assert.equal(matches.length, 1);
+
+            if (matches.length === 1) {
+              var match = matches[0];
+              assert.equal(match.title, currentTreeNode.title);
+              assert.equal(match.body, currentTreeNode.body);
+              assert.equal(match.created, currentTreeNode.created);
+              assert.equal(match.modified, currentTreeNode.modified);
+            }
+
+            if (typeof currentTreeNode.children === 'object') {
+              nodesAtNextDepth = 
+                nodesAtNextDepth.concat(currentTreeNode.children);                
+            }
+          }
+          nodesAtDepth = nodesAtNextDepth;
+        }
+        while (nodesAtDepth.length > 0);
+
+        testDone();
+      }
+    });
 
   });
+
 
   it('should delete a sprig', function deleteSprig(testDone) {
     // console.log('deleting', session.secondDocId, session.sprigOne.id);
