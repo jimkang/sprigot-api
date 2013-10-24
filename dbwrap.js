@@ -113,6 +113,7 @@ function getDocIdFromKey(key) {
 }
 
 function getRangeForSprigsInDoc(docId) {
+  debugger;
   var cleanDocId = sanitizeKeySegment(docId);
   return [
     's' + nsDelimiter + cleanDocId + nsDelimiter,
