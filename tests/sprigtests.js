@@ -630,7 +630,6 @@ describe('A visitor', function getASprig() {
     });
   });
 
-
   it('should get a version', function getVersion(testDone) {
     utils.sendJSONRequest({
       url: settings.baseURL,
@@ -644,6 +643,7 @@ describe('A visitor', function getASprig() {
         var response = JSON.parse(xhr.responseText);
         debugger;
         assert.ok(typeof response.sprigVersionReq.result === 'string');
+        console.log('Version:', response.sprigVersionReq.result);
         testDone();
       }
     });
