@@ -3,7 +3,7 @@ var url = require('url');
 var _ = require('underscore');
 var dbwrap = require('./dbwrap');
 var treegetting = require('./treegetting');
-
+var sprigBridge = require('./client/d3sprigbridge');
 var port = 3000;
 
 http.createServer(function takeRequest(req, res) {
@@ -113,37 +113,39 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
         break;
       case 'getDoc':
         if (job.params.id) {
-          if (typeof job.params.childDepth === 'number' && 
-            job.params.childDepth > 0) {
-
-            dbwrap.getDocFromDb(job.params.id, jobKey, 
-              function gotDoc(status, jobKey, doc) {
-                if (status !== 'got') {
-                  jobComplete(status, jobKey, doc);
-                }
-                else {
-                  // TODO: Check to see if doc has limited readers.
-                  debugger;
-                  treegetting.getTreeFromDb(doc.rootSprig, doc.id, 
-                    job.params.childDepth, jobKey, 
-                    function gotTree(status, jobKey, tree) {
-                      doc.sprigTree = tree;
-                      jobComplete(status, jobKey, doc);
-                    }
-                  );
-                }
-              }
-            );
+          if (typeof job.params.childDepth !== 'number') {
+            job.params.childDepth = 100;
           }
-          else {
-            dbwrap.getSprigFromDb(job.params.id, job.params.doc, 
-              jobKey, jobComplete);
-          }          
+
+          dbwrap.getDocFromDb(job.params.id, jobKey, 
+            function gotDoc(status, jobKey, doc) {
+              if (status !== 'got') {
+                jobComplete(status, jobKey, doc);
+              }
+              else {
+                // TODO: Check to see if doc has limited readers.
+                treegetting.getTreeFromDb(doc.rootSprig, doc.id, 
+                  job.params.childDepth, jobKey, 
+                  function gotTree(status, jobKey, tree) {
+                    if (job.params.flatten) {
+                      doc.sprigList = sprigBridge.flattenTreeBreadthFirst(
+                        tree, job.params.childDepth
+                      );
+                    }
+                    else {
+                      doc.sprigTree = tree;
+                    }
+                    jobComplete(status, jobKey, doc);
+                  }
+                );
+              }
+            }
+          );
         }
         else {
           jobComplete('Not understood', jobKey,  null);
         }
-        break;        
+        break; 
       default:
         jobComplete('Not understood', jobKey, null);
         break;
