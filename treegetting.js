@@ -67,7 +67,6 @@ module.exports.getTreeFromDb = function getTreeFromDb(
 
   getDocSprigsFromDb(docId, function gotSprigs(errors, sprigsForIds) {
     var sprigTree = treeify(sprigsForIds, id, childDepth);
-    debugger;
   
     var status = 'got';
     var results = sprigTree;
