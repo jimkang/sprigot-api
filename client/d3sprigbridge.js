@@ -140,7 +140,6 @@ function flattenTreeBreadthFirst(sprigTree, depthLimit) {
 
     for (var i = 0; i < sprigsAtDepth.length; ++i) {
       var sprig = sprigsAtDepth[i];
-      sprigs.push(sprig);
 
       if (currentDepth + 1 <= depthLimit && sprig) {
         var theChildren = [];
@@ -153,6 +152,8 @@ function flattenTreeBreadthFirst(sprigTree, depthLimit) {
 
         sprigsAtNextDepth = sprigsAtNextDepth.concat(theChildren);
       }
+
+      sprigs.push(this.serializeTreedNode(sprig));
     }
 
     currentDepth++;

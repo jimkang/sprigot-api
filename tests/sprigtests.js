@@ -585,6 +585,11 @@ describe('A visitor', function getASprig() {
               assert.equal(match.body, currentTreeNode.body);
               assert.equal(match.created, currentTreeNode.created);
               assert.equal(match.modified, currentTreeNode.modified);
+
+              // Children should just be string references.
+              if (match.children) {
+                assert.equal(typeof match.children[0], 'string');
+              }
             }
 
             if (typeof currentTreeNode.children === 'object') {
