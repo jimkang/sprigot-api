@@ -120,7 +120,39 @@ Store.getSprigTree = function getSprigTree(docId, outerDone) {
       }
     }
   );
-}
+};
+
+Store.getSprigList = function getSprigList(docId, outerDone) {
+  var sprigRequest = {
+    op: 'getDoc',
+    params: {
+      id: docId,
+      flatten: true
+    }
+  };
+
+  this.apienvoy.request({getDocReq: sprigRequest}, 
+    function done(error, response) {
+      if (error) {
+        if (outerDone) {
+          outerDone(error, null)
+        }
+        return;
+      }
+
+      if ('getDocReq' in response && response.getDocReq.status === 'got') {
+        if (outerDone) {
+          outerDone(null, response.getDocReq.result.sprigList);
+        }
+      }
+      else {
+        if (outerDone) {
+          outerDone(null, null);
+        }
+      }
+    }
+  );
+};
 
 Store.createNewDoc = function createNewDoc(docParams, rootSprigParams) {
   var requestBody = {}
