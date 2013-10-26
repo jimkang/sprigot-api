@@ -5,7 +5,8 @@ var Spriglog = {
   store: null,
   opts: opts,
   spriglogSel: null,
-  controllerType: 'glog'
+  controllerType: 'glog',
+  sprigList: []
 };
 
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
@@ -32,33 +33,44 @@ Spriglog.load = function load(docId, identifyFocusSprig, done) {
   this.docId = docId;
   // Historian.init(this.graph.treeNav, this.docId);
 
-  this.store.getSprigTree(docId, function doneGettingTree(error, sprigTree) {
+  this.store.getSprigList(docId, function doneGettingList(error, sprigList) {
     if (error) {
       done(error, null);
     }
-
-    if (sprigTree) {
-      var sprigs = D3SprigBridge.flattenTreeBreadthFirst(sprigTree);
-
-      var sprigs = this.spriglogSel.selectAll('.sprig')
-        .data(sprigs, function(d) { return d.id });
-
-      sprigs.enter().append('div').html(
-        function getText(d) {
-          return d.body;
-        }
-      )
-      .classed('textpane', true);
-
-      sprigs.exit().remove();
-
+    else if (sprigList) {
+      this.sprigList = sprigList;
+      this.render(sprigList);
+      done();
     }
     else {
       done('Sprig tree not found.');
     }
   }
   .bind(this));
-}
+};
+
+Spriglog.render = function render(sprigList) {
+  var sprigs = this.spriglogSel.selectAll('.sprig')
+    .data(sprigList, function(d) { return d.id; });
+
+  var newSprigs = sprigs.enter().append('div')
+    .classed('sprig', true)
+    .classed('textpane', true);
+
+  newSprigs.append('span').classed('title', true);
+  newSprigs.append('span').classed('stamps', true);
+  newSprigs.append('div').classed('sprigbody', true);
+
+  var things = 
+  sprigs.select('.title').text(function getTitle(d) {return d.title;});
+  sprigs.select('.stamps').text(function getStamps(d) {
+    return 'Created: ' + d.created + ', Modified' + d.modified;
+  });
+  sprigs.select('.sprigbody').html(function getBody(d) {return d.body;});
+  
+  var sprigsToRemove = sprigs.exit();
+  sprigsToRemove.remove();
+};
 
 Spriglog.init();
 
