@@ -6,7 +6,9 @@ var Spriglog = {
   opts: opts,
   spriglogSel: null,
   controllerType: 'glog',
-  sprigList: []
+  sprigList: [],
+  sprigShowRange: [0, 5], // Excludes end
+  numberOfSprigsToRevealPerScrollEnd: 5
 };
 
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
@@ -39,7 +41,15 @@ Spriglog.load = function load(docId, identifyFocusSprig, done) {
     }
     else if (sprigList) {
       this.sprigList = sprigList;
-      this.render(sprigList);
+      if (this.sprigList.length < this.sprigShowRange[1]) {
+        this.sprigShowRange[1] = this.sprigList.length;
+      }
+
+      this.render(
+        sprigList.slice(this.sprigShowRange[0], this.sprigShowRange[1]));
+
+      window.onscroll = this.respondToScroll.bind(this);
+
       done();
     }
     else {
@@ -70,6 +80,28 @@ Spriglog.render = function render(sprigList) {
   
   var sprigsToRemove = sprigs.exit();
   sprigsToRemove.remove();
+};
+
+Spriglog.respondToScroll = function respondToScroll(e) {
+  // Scrolled to bottom of body?
+  if (document.body.scrollHeight - document.body.scrollTop === 
+    document.body.clientHeight) {
+
+    // Is there is more to show?
+    if (this.sprigShowRange[0] + this.sprigShowRange[1] < 
+      this.sprigList.length) {
+
+      this.sprigShowRange[1] += this.numberOfSprigsToRevealPerScrollEnd;
+      if (this.sprigShowRange[0] + this.sprigShowRange[1] >= 
+        this.sprigList.length) {
+
+        this.sprigShowRange[1] = this.sprigList.length - this.sprigShowRange[0];
+      }
+
+      this.render(this.sprigList.slice(this.sprigShowRange[0], 
+        this.sprigShowRange[1]));
+    }
+  }
 };
 
 Spriglog.init();
