@@ -1,3 +1,5 @@
+// Adds a script tag using the given TypeKit url. When the TypeKit script 
+// arrives, it loads the TypeKit and calls the callback.
 function loadATypeKit(typekitURL, done) {
   var head = d3.select('head');
 
