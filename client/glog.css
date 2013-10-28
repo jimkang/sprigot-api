@@ -133,8 +133,8 @@ section {
   display: -webkit-flex;  /* NEW, Chrome 21+ */
   display: flex;          /* NEW: Opera 12.1, Firefox 22+ */
 
-  flex-direction: row;
-  -webkit-flex-direction: row;
+  flex-direction: column;
+  -webkit-flex-direction: column;
 
   flex-wrap: wrap;
   -webkit-flex-wrap: wrap;
@@ -150,7 +150,6 @@ section {
   justify-content: center;
 
   margin: 0;
-  height: 100%;
   width: 100% /* needed for Firefox */   
 }
 
