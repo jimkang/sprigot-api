@@ -11,7 +11,8 @@ uglifyjs \
   textstuff.js \
   divider.js \
   historian.js \
+  load_a_typekit \
+  spriglog \
   sprigot.js \
   direct.js \
  -c -m -o ~/gcw/sprigotclientbuild/sprigotclient.js
-# -c -m -o ~/gcw/gcwsite/sprigot/sprigotclient.js

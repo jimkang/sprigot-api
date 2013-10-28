@@ -13,7 +13,7 @@ var Spriglog = {
 
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
 
-Spriglog.init = function init() {
+Spriglog.init = function init(initDone) {
   this.opts = opts ? opts : {};
   var body = d3.select('body');
   this.spriglogSel = body.select('.sprigot');
@@ -22,11 +22,20 @@ Spriglog.init = function init() {
     this.spriglogSel.remove();
   }
 
+  this.store = createStore();
+
   if (this.spriglogSel.empty()) {
     this.spriglogSel = body.append('section').classed('glog', true);
-  }
 
-  this.store = createStore();
+    var head = d3.select('head');
+    head.append('link').attr({
+      rel: 'stylesheet',
+      type: 'text/css',
+      href: 'glog.css'
+    });
+
+    loadATypeKit('//use.typekit.net/med0yzx.js', initDone);    
+  }
 
   // TextStuff.init(this.spriglogSel, this.graph, TreeRenderer, this.store, this);
 };
@@ -67,9 +76,9 @@ Spriglog.render = function render(sprigList) {
     .classed('sprig', true)
     .classed('textpane', true);
 
-  newSprigs.append('span').classed('title', true);
-  newSprigs.append('span').classed('stamps', true);
+  newSprigs.append('div').classed('title', true);
   newSprigs.append('div').classed('sprigbody', true);
+  newSprigs.append('div').classed('stamps', true);
 
   var things = 
   sprigs.select('.title').text(function getTitle(d) {return d.title;});
@@ -103,8 +112,6 @@ Spriglog.respondToScroll = function respondToScroll(e) {
     }
   }
 };
-
-Spriglog.init();
 
 return Spriglog;
 }

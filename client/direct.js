@@ -1,26 +1,24 @@
 var Director = {
-  sprigController: null
+  sprigController: null,
+  initialTargetSprigId: null,
+  initialTargetDocId: null
 };
 
-Director.createController = function createController(opts) {
-  var controller = null;
-
-  if (opts.format === 'glog') {
-    controller = createSpriglog(opts);
-  }
-  else {
-    controller = createSprigot(opts);
-  }
-  return controller;
-};
-
-Director.initController = function initController(opts) {
+Director.setUpController = function setUpController(opts) {
   var expectedType = opts.format ? opts.format : 'sprigot';
+
   if (!this.sprigController || 
     this.sprigController.controllerType !== expectedType) {
 
-    this.sprigController = this.createController(opts);
+    if (opts.format === 'glog') {
+      this.sprigController = createSpriglog(opts);
+    }
+    else {
+      this.sprigController = createSprigot(opts);
+    }
   }
+
+  return this.sprigController;
 };
 
 Director.direct = function direct(locationHash, queryString) {
@@ -29,12 +27,8 @@ Director.direct = function direct(locationHash, queryString) {
 
   var pathSegments = locationHash.split('/');
   if (pathSegments.length < 2) {
-    this.sprigController = this.createController(queryOpts);
-    this.sprigController.load('About', this.matchAny, function doneLoading(error) {
-      if (error) {
-        console.log('Error while getting sprig:', error);
-      }
-    });
+    // No docId specified.
+    this.directToAbout(queryOpts);
     return;
   }
 
@@ -42,48 +36,71 @@ Director.direct = function direct(locationHash, queryString) {
     case 'index':
       break;
     default:
-      var docId = pathSegments[1];
+      this.initialTargetDocId = pathSegments[1];
       if (pathSegments.length > 1) {
-        var sprigId = pathSegments[2];
+        this.initialTargetSprigId = pathSegments[2];
       }      
 
-      this.initController(queryOpts);
+      this.setUpController(queryOpts);
+      this.sprigController.init(this.loadToController.bind(this));
+  }
+};
 
-      var identifyFocusSprig = function matchFocusSprigId(sprig) {
-        return (sprigId === sprig.id);
-      };
-      if (sprigId === 'findunread') {
-        identifyFocusSprig = this.matchAny;
-      }
+Director.loadToController = function loadToController() {
+  if (this.sprigController.controllerType === 'sprigot' &&
+    this.sprigController.graph.nodeRoot && 
+    this.sprigController.docId === this.initialTargetDocId) {
 
-      if (this.sprigController.controllerType === 'sprigot' &&
-        this.sprigController.graph.nodeRoot && 
-        this.sprigController.docId === docId) {
+    if (this.initialTargetSprigId === 'findunread') {
+      this.sprigController.respondToFindUnreadCmd();
+    }
+    else if (this.initialTargetSprigId) {
+      this.sprigController.graph.treeNav.goToSprigId(
+        this.initialTargetSprigId, 100);
+    }
+  }
+  else {
+    var identifyFocusSprig = 
+      (this.initialTargetSprigId === 'findunread') ? this.matchAny : this.matchFocusSprigId;
 
-        if (sprigId === 'findunread') {
-          this.sprigController.respondToFindUnreadCmd();
-        }
-        else if (sprigId) {
-          this.sprigController.graph.treeNav.goToSprigId(sprigId, 100);
-        }
+    this.sprigController.load(this.initialTargetDocId, identifyFocusSprig, 
+      function doneLoading(error) {
+      if (error) {
+        console.log('Error while getting sprig:', error);
       }
       else {
-        this.sprigController.load(docId, identifyFocusSprig, function doneLoading(error) {
-          if (error) {
-            console.log('Error while getting sprig:', error);
-          }
-          else {
-            if (sprigId === 'findunread') {
-              this.sprigController.respondToFindUnreadCmd();
-            }
-          }
-        });
+        if (this.initialTargetSprigId === 'findunread') {
+          this.sprigController.respondToFindUnreadCmd();
+        }
       }
+    });
   }
+};
+
+Director.directToAbout = function directToAbout(queryOpts) {
+
+  this.setUpController(queryOpts);
+
+  this.sprigController.init(function initDone() {
+
+    this.sprigController.load('About', 
+      this.matchAny, 
+      function doneLoading(error) {
+        if (error) {
+          console.log('Error while getting sprig:', error);
+        }
+      }
+    );
+  }
+  .bind(this));
 };
 
 Director.matchAny = function matchAny() {
   return true;
+};
+
+Director.matchFocusSprigId = function matchFocusSprigId(sprig) {
+  return (this.initialTargetSprigId === sprig.id);
 };
 
 Director.respondToHashChange = function respondToHashChange() {

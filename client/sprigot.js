@@ -10,7 +10,7 @@ var Sprigot = {
   controllerType: 'sprigot'
 };
 
-Sprigot.init = function init() {
+Sprigot.init = function init(initDone) {
   var body = d3.select('body');
   var sprigotSel = body.select('.sprigot');
 
@@ -19,6 +19,12 @@ Sprigot.init = function init() {
   }
 
   if (sprigotSel.empty()) {
+    d3.select('head').append('link').attr({
+      rel: 'stylesheet',
+      type: 'text/css',
+      href: 'sprig.css'
+    });
+
     sprigotSel = body.append('section').classed('sprigot', true);
   }
   else {
@@ -44,6 +50,8 @@ Sprigot.init = function init() {
   this.initDocEventResponders();
 
   this.tagElementsWithCSSHackClasses();
+
+  loadATypeKit('//use.typekit.net/uoo5gyw.js', initDone);
 }
 
 Sprigot.load = function load(docId, identifyFocusSprig, done) {
@@ -265,8 +273,6 @@ Sprigot.tagElementsWithCSSHackClasses = function tagElementsWithCSSHackClasses()
     d3.select('#nongraphPane').classed('is-not-ios-seven', true);
   }
 };
-
-Sprigot.init();
 
 return Sprigot;
 }
