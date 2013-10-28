@@ -36,8 +36,6 @@ Spriglog.init = function init(initDone) {
 
     loadATypeKit('//use.typekit.net/med0yzx.js', initDone);    
   }
-
-  // TextStuff.init(this.spriglogSel, this.graph, TreeRenderer, this.store, this);
 };
 
 Spriglog.load = function load(docId, identifyFocusSprig, done) {
@@ -80,10 +78,10 @@ Spriglog.render = function render(sprigList) {
   newSprigs.append('div').classed('sprigbody', true);
   newSprigs.append('div').classed('stamps', true);
 
-  var things = 
   sprigs.select('.title').text(function getTitle(d) {return d.title;});
   sprigs.select('.stamps').text(function getStamps(d) {
-    return 'Created: ' + d.created + ', Modified' + d.modified;
+    var createdDate = new Date(d.created);
+    return createdDate.toLocaleString();
   });
   sprigs.select('.sprigbody').html(function getBody(d) {return d.body;});
   
