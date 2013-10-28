@@ -3,21 +3,44 @@
 function loadATypeKit(typekitURL, done) {
   var head = d3.select('head');
 
+  var needToRunDone = true;
+
   var typekitScript = head.append('script').attr({
     type: 'text/javascript',
     src: typekitURL
   });
   var typekitScriptEl = typekitScript.node();
+  typekitScriptEl.async = true;
   typekitScriptEl.onload = function loadTypeKit() {
     try {
+      console.log('Typekit is loading.');
+      function typekitDone() {
+        if (needToRunDone) {
+          console.log('needToRunDone is true.');
+          done();
+        }
+      }
+
       Typekit.load({
-        active: done,
-        inactive: done
+        active: typekitDone,
+        inactive: typekitDone
       });
     } 
     catch (e) {
       debugger;
     }
   };
+
+  setTimeout(function timeIsUp() {
+    if (needToRunDone) {
+      console.log('Moving on.')
+      needToRunDone = false;      
+      done();
+    }
+    else {
+      console.log('Typekit already loaded.')
+    }
+  },
+  1000);
 }
 
