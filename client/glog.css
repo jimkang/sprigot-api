@@ -41,6 +41,7 @@ body {
   font-family: brandon-grotesque, Helvetica, sans-serif;
   font-weight: bold;
   font-size: 40px;
+  text-transform: uppercase;
 }
 
 .glog .stamps {
