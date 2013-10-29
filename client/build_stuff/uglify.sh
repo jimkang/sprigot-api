@@ -1,5 +1,5 @@
 uglifyjs \
-  settings.js \
+  $1_settings.js \
   camera.js \
   d3sprigbridge.js \
   uid.js \
