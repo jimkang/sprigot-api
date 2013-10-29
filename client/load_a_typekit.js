@@ -17,6 +17,8 @@ function loadATypeKit(typekitURL, done) {
       function typekitDone() {
         if (needToRunDone) {
           console.log('needToRunDone is true.');
+          needToRunDone = false;
+          clearTimeout(timerId)
           done();
         }
       }
@@ -31,10 +33,10 @@ function loadATypeKit(typekitURL, done) {
     }
   };
 
-  setTimeout(function timeIsUp() {
+  var timerId = setTimeout(function timeIsUp() {
     if (needToRunDone) {
       console.log('Moving on.')
-      needToRunDone = false;      
+      needToRunDone = false;
       done();
     }
     else {
