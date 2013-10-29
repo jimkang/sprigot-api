@@ -28,7 +28,7 @@ Director.direct = function direct(locationHash, queryString) {
   var pathSegments = locationHash.split('/');
   if (pathSegments.length < 2) {
     // No docId specified.
-    this.directToAbout(queryOpts);
+    this.directToDefault(queryOpts);
     return;
   }
 
@@ -77,13 +77,13 @@ Director.loadToController = function loadToController() {
   }
 };
 
-Director.directToAbout = function directToAbout(queryOpts) {
+Director.directToDefault = function directToDefault(queryOpts) {
 
   this.setUpController(queryOpts);
 
   this.sprigController.init(function initDone() {
 
-    this.sprigController.load('About', 
+    this.sprigController.load(Settings.defaultDoc, 
       this.matchAny, 
       function doneLoading(error) {
         if (error) {
