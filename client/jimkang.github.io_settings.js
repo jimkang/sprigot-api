@@ -1,4 +1,4 @@
 var Settings = {
-  defaultDoc: 'About'
+  defaultDoc: 'jimkang.com'
 };
 
