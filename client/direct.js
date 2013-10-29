@@ -60,9 +60,11 @@ Director.loadToController = function loadToController() {
     }
   }
   else {
-    var identifyFocusSprig = 
-      (this.initialTargetSprigId === 'findunread') ? this.matchAny : this.matchFocusSprigId;
-
+    var identifyFocusSprig = this.matchFocusSprigId.bind(this);
+    if (this.initialTargetSprigId === 'findunread') {
+      identifyFocusSpri = this.matchAny;
+    }
+    
     this.sprigController.load(this.initialTargetDocId, identifyFocusSprig, 
       function doneLoading(error) {
       if (error) {
