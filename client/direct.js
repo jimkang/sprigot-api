@@ -21,7 +21,7 @@ Director.setUpController = function setUpController(opts) {
   return this.sprigController;
 };
 
-Director.direct = function direct(locationHash, queryString) {
+Director.direct = function direct(locationHash) {
   var queryOpts = 
     this.dictFromQueryString(this.queryStringFromHash(locationHash));
 
@@ -64,7 +64,7 @@ Director.loadToController = function loadToController() {
     if (this.initialTargetSprigId === 'findunread') {
       identifyFocusSpri = this.matchAny;
     }
-    
+
     this.sprigController.load(this.initialTargetDocId, identifyFocusSprig, 
       function doneLoading(error) {
       if (error) {
@@ -110,7 +110,7 @@ Director.respondToHashChange = function respondToHashChange() {
 };
 
 Director.init = function init() {
-  this.direct(location.hash, location.search);
+  this.direct(location.hash);
   window.onhashchange = this.respondToHashChange.bind(this);
 }
 
