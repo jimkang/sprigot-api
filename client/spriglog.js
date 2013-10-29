@@ -11,8 +11,6 @@ var Spriglog = {
   numberOfSprigsToRevealPerScrollEnd: 5
 };
 
-var margin = {top: 20, right: 10, bottom: 20, left: 10};
-
 Spriglog.init = function init(initDone) {
   this.opts = opts ? opts : {};
   var body = d3.select('body');
@@ -89,7 +87,7 @@ Spriglog.render = function render(sprigList) {
   sprigsToRemove.remove();
 };
 
-Spriglog.respondToScroll = function respondToScroll(e) {
+Spriglog.respondToScroll = function respondToScroll() {
   // Scrolled to bottom of body?
   if (document.body.scrollHeight - document.body.scrollTop === 
     document.body.clientHeight) {
