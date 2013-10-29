@@ -105,7 +105,7 @@ TreeNav.goToSprigId = function goToSprigId(sprigId, delay) {
 
   if (pathToSprig.length > 0) {
     var destNode = pathToSprig[pathToSprig.length-1];
-    if (destNode.id !== this.graph.focusNode.id) {    
+    if (!this.graph.focusNode || destNode.id !== this.graph.focusNode.id) {
       this.followPathToSprig(pathToSprig, delay, function done() {
         this.textStuff.showTextpaneForTreeNode(destNode);
       }
