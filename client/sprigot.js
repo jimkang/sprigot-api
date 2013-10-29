@@ -28,6 +28,7 @@ Sprigot.init = function init(initDone) {
     sprigotSel = body.append('section').classed('sprigot', true);
   }
   else {
+    initDone();
     return;
   }
 
