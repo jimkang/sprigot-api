@@ -148,11 +148,14 @@ Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {
     TextStuff.changeEditMode(false);
   }
 
+  var currentJSONDate = (new Date()).toJSON();
   var newSprig = {
     id: TextStuff.makeId(8),
     doc: this.docId,
     title: 'New Sprig',
-    body: ''
+    body: '',
+    created: currentJSONDate,
+    modified: currentJSONDate 
   };
 
   var currentChildren = this.graph.focusNode.children;
