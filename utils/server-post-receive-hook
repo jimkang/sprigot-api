@@ -7,4 +7,3 @@ npm install
 killall node
 node /var/www/sprigot/launcher.js
 '
-
