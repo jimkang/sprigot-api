@@ -2,6 +2,7 @@
 sudo -u noderunner bash -c '
 git --work-tree=/var/www/sprigot --git-dir=/var/repos/sprigot.git checkout -f
 cd /var/www/sprigot
+npm install
 # This could be a problem if there is ever another node running on this VPS.
 killall node
 node /var/www/sprigot/launcher.js
