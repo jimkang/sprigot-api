@@ -1,5 +1,5 @@
 {
-  "name": "sprigot",
+  "name": "Sprigot",
   "version": "0.1.4",
   "devDependencies": {
     "mocha": "~1.12.0",
