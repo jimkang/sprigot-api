@@ -15,5 +15,6 @@ uglifyjs \
   load_a_typekit.js \
   spriglog.js \
   sprigot.js \
+  newdoc.js \
   direct.js \
  -c -m -o ~/gcw/$1/sprigotclient.js

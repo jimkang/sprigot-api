@@ -13,6 +13,9 @@ Director.setUpController = function setUpController(opts) {
     if (opts.format === 'glog') {
       this.sprigController = createSpriglog(opts);
     }
+    else if (opts.format === 'newdoc') {
+      this.sprigController = createNewDocForm(opts);
+    }
     else {
       this.sprigController = createSprigot(opts);
     }
@@ -34,6 +37,11 @@ Director.direct = function direct(locationHash) {
 
   switch (pathSegments[1]) {
     case 'index':
+      break;
+    case 'new':
+      queryOpts.format = 'newdoc';
+      this.setUpController(queryOpts);
+      this.sprigController.init(this.loadToController.bind(this));
       break;
     default:
       this.initialTargetDocId = pathSegments[1];
