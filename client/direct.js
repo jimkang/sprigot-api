@@ -73,14 +73,17 @@ Director.loadToController = function loadToController() {
       identifyFocusSpri = this.matchAny;
     }
 
-    this.sprigController.load(this.initialTargetDocId, identifyFocusSprig, 
-      function doneLoading(error) {
-      if (error) {
-        console.log('Error while getting sprig:', error);
-      }
-      else {
-        if (this.initialTargetSprigId === 'findunread') {
-          this.sprigController.respondToFindUnreadCmd();
+    this.sprigController.load({
+      docId: this.initialTargetDocId, 
+      identifySprig: identifyFocusSprig, 
+      done: function doneLoading(error) {
+        if (error) {
+          console.log('Error while getting sprig:', error);
+        }
+        else {
+          if (this.initialTargetSprigId === 'findunread') {
+            this.sprigController.respondToFindUnreadCmd();
+          }
         }
       }
     });
@@ -88,19 +91,19 @@ Director.loadToController = function loadToController() {
 };
 
 Director.directToDefault = function directToDefault(queryOpts) {
-
   this.setUpController(queryOpts);
 
   this.sprigController.init(function initDone() {
-
-    this.sprigController.load(Settings.defaultDoc, 
-      this.matchAny, 
-      function doneLoading(error) {
+    
+    this.sprigController.load({
+      docId: Settings.defaultDoc, 
+      identifySprig: this.matchAny, 
+      done: function doneLoading(error) {
         if (error) {
           console.log('Error while getting sprig:', error);
         }
       }
-    );
+    });
   }
   .bind(this));
 };

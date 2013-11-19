@@ -36,32 +36,35 @@ Spriglog.init = function init(initDone) {
   }
 };
 
-Spriglog.load = function load(docId, identifyFocusSprig, done) {
-  this.docId = docId;
+// Expected in opts: docId, done.
+Spriglog.load = function load(opts) {
+  this.docId = opts.docId;
   // Historian.init(this.graph.treeNav, this.docId);
 
-  this.store.getSprigList(docId, function doneGettingList(error, sprigList) {
-    if (error) {
-      done(error, null);
-    }
-    else if (sprigList) {
-      this.sprigList = sprigList;
-      if (this.sprigList.length < this.sprigShowRange[1]) {
-        this.sprigShowRange[1] = this.sprigList.length;
+  this.store.getSprigList(this.docId, 
+    function doneGettingList(error, sprigList) {
+      if (error) {
+        opts.done(error, null);
       }
+      else if (sprigList) {
+        this.sprigList = sprigList;
+        if (this.sprigList.length < this.sprigShowRange[1]) {
+          this.sprigShowRange[1] = this.sprigList.length;
+        }
 
-      this.render(
-        sprigList.slice(this.sprigShowRange[0], this.sprigShowRange[1]));
+        this.render(
+          sprigList.slice(this.sprigShowRange[0], this.sprigShowRange[1]));
 
-      window.onscroll = this.respondToScroll.bind(this);
+        window.onscroll = this.respondToScroll.bind(this);
 
-      done();
+        opts.done();
+      }
+      else {
+        opts.done('Sprig tree not found.');
+      }
     }
-    else {
-      done('Sprig tree not found.');
-    }
-  }
-  .bind(this));
+    .bind(this)
+  );
 };
 
 Spriglog.render = function render(sprigList) {

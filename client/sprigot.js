@@ -55,25 +55,27 @@ Sprigot.init = function init(initDone) {
   loadATypeKit('//use.typekit.net/uoo5gyw.js', initDone);
 }
 
-Sprigot.load = function load(docId, identifyFocusSprig, done) {
-  this.docId = docId;
+// Expected in opts: docId, identifySprig, done.
+Sprigot.load = function load(opts) {
+  this.docId = opts.docId;
   Historian.init(this.graph.treeNav, this.docId);
 
-  this.store.getSprigTree(docId, function doneGettingTree(error, sprigTree) {
+  this.store.getSprigTree(this.docId, function doneGettingTree(error, sprigTree) {
     if (error) {
-      done(error, null);
+      opts.done(error, null);
     }
 
     if (sprigTree) {
       var sanitizedTree = D3SprigBridge.sanitizeTreeForD3(sprigTree);
-      this.graph.loadNodeTreeToGraph(sanitizedTree, identifyFocusSprig, done);
+      this.graph.loadNodeTreeToGraph(sanitizedTree, opts.identifySprig, 
+        opts.done);
     }
     else {
-      done('Sprig tree not found.');
+      opts.done('Sprig tree not found.');
     }
   }
   .bind(this));
-}
+};
 
 Sprigot.initDocEventResponders = function initDocEventResponders() {
   var doc = d3.select(document);

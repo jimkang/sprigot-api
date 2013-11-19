@@ -33,16 +33,13 @@ newDocForm.init = function init(initDone) {
   }
 };
 
-newDocForm.load = function load(docId, idFocusSprig, done) {
+newDocForm.load = function load(opts) {
   this.render([{
     title: 'Test',
     body: 'Yo!'
   }]);
 
-  setTimeout(function doneOnNextTick() {
-    done();    
-  },
-  0);
+  setTimeout(function doneOnNextTick() { opts.done(); }, 0);
 };
 
 newDocForm.render = function render(sprigList) {
