@@ -94,7 +94,7 @@ Director.directToDefault = function directToDefault(queryOpts) {
   this.setUpController(queryOpts);
 
   this.sprigController.init(function initDone() {
-    
+
     this.sprigController.load({
       docId: Settings.defaultDoc, 
       identifySprig: this.matchAny, 
@@ -123,7 +123,7 @@ Director.respondToHashChange = function respondToHashChange() {
 Director.init = function init() {
   this.direct(location.hash);
   window.onhashchange = this.respondToHashChange.bind(this);
-}
+};
 
 Director.queryStringFromHash = function queryStringFromHash(locationHash) {
   var queryString = null;
