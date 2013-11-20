@@ -53,7 +53,7 @@ Sprigot.init = function init(initDone) {
   this.tagElementsWithCSSHackClasses();
 
   loadATypeKit('//use.typekit.net/uoo5gyw.js', initDone);
-}
+};
 
 // Expected in opts: docId, identifySprig, done.
 Sprigot.load = function load(opts) {
@@ -133,7 +133,7 @@ Sprigot.respondToDocKeyUp = function respondToDocKeyUp() {
         break;
     }
   }
-}
+};
 
 Sprigot.respondToDocKeyDown = function respondToDocKeyDown() {
   // cmd+delete keys
@@ -142,7 +142,7 @@ Sprigot.respondToDocKeyDown = function respondToDocKeyDown() {
     (d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 8) {
     TextStuff.showDeleteSprigDialog();
   }
-}
+};
 
 Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {
   d3.event.stopPropagation();
@@ -185,7 +185,7 @@ Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {
   }
   .bind(this),
   this.graph.treeRenderer.treeNodeAnimationDuration + 100);
-}
+};
 
 Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
   d3.event.stopPropagation();
@@ -213,7 +213,7 @@ Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
     treeNav.chooseTreeNode(parentNode, d3.select('#' + parentNode.id).node());
   },
   this.graph.treeRenderer.treeNodeAnimationDuration + 500);
-}
+};
 
 Sprigot.respondToNewSprigotCmd = function respondToNewSprigotCmd() {
   var newDoc = {
@@ -268,7 +268,7 @@ Sprigot.respondToSwitchToGraphCmd = function respondToSwitchToGraphCmd() {
 Sprigot.isMobile = function isMobile() {
   var isMobileMediaQuery = 'only screen and (max-device-height: 568px)';
   return (window.matchMedia(isMobileMediaQuery).matches);
-}
+};
 
 Sprigot.tagElementsWithCSSHackClasses = function tagElementsWithCSSHackClasses() {
   if (this.isMobile() &&
