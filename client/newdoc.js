@@ -26,10 +26,10 @@ newDocForm.init = function init(initDone) {
     head.append('link').attr({
       rel: 'stylesheet',
       type: 'text/css',
-      href: 'sprig.css'
+      href: 'form.css'
     });
 
-    loadATypeKit('//use.typekit.net/uoo5gyw.js', initDone);    
+    loadATypeKit('//use.typekit.net/med0yzx.js', initDone);    
   }
 };
 
