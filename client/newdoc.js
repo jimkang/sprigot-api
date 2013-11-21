@@ -73,8 +73,18 @@ newDocForm.render = function render(sprigList) {
   sprigsToRemove.remove();
 
   sprigBody.each(function setUpFields(d) {
-    var fields = d3.select(this).selectAll('input').data(d.fields);
-    var newFields = fields.enter().append('input');
+    var fields = d3.select(this).selectAll('.field-group').data(d.fields);
+    var newFields = fields.enter().append('div').classed('field-group', true);
+
+    newFields.append('label')
+      .attr({
+        id: function getId(d) { return d.name + '_label'; },
+        for: function getFor(d) { return d.name; }
+      })
+      .text(function getName(d) { return d.name; });
+
+    newFields.append('input').attr('id', function getId(d) { return d.name; });
+
     fields.exit().remove();
   });
 
