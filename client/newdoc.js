@@ -49,7 +49,13 @@ newDocForm.load = function load(opts) {
           'glog'
         ]
       }
-    ]
+    ],
+    submit: {
+      action: function submitNewDocument() {
+        // alert('Yo');
+      },
+      name: 'Make it!'
+    }
   }]);
 
   setTimeout(function doneOnNextTick() { opts.done(); }, 0);
@@ -72,22 +78,30 @@ newDocForm.render = function render(sprigList) {
   var sprigsToRemove = sprigs.exit();
   sprigsToRemove.remove();
 
-  sprigBody.each(function setUpFields(d) {
-    var fields = d3.select(this).selectAll('.field-group').data(d.fields);
-    var newFields = fields.enter().append('div').classed('field-group', true);
+  sprigBody.each(this.setUpFields);
 
-    newFields.append('label')
-      .attr({
-        id: function getId(d) { return d.name + '_label'; },
-        for: function getFor(d) { return d.name; }
-      })
-      .text(function getName(d) { return d.name; });
+  sprigBody.append('button').classed('submit-button', true)
+    .text(function getName(d) { return d.submit.name; })
+    .on('click', function onSubmit(d) {
+      d.submit.action();
+    });
 
-    newFields.append('input').attr('id', function getId(d) { return d.name; });
+};
 
-    fields.exit().remove();
-  });
+newDocForm.setUpFields = function setUpFields(d) {
+  var fields = d3.select(this).selectAll('.field-group').data(d.fields);
+  var newFields = fields.enter().append('div').classed('field-group', true);
 
+  newFields.append('label')
+    .attr({
+      id: function getId(d) { return d.name + '_label'; },
+      for: function getFor(d) { return d.name; }
+    })
+    .text(function getName(d) { return d.name; });
+
+  newFields.append('input').attr('id', function getId(d) { return d.name; });
+
+  fields.exit().remove();
 };
 
 return newDocForm;
