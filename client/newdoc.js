@@ -90,7 +90,8 @@ newDocForm.load = function load(opts) {
           }
           else {
             console.log('Saved doc:', response);
-            Director.direct('#/' + newDoc.id + '/' + rootSprig.id);
+            Director.direct('#/' + newDoc.id + '/' + rootSprig.id + 
+              '?forceRebuild=true');
           }
         });
       },
