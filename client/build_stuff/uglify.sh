@@ -14,6 +14,7 @@ uglifyjs \
   historian.js \
   load_a_typekit.js \
   spriglog.js \
+  sprigotbasemixin.js \
   sprigot.js \
   newdoc.js \
   direct.js \

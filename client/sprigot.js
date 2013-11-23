@@ -11,23 +11,10 @@ var Sprigot = {
 };
 
 Sprigot.init = function init(initDone) {
-  var body = d3.select('body');
-  var sprigotSel = body.select('.sprigot');
+  var baseMixin = createSprigotBaseMixin();
+  var addedContainer = baseMixin.setUpOuterContainer('sprig.css', this.opts);
 
-  if (this.opts.forceRebuild && !sprigotSel.empty()) {
-    sprigotSel.remove();
-  }
-
-  if (sprigotSel.empty()) {
-    d3.select('head').append('link').attr({
-      rel: 'stylesheet',
-      type: 'text/css',
-      href: 'sprig.css'
-    });
-
-    sprigotSel = body.append('section').classed('sprigot', true);
-  }
-  else {
+  if (!addedContainer) {
     initDone();
     return;
   }
@@ -38,6 +25,7 @@ Sprigot.init = function init(initDone) {
   }
   this.camera = createCamera(cameraScaleExtent);
   this.graph = createGraph();
+  var sprigotSel = d3.select('.sprigot');  
   this.graph.init(sprigotSel, this.camera, TreeRenderer, TextStuff, Historian,
     this);
   this.store = createStore();
