@@ -15,12 +15,13 @@ newDocForm.init = function init(initDone) {
 
   if (this.opts.forceRebuild && !this.newDocFormSel.empty()) {
     this.newDocFormSel.remove();
+    this.newDocFormSel = body.select('.sprigot');
   }
 
   this.store = createStore();
 
   if (this.newDocFormSel.empty()) {
-    this.newDocFormSel = body.append('section').classed('glog', true);
+    this.newDocFormSel = body.append('section').classed('sprigot', true);
 
     var head = d3.select('head');
     head.append('link').attr({
