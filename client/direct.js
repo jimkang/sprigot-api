@@ -56,6 +56,7 @@ Director.direct = function direct(locationHash) {
 
 Director.loadToController = function loadToController() {
   if (this.sprigController.controllerType === 'sprigot' &&
+    this.sprigController.graph &&
     this.sprigController.graph.nodeRoot && 
     this.sprigController.docId === this.initialTargetDocId) {
 
