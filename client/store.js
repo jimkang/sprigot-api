@@ -154,7 +154,7 @@ Store.getSprigList = function getSprigList(docId, outerDone) {
   );
 };
 
-Store.createNewDoc = function createNewDoc(docParams, rootSprigParams) {
+Store.createNewDoc = function createNewDoc(docParams, rootSprigParams, done) {
   var requestBody = {}
   var docCreateReqId = 'docCreateReq' + uid(4);
   var rootSprigSaveReqId = 'rootSprigSaveReq' + uid(4);
@@ -169,14 +169,7 @@ Store.createNewDoc = function createNewDoc(docParams, rootSprigParams) {
     params: rootSprigParams
   };
 
-  this.apienvoy.request(requestBody, function done(error, response) {
-    if (error) {
-      console.log('Error while saving doc:', error);
-    }
-    else {
-      console.log('Saved doc:', response);
-    }
-  });
+  this.apienvoy.request(requestBody, done);
 }
 
 return Store;
