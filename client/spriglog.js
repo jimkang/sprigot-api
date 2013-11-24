@@ -13,27 +13,20 @@ var Spriglog = {
 
 Spriglog.init = function init(initDone) {
   this.opts = opts ? opts : {};
-  var body = d3.select('body');
-  this.spriglogSel = body.select('.sprigot');
 
-  if (this.opts.forceRebuild && !this.spriglogSel.empty()) {
-    this.spriglogSel.remove();
+  var baseMixin = createSprigotBaseMixin();
+  var addedContainer = baseMixin.setUpOuterContainer('glog.css', 'bloge', 
+    this.opts);
+  if (addedContainer) {
+    this.spriglogSel = d3.select('.bloge');
+  }
+  else {
+    initDone();
+    return;
   }
 
   this.store = createStore();
-
-  if (this.spriglogSel.empty()) {
-    this.spriglogSel = body.append('section').classed('glog', true);
-
-    var head = d3.select('head');
-    head.append('link').attr({
-      rel: 'stylesheet',
-      type: 'text/css',
-      href: 'glog.css'
-    });
-
-    loadATypeKit('//use.typekit.net/med0yzx.js', initDone);    
-  }
+  loadATypeKit('//use.typekit.net/med0yzx.js', initDone);
 };
 
 // Expected in opts: docId, done.

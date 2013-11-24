@@ -12,8 +12,9 @@ var Sprigot = {
 
 Sprigot.init = function init(initDone) {
   var baseMixin = createSprigotBaseMixin();
-  var addedContainer = baseMixin.setUpOuterContainer('sprig.css', this.opts);
-
+  var addedContainer = baseMixin.setUpOuterContainer('sprig.css', 'sprigot', 
+    this.opts);
+  
   if (!addedContainer) {
     initDone();
     return;
