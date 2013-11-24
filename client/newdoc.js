@@ -10,28 +10,21 @@ var newDocForm = {
 
 newDocForm.init = function init(initDone) {
   this.opts = opts ? opts : {};
-  var body = d3.select('body');
-  this.newDocFormSel = body.select('.sprigot');
 
-  if (this.opts.forceRebuild && !this.newDocFormSel.empty()) {
-    this.newDocFormSel.remove();
-    this.newDocFormSel = body.select('.sprigot');
+  var baseMixin = createSprigotBaseMixin();
+  var addedContainer = baseMixin.setUpOuterContainer('form.css', 'form', 
+    this.opts);
+  if (addedContainer) {
+    this.newDocFormSel = d3.select('.form');
+  }
+  else {
+    initDone();
+    return;
   }
 
   this.store = createStore();
 
-  if (this.newDocFormSel.empty()) {
-    this.newDocFormSel = body.append('section').classed('sprigot', true);
-
-    var head = d3.select('head');
-    head.append('link').attr({
-      rel: 'stylesheet',
-      type: 'text/css',
-      href: 'form.css'
-    });
-
-    loadATypeKit('//use.typekit.net/med0yzx.js', initDone);    
-  }
+  loadATypeKit('//use.typekit.net/med0yzx.js', initDone);    
 };
 
 newDocForm.load = function load(opts) {
