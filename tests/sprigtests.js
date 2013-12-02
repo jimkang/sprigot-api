@@ -166,7 +166,8 @@ describe('A visitor', function getASprig() {
       ],
       readers: [
         'smidgeo', 'drwily'
-      ]
+      ],
+      format: 'sprigot'
     };
 
     utils.sendJSONRequest({
