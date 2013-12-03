@@ -67,7 +67,8 @@ newDocForm.load = function load(opts) {
           ],
           admins: [
             formValues.author
-          ]
+          ],
+          format: formValues.format
         };
 
         var rootSprig = {
