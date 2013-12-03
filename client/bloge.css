@@ -30,21 +30,21 @@ body {
   /*background-color: #eee;*/
 }
 
-.glog .textpane {
+.bloge .textpane {
   width: 66%;
   margin-top: 0.7em;
   margin-bottom: 0.7em;
   padding: 1em;
 }
 
-.glog .title {
+.bloge .title {
   font-family: brandon-grotesque, 'Helvetica Neue', Helvetica, sans-serif;
   font-weight: bold;
   font-size: 40px;
   text-transform: uppercase;
 }
 
-.glog .stamps {
+.bloge .stamps {
   font-family: brandon-grotesque, 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 18px;
   margin-top: 1em;

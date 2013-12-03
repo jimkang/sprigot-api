@@ -10,7 +10,7 @@ Director.setUpController = function setUpController(opts) {
   if (!this.sprigController || 
     this.sprigController.controllerType !== expectedType) {
 
-    if (opts.format === 'glog') {
+    if (opts.format === 'bloge') {
       this.sprigController = createSpriglog(opts);
     }
     else if (opts.format === 'newdoc') {

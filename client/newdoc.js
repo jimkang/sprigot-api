@@ -52,7 +52,7 @@ newDocForm.load = function load(opts) {
         type: 'select',
         options: [
           'sprigot',
-          'glog'
+          'bloge'
         ]
       }
     ],

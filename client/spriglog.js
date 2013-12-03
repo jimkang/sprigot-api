@@ -5,7 +5,7 @@ var Spriglog = {
   store: null,
   opts: opts,
   spriglogSel: null,
-  controllerType: 'glog',
+  controllerType: 'bloge',
   sprigList: [],
   sprigShowRange: [0, 5], // Excludes end
   numberOfSprigsToRevealPerScrollEnd: 5
@@ -15,7 +15,7 @@ Spriglog.init = function init(initDone) {
   this.opts = opts ? opts : {};
 
   var baseMixin = createSprigotBaseMixin();
-  var addedContainer = baseMixin.setUpOuterContainer('glog.css', 'bloge', 
+  var addedContainer = baseMixin.setUpOuterContainer('bloge.css', 'bloge', 
     this.opts);
   if (addedContainer) {
     this.spriglogSel = d3.select('.bloge');
