@@ -545,10 +545,8 @@ describe('A visitor', function getASprig() {
     });
   });
 
-  it('should get a list via the doc', function getSprigList(
-    testDone) {
-
-    utils.addDocRefToNodesInTree(caseDataSource, session.deepDocParams.id);
+  it('should get a only the doc', function getDoc(testDone) {
+    utils.addDocRefToNodesInTree(caseDataSource, session.deepDocParams.id);    
 
     utils.sendJSONRequest({
       url: settings.baseURL,
@@ -557,6 +555,31 @@ describe('A visitor', function getASprig() {
         sprig1req: {
           op: 'getDoc',
           params: {            
+            id: session.deepDocParams.id,
+            childDepth: 0
+          }
+        }
+      },
+      done: function doneGettingDoc(error, xhr) {
+        var response = JSON.parse(xhr.responseText);
+        debugger;
+        assert.deepEqual(response.sprig1req.result, session.deepDocParams);
+        assert.ok(!response.sprig1req.result.sprigTree);
+        testDone();
+      }
+    });
+  });  
+
+  it('should get a list via the doc', function getSprigList(testDone) {
+    utils.addDocRefToNodesInTree(caseDataSource, session.deepDocParams.id);
+
+    utils.sendJSONRequest({
+      url: settings.baseURL,
+      method: 'POST',
+      jsonParams: {
+        sprig1req: {
+          op: 'getDoc',
+          params: {
             id: session.deepDocParams.id,
             flatten: true
           }
@@ -572,7 +595,7 @@ describe('A visitor', function getASprig() {
         // Walk tree, make sure everything in the tree is in the fetched list.
         var fetchedList = response.sprig1req.result.sprigList;
         var nodesAtDepth = [caseDataSource];
-        debugger;
+
         do {
           var nodesAtNextDepth = [];
           for (var i = 0; i < nodesAtDepth.length; ++i) {
@@ -605,7 +628,6 @@ describe('A visitor', function getASprig() {
         testDone();
       }
     });
-
   });
 
   it('should delete a sprig', function deleteSprig(testDone) {
@@ -647,7 +669,6 @@ describe('A visitor', function getASprig() {
       },
       done: function doneGettingVersion(error, xhr) {
         var response = JSON.parse(xhr.responseText);
-        debugger;
         assert.ok(typeof response.sprigVersionReq.result === 'string');
         console.log('Version:', response.sprigVersionReq.result);
         testDone();
