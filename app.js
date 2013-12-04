@@ -119,30 +119,34 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
             job.params.childDepth = 100;
           }
 
-          dbwrap.getDocFromDb(job.params.id, jobKey, 
-            function gotDoc(status, jobKey, doc) {
-              if (status !== 'got') {
-                jobComplete(status, jobKey, doc);
-              }
-              else {
-                // TODO: Check to see if doc has limited readers.
-                treegetting.getTreeFromDb(doc.rootSprig, doc.id, 
-                  job.params.childDepth, jobKey, 
-                  function gotTree(status, jobKey, tree) {
-                    if (job.params.flatten) {
-                      doc.sprigList = sprigBridge.flattenTreeBreadthFirst(
-                        tree, job.params.childDepth
-                      );
-                    }
-                    else {
-                      doc.sprigTree = tree;
-                    }
-                    jobComplete(status, jobKey, doc);
-                  }
-                );
-              }
+          function followUpGettingDocWithGettingTree(status, jobKey, doc) {
+            if (status !== 'got') {
+              jobComplete(status, jobKey, doc);
             }
-          );
+            else {
+              // TODO: Check to see if doc has limited readers.
+              treegetting.getTreeFromDb(doc.rootSprig, doc.id, 
+                job.params.childDepth, jobKey, 
+                function gotTree(status, jobKey, tree) {
+                  if (job.params.flatten) {
+                    doc.sprigList = sprigBridge.flattenTreeBreadthFirst(
+                      tree, job.params.childDepth
+                    );
+                  }
+                  else {
+                    doc.sprigTree = tree;
+                  }
+                  jobComplete(status, jobKey, doc);
+                }
+              );
+            }
+          }
+
+          var jobDone = jobComplete;
+          if (job.params.childDepth > 0) {
+            jobDone = followUpGettingDocWithGettingTree;
+          }
+          dbwrap.getDocFromDb(job.params.id, jobKey, jobDone);
         }
         else {
           jobComplete('Not understood', jobKey,  null);
@@ -157,6 +161,7 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
     }
   };
 }
+
 
 
 console.log('Server running at:', port);
