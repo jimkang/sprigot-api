@@ -1,10 +1,11 @@
 var Director = {
   sprigController: null,
   initialTargetSprigId: null,
-  initialTargetDocId: null
+  initialTargetDocId: null,
+  store: createStore()
 };
 
-Director.setUpController = function setUpController(opts) {
+Director.setUpController = function setUpController(opts, done) {
   var expectedType = opts.format ? opts.format : 'sprigot';
 
   if (!this.sprigController || 
@@ -19,19 +20,22 @@ Director.setUpController = function setUpController(opts) {
     else {
       this.sprigController = createSprigot(opts);
     }
-  }
 
-  return this.sprigController;
+    this.sprigController.init(done);
+  }
+  else {
+    this.sprigController.opts = opts;
+    setTimeout(done, 0);
+  }
 };
 
 Director.direct = function direct(locationHash) {
-  var queryOpts = 
-    this.dictFromQueryString(this.queryStringFromHash(locationHash));
+  var opts = this.dictFromQueryString(this.queryStringFromHash(locationHash));
 
   var pathSegments = locationHash.split('/');
   if (pathSegments.length < 2) {
     // No docId specified.
-    this.directToDefault(queryOpts);
+    this.directToDefault(opts);
     return;
   }
 
@@ -39,82 +43,53 @@ Director.direct = function direct(locationHash) {
     case 'index':
       break;
     case 'new':
-      queryOpts.format = 'newdoc';
-      this.setUpController(queryOpts);
-      this.sprigController.init(this.loadToController.bind(this));
+      opts.format = 'newdoc';
+      opts.loadDone = this.loadDone.bind(this);
+      this.setUpController(opts, this.callLoad.bind(this));
       break;
     default:
+      // This branch is for routes that require that the doc (without its tree) 
+      // be loaded before deciding which controller to use.
       this.initialTargetDocId = pathSegments[1];
-      if (pathSegments.length > 1) {
-        this.initialTargetSprigId = pathSegments[2];
-      }      
-
-      this.setUpController(queryOpts);
-      this.sprigController.init(this.loadToController.bind(this));
+      this.store.getDoc(this.initialTargetDocId, function gotDoc(error, doc) {
+        if (error) {      
+          // TODO: Load error controller.
+          console.log('Error', error);
+        }
+        else {
+          if (!opts.format) {
+            opts.format = doc.format;
+          }
+          opts.doc = doc;
+          if (pathSegments.length > 1) {
+            opts.initialTargetSprigId = pathSegments[2];
+          }
+          opts.loadDone = this.loadDone.bind(this);
+          this.setUpController(opts, this.callLoad.bind(this));
+        }
+      }
+      .bind(this));
   }
 };
 
-Director.loadToController = function loadToController() {
-  if (this.sprigController.controllerType === 'sprigot' &&
-    this.sprigController.graph &&
-    this.sprigController.graph.nodeRoot && 
-    this.sprigController.docId === this.initialTargetDocId) {
-
-    if (this.initialTargetSprigId === 'findunread') {
-      this.sprigController.respondToFindUnreadCmd();
-    }
-    else if (this.initialTargetSprigId) {
-      this.sprigController.graph.treeNav.goToSprigId(
-        this.initialTargetSprigId, 100);
-    }
+Director.loadDone = function loadDone(error) {
+  if (error) {
+    console.log('Error while loading:', error);
   }
-  else {
-    var identifyFocusSprig = this.matchFocusSprigId.bind(this);
-    if (this.initialTargetSprigId === 'findunread') {
-      identifyFocusSpri = this.matchAny;
-    }
+};
 
-    this.sprigController.load({
-      docId: this.initialTargetDocId, 
-      identifySprig: identifyFocusSprig, 
-      done: function doneLoading(error) {
-        if (error) {
-          console.log('Error while getting sprig:', error);
-        }
-        else {
-          if (this.initialTargetSprigId === 'findunread') {
-            this.sprigController.respondToFindUnreadCmd();
-          }
-        }
-      }
-    });
-  }
+Director.callLoad = function callLoad() {
+  this.sprigController.load();
 };
 
 Director.directToDefault = function directToDefault(queryOpts) {
-  this.setUpController(queryOpts);
-
-  this.sprigController.init(function initDone() {
-
-    this.sprigController.load({
-      docId: Settings.defaultDoc, 
-      identifySprig: this.matchAny, 
-      done: function doneLoading(error) {
-        if (error) {
-          console.log('Error while getting sprig:', error);
-        }
-      }
-    });
-  }
-  .bind(this));
-};
-
-Director.matchAny = function matchAny() {
-  return true;
-};
-
-Director.matchFocusSprigId = function matchFocusSprigId(sprig) {
-  return (this.initialTargetSprigId === sprig.id);
+  queryOpts.doc = Settings.defaultDoc;
+  queryOpts.loadDone = function doneLoading(error) {
+    if (error) {
+      console.log('Error while getting sprig:', error);
+    }
+  };
+  this.setUpController(queryOpts, this.callLoad.bind(this));
 };
 
 Director.respondToHashChange = function respondToHashChange() {

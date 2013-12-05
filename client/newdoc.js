@@ -27,7 +27,7 @@ newDocForm.init = function init(initDone) {
   loadATypeKit('//use.typekit.net/med0yzx.js', initDone);    
 };
 
-newDocForm.load = function load(opts) {
+newDocForm.load = function load() {
   this.render([{
     title: 'New Sprigot document',
     fields: [
@@ -94,7 +94,7 @@ newDocForm.load = function load(opts) {
     }
   }]);
 
-  setTimeout(function doneOnNextTick() { opts.done(); }, 0);
+  setTimeout(function doneOnNextTick() { opts.loadDone(); }, 0);
 };
 
 newDocForm.render = function render(forms) {

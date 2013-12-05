@@ -1,7 +1,7 @@
 function createSpriglog(opts) {
+// Expected in opts: doc, loadDone.
 
 var Spriglog = {
-  docId: null,
   store: null,
   opts: opts,
   spriglogSel: null,
@@ -21,7 +21,7 @@ Spriglog.init = function init(initDone) {
     this.spriglogSel = d3.select('.bloge');
   }
   else {
-    initDone();
+    setTimeout(initDone, 0);
     return;
   }
 
@@ -29,15 +29,13 @@ Spriglog.init = function init(initDone) {
   loadATypeKit('//use.typekit.net/med0yzx.js', initDone);
 };
 
-// Expected in opts: docId, done.
-Spriglog.load = function load(opts) {
-  this.docId = opts.docId;
+Spriglog.load = function load() {
   // Historian.init(this.graph.treeNav, this.docId);
 
-  this.store.getSprigList(this.docId, 
+  this.store.getSprigList(this.opts.doc.id, 
     function doneGettingList(error, sprigList) {
       if (error) {
-        opts.done(error, null);
+        this.opts.loadDone(error, null);
       }
       else if (sprigList) {
         this.sprigList = sprigList;
@@ -50,10 +48,10 @@ Spriglog.load = function load(opts) {
 
         window.onscroll = this.respondToScroll.bind(this);
 
-        opts.done();
+        this.opts.loadDone();
       }
       else {
-        opts.done('Sprig tree not found.');
+        this.opts.loadDone('Sprig tree not found.');
       }
     }
     .bind(this)

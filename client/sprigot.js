@@ -1,7 +1,8 @@
 function createSprigot(opts) {
+// Expected in opts: doc, loadDone.
+// Optional in opts: initialTargetSprigId.
 
 var Sprigot = {
-  docId: null,
   graph: null,
   store: null,
   divider: null,
@@ -14,7 +15,7 @@ Sprigot.init = function init(initDone) {
   var baseMixin = createSprigotBaseMixin();
   var addedContainer = baseMixin.setUpOuterContainer('sprig.css', 'sprigot', 
     this.opts);
-  
+
   if (!addedContainer) {
     initDone();
     return;
@@ -44,23 +45,32 @@ Sprigot.init = function init(initDone) {
   loadATypeKit('//use.typekit.net/uoo5gyw.js', initDone);
 };
 
-// Expected in opts: docId, identifySprig, done.
-Sprigot.load = function load(opts) {
-  this.docId = opts.docId;
-  Historian.init(this.graph.treeNav, this.docId);
+Sprigot.load = function load() {
+  Historian.init(this.graph.treeNav, this.opts.doc.id);
 
-  this.store.getSprigTree(this.docId, function doneGettingTree(error, sprigTree) {
+  this.store.getSprigTree(this.opts.doc.id, function gotTree(error, tree) {
     if (error) {
-      opts.done(error, null);
+      this.opts.loadDone(error, null);
     }
 
-    if (sprigTree) {
-      var sanitizedTree = D3SprigBridge.sanitizeTreeForD3(sprigTree);
-      this.graph.loadNodeTreeToGraph(sanitizedTree, opts.identifySprig, 
-        opts.done);
+    if (tree) {
+      tree = D3SprigBridge.sanitizeTreeForD3(tree);
+      var targetId = this.opts.initialTargetSprigId;
+      var matcher = function matchAny() { return true; };
+      if (targetId) {
+        matcher = function isTarget(sprig) { return (targetId === sprig.id); };
+      }
+
+      this.graph.loadNodeTreeToGraph(tree, matcher, function onGraphLoaded() {
+        if (targetId === 'findunread') {
+          this.respondToFindUnreadCmd();
+        }
+        this.opts.loadDone();
+      }
+      .bind(this));
     }
     else {
-      opts.done('Sprig tree not found.');
+      this.opts.loadDone('Sprig tree not found.');
     }
   }
   .bind(this));
@@ -142,7 +152,7 @@ Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {
   var currentJSONDate = (new Date()).toJSON();
   var newSprig = {
     id: TextStuff.makeId(8),
-    doc: this.docId,
+    doc: this.opts.doc.id,
     title: 'New Sprig',
     body: '',
     created: currentJSONDate,
@@ -188,7 +198,7 @@ Sprigot.respondToDeleteSprigCmd = function respondToDeleteSprigCmd() {
 
   var sprigToDelete = {
     id: this.graph.focusNode.id,
-    doc: this.docId
+    doc: this.opts.doc.id
   };
 
   this.store.deleteChildAndSaveParentSprig(sprigToDelete, 
