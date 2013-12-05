@@ -1,10 +1,11 @@
 var Historian = {
-  treeNav: null,
+  docNav: null,
   docId: null
 };
 
-Historian.init = function init(treeNav, docId) {
-  this.treeNav = treeNav;
+// docNavigator is expected to have a goToSprigId method.
+Historian.init = function init(docNavigator, docId) {
+  this.docNav = docNavigator;
   this.docId = docId;
   window.onpopstate = this.statePopped.bind(this);
 };
@@ -12,7 +13,7 @@ Historian.init = function init(treeNav, docId) {
 Historian.statePopped = function statePopped(e) {
   if (e.state) {
     this.docId = e.state.docId;
-    this.treeNav.goToSprigId(e.state.sprigId, 100);
+    this.docNav.goToSprigId(e.state.sprigId, 100);
   }
 };
 
