@@ -90,6 +90,38 @@ Store.deleteChildAndSaveParentSprig = function deleteChildAndSaveParentSprig(
   });
 }
 
+Store.getDoc = function getDoc(docId, outerDone) {
+  var sprigRequest = {
+    op: 'getDoc',
+    params: {
+      id: docId,
+      childDepth: 0
+    }
+  };
+
+  this.apienvoy.request({getDocReq: sprigRequest}, 
+    function done(error, response) {
+      if (error) {
+        if (outerDone) {
+          outerDone(error, null)
+        }
+        return;
+      }
+
+      if ('getDocReq' in response && response.getDocReq.status === 'got') {
+        if (outerDone) {
+          outerDone(null, response.getDocReq.result);
+        }
+      }
+      else {
+        if (outerDone) {
+          outerDone(null, null);
+        }
+      }
+    }
+  );
+};
+
 Store.getSprigTree = function getSprigTree(docId, outerDone) {
   var sprigRequest = {
     op: 'getDoc',
