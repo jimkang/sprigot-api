@@ -30,7 +30,7 @@ Spriglog.init = function init(initDone) {
 };
 
 Spriglog.load = function load() {
-  // Historian.init(this.graph.treeNav, this.docId);
+  Historian.init(null, this.opts.doc.id);
 
   this.store.getSprigList(this.opts.doc.id, 
     function doneGettingList(error, sprigList) {
@@ -47,7 +47,7 @@ Spriglog.load = function load() {
           sprigList.slice(this.sprigShowRange[0], this.sprigShowRange[1]));
 
         window.onscroll = this.respondToScroll.bind(this);
-
+        Historian.syncURLToSprigId(this.opts.doc.rootSprig);
         this.opts.loadDone();
       }
       else {
