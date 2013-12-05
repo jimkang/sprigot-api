@@ -88,18 +88,14 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
 }
 
 TextStuff.initFindUnreadLink = function initFindUnreadLink() {
-  var hashParts = location.hash.split('/');
-  if (hashParts.length > 1) {
-    var hashWithoutSprig = hashParts[0] + '/' + hashParts[1] + '/';
-    this.findUnreadLink = this.pane.append('a')
-      .attr('id', 'findunreadlink')
-      .attr('href', hashWithoutSprig + 'findunread')
-      .classed('control-link', true)
-      .classed('findunread-link', true)
-      .text('Find Unread')
-      .style('display', 'none');
-  }
-}
+  this.findUnreadLink = this.pane.append('a')
+    .attr('id', 'findunreadlink')
+    .classed('control-link', true)
+    .classed('findunread-link', true)
+    .text('Find Unread')
+    .style('display', 'none')
+    .on('click', this.sprigot.respondToFindUnreadCmd.bind(this.sprigot));
+};
 
 TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode) {
   this.textcontent.datum(treeNode);
