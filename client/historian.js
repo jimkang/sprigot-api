@@ -34,4 +34,5 @@ Historian.syncURLToSprigId = function syncURLToSprigId(sprigId) {
     sprigId: sprigId
   },
   null, newURL);  
-}
+};
+
