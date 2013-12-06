@@ -71,12 +71,16 @@ newDocForm.load = function load() {
           format: formValues.format
         };
 
+        var currentJSONDate = (new Date()).toJSON();
+
         var rootSprig = {
           id: newDoc.rootSprig,
           doc: newDoc.id,
           title: formValues.name,
           body: 'Hello. Type some stuff here.',
-          children: []
+          children: [],
+          created: currentJSONDate,
+          modified: currentJSONDate 
         };
 
         store.createNewDoc(newDoc, rootSprig, function done(error, response) {
