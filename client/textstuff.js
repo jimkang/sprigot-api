@@ -223,7 +223,7 @@ TextStuff.changeEditMode = function changeEditMode(editable, skipSave) {
 
     if (!skipSave) {
       this.store.saveSprigFromTreeNode(this.textcontent.datum(), 
-        this.sprigot.docId);
+        this.sprigot.opts.doc.id);
     }
   }
 }
@@ -252,7 +252,7 @@ TextStuff.respondToEmphasisCheckChange = function respondToEmphasisCheckChange()
   if (this.graph.focusNode) {
     this.graph.focusNode.emphasize = this.emphasizeCheckbox.node().checked;
     this.treeRenderer.update(this.graph.nodeRoot);
-    this.store.saveSprigFromTreeNode(this.graph.focusNode, this.sprigot.docId);
+    this.store.saveSprigFromTreeNode(this.graph.focusNode, this.sprigot.opts.doc.id);
   }
 }
 
