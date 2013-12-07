@@ -1,4 +1,6 @@
 var Settings = {
-  defaultDoc: 'About'
+  defaultDoc: {
+    id: 'About'
+  }
 };
 
