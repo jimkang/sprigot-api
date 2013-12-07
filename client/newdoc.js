@@ -60,7 +60,7 @@ newDocForm.load = function load() {
       action: function submitNewDocument(formValues) {
         var store = createStore();
         var newDoc = {
-          id: uid(8),
+          id: formValues.name,
           rootSprig: uid(8),
           authors: [
             formValues.author
