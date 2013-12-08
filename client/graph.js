@@ -180,6 +180,35 @@ Graph.nodeIsUnvisited = function nodeIsUnvisited(sprig) {
   return !this.nodeWasVisited(sprig);
 }
 
+Graph.documentIsEditable = function documentIsEditable() {
+  return this.textStuff.editAvailable;
+};
+
+Graph.nodeWasDragged = function nodeWasDragged(node) {
+  if (this.documentIsEditable()) {
+    var dx = node.x - node.x0;
+    var dy = node.y - node.y0;
+    if (Math.abs(dy) > Math.abs(dx)) {
+      this.swapNodeWithSibling(node, (dy > 0) ? 1 : -1);
+    }
+  }
+};
+
+Graph.swapNodeWithSibling = function swapNodeWithSibling(node, direction) {
+  if (typeof node.parent === 'object' && 
+    typeof node.parent.children === 'object') {
+
+    var nodeIndex = _.indexOf(node.parent.children, node);
+    var newIndex = nodeIndex + direction;
+    if (newIndex > -1 && newIndex < node.parent.children.length) {
+      var swapee = node.parent.children[newIndex];
+      node.parent.children[nodeIndex] = swapee;
+      node.parent.children[newIndex] = node;
+      this.sprigot.store.saveSprigFromTreeNode(node.parent, node.parent.doc);
+    }
+  }
+};
+
 return Graph;
 }
 

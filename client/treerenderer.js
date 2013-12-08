@@ -44,6 +44,7 @@ TreeRenderer.update = function update(source, duration) {
   var node = this.graphSVGGroup.selectAll('g.node')
     .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
+
   // Enter any new nodes at the parent's previous position.
   var nodeEnter = node.enter().append('g')
     .attr('class', 'node')
@@ -53,6 +54,10 @@ TreeRenderer.update = function update(source, duration) {
     .attr('id', function(d) { return d.id; })
     .on('click', TreeRenderer.respondToNodeClick)
     .on('dblclick', this.onNodeDoubleClick.bind(this));
+
+  if (this.graph.documentIsEditable()) {
+    this.addDragToNodeSelection(nodeEnter);
+  }
 
   nodeEnter.append('circle')
     .attr('r', 1e-6)
@@ -179,4 +184,36 @@ TreeRenderer.respondToNodeClick = function respondToNodeClick(treeNode) {
 TreeRenderer.onNodeDoubleClick = function onNodeDoubleClick(treeNode) {
   this.graph.treeNav.toggleChildren(treeNode);
   this.update(treeNode);
+};
+
+TreeRenderer.addDragToNodeSelection = function addDragToNodeSelection(sel) {
+  var dragger = d3.behavior.drag();
+
+  dragger.on('dragstart', function stopOtherDraggers(d) {
+    d3.event.sourceEvent.stopPropagation();
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+
+  dragger.on('drag', function adjustPosition(d) {
+    d3.event.sourceEvent.stopPropagation();
+    this.setAttribute('transform', translateTransform(d3.event.x, d3.event.y));
+    // Reminder:
+    // The tree layout generates a left-to-right tree by default, and we want a 
+    // top-to-bottom tree, so we flip x and y when we talk to it.
+    d.x = d3.event.y;
+    d.y = d3.event.x;
+  });
+
+  dragger.on('dragend', function reportDrag(d) {
+    d3.event.sourceEvent.stopPropagation();
+    this.graph.nodeWasDragged(d);
+  }
+  .bind(this));
+
+  sel.call(dragger);
+};
+
+function translateTransform(x, y) {
+  return 'translate(' + x + ', ' + y + ')';
 }
