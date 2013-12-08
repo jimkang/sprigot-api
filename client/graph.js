@@ -38,6 +38,8 @@ Graph.init = function init(sprigotSel, camera, treeRenderer,
       height: '85%'
     });
 
+  this.setUpFilters();
+
   this.board.append('g').attr('id', 'background')
     .append('rect').attr({
       width: '100%',
@@ -64,7 +66,36 @@ Graph.init = function init(sprigotSel, camera, treeRenderer,
   }
 
   return this;
-}
+};
+
+Graph.setUpFilters = function setUpFilters() {
+  var filter = this.board.append('defs').append('filter').attr({
+    id: 'text-glow',
+    x: '-20%',
+    y: '-20%',
+    width: '140%',
+    height: '140%'
+  });
+  filter.append('feGaussianBlur').attr({
+    in: 'SourceAlpha',
+    stdDeviation: 4,
+    result: 'blurOut'
+  });
+
+  var transferPrimitive = filter.append('feComponentTransfer').attr({
+    in: 'blurOut',
+    result: 'increaseOpacityOut'
+  });
+  transferPrimitive.append('feFuncA').attr({
+    type: 'gamma',
+    exponent: 0.7,
+    amplitude: 0.8,
+  });
+
+  var mergePrimitive = filter.append('feMerge');
+  mergePrimitive.append('feMergeNode').attr('in', 'increaseOpacityOut');
+  mergePrimitive.append('feMergeNode').attr('in', 'SourceGraphic');
+};
 
 Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree, 
   identifyFocusSprig, done) {

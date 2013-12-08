@@ -73,10 +73,7 @@ TreeRenderer.update = function update(source, duration) {
     })
     .attr('y', '-1em')
     .attr('dy', '.35em')
-    .attr('text-anchor', function(d) {
-      // Remember: swapXAndY().
-      return (d.y > 0) ? 'start' : 'end'; 
-    })
+    .attr('text-anchor', 'middle')
     .text(function(d) { return d.title; })
     .style('fill-opacity', 1e-6);
 
