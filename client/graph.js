@@ -38,7 +38,7 @@ Graph.init = function init(sprigotSel, camera, treeRenderer,
       height: '85%'
     });
 
-  this.setUpFilters();
+  // this.setUpFilters();
 
   this.board.append('g').attr('id', 'background')
     .append('rect').attr({

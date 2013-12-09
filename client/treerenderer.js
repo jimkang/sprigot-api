@@ -111,7 +111,7 @@ TreeRenderer.update = function update(source, duration) {
 
   nodeUpdate.select('text')
     .style('fill-opacity', function (d) { 
-      return this.graph.nodeHasFocus(d) ? 1.0 : 0.78; 
+      return this.graph.nodeHasFocus(d) ? 1.0 : 0.85; 
     }
     .bind(this))
     .call(wrap, function getTitle(d) { return d.title; }, this.maxLabelWidth);
