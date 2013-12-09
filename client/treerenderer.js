@@ -5,7 +5,7 @@ var TreeRenderer = {
   graphSVGGroup: null,
   graph: null,
   treeNodeAnimationDuration: 750,
-  maxLabelWidth: 100
+  maxLabelWidth: 140
 };
 
 TreeRenderer.init = function init(sprigTree, graph) {
