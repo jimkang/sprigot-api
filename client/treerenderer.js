@@ -4,7 +4,8 @@ var TreeRenderer = {
   sprigTree: null,
   graphSVGGroup: null,
   graph: null,
-  treeNodeAnimationDuration: 750
+  treeNodeAnimationDuration: 750,
+  maxLabelWidth: 100
 };
 
 TreeRenderer.init = function init(sprigTree, graph) {
@@ -43,7 +44,6 @@ TreeRenderer.update = function update(source, duration) {
   // Update the nodes.
   var node = this.graphSVGGroup.selectAll('g.node')
     .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
 
   // Enter any new nodes at the parent's previous position.
   var nodeEnter = node.enter().append('g')
@@ -113,7 +113,8 @@ TreeRenderer.update = function update(source, duration) {
     .style('fill-opacity', function (d) { 
       return this.graph.nodeHasFocus(d) ? 1.0 : 0.78; 
     }
-    .bind(this));
+    .bind(this))
+    .call(wrap, function getTitle(d) { return d.title; }, this.maxLabelWidth);
 
   // Transition exiting nodes to the parent's new position.
   var nodeExit = node.exit().transition()
@@ -213,4 +214,43 @@ TreeRenderer.addDragToNodeSelection = function addDragToNodeSelection(sel) {
 
 function translateTransform(x, y) {
   return 'translate(' + x + ', ' + y + ')';
+}
+
+// Based on https://gist.github.com/mbostock/7555321.
+function wrap(text, getTextData, width) {
+  text.each(function(d) {
+    // console.log('text.text()', text.text());
+    var text = d3.select(this),
+      words = getTextData(d).split(/\s+/).reverse(),
+      word,
+      line = [],
+      lineNumber = 0,
+      lineHeight = 1.1, // ems
+      y = text.attr('y'),
+      dy = parseFloat(text.attr('dy')),
+      tspan = text.text(null).append('tspan')
+        .attr('x', 0).attr('y', y).attr('dy', dy + 'em');
+
+    var tspans = [tspan];
+
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(' '));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(' '));
+        line = [word];
+        tspan = text.append('tspan')
+          .attr('x', 0).attr('y', y)
+          // .attr('dy', ++lineNumber * lineHeight + dy + 'em')
+          .text(word);
+        tspans.push(tspan);
+      }
+    }
+
+    for (var i = 0; i < tspans.length; ++i) {
+      var tspanToPlace = tspans[i];
+      tspanToPlace.attr('dy', dy - (tspans.length - i - 1) * lineHeight + 'em');
+    }
+  });
 }
