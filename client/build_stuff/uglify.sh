@@ -8,6 +8,7 @@ uglifyjs \
   store.js \
   treerenderer.js \
   treenav.js \
+  collisionfinder.js \
   graph.js \
   textstuff.js \
   divider.js \

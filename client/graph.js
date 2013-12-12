@@ -14,6 +14,7 @@ var Graph = {
   focusEl: null,
   focusNode: null,
   nodeRoot: null,
+  collisionFinder: null,
   margin: {top: 20, right: 10, bottom: 20, left: 10}
 };
 
@@ -64,6 +65,8 @@ Graph.init = function init(sprigotSel, camera, treeRenderer,
   else {
     note.text('You can use the mouse wheel to zoom in and out of the graph. Drag to pan.');    
   }
+
+  this.collisionFinder = createCollisionFinder(this.board.node());
 
   return this;
 };
