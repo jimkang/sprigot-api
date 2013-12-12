@@ -205,9 +205,8 @@ TreeRenderer.addDragToNodeSelection = function addDragToNodeSelection(sel) {
 
   dragger.on('dragend', function reportDrag(d) {
     d3.event.sourceEvent.stopPropagation();
-    this.graph.nodeWasDragged(d);
-  }
-  .bind(this));
+    TreeRenderer.graph.nodeWasDragged(d, this);
+  });
 
   sel.call(dragger);
 };
