@@ -212,18 +212,24 @@ Graph.nodeWasVisited = function nodeWasVisited(treeNode) {
 
 Graph.nodeIsUnvisited = function nodeIsUnvisited(sprig) {
   return !this.nodeWasVisited(sprig);
-}
+};
 
 Graph.documentIsEditable = function documentIsEditable() {
   return this.textStuff.editAvailable;
 };
 
-Graph.nodeWasDragged = function nodeWasDragged(node) {
+Graph.nodeWasDragged = function nodeWasDragged(node, nodeEl) {
   if (this.documentIsEditable()) {
-    var dx = node.x - node.x0;
-    var dy = node.y - node.y0;
-    if (Math.abs(dy) > Math.abs(dx)) {
-      this.swapNodeWithSibling(node, (dy > 0) ? 1 : -1);
+    var collidingEls = this.collisionFinder.elementsHittingEl(nodeEl);
+    function elOtherHasTreeNodeData(el) {
+      return (typeof el.__data__ === 'object' && 
+        typeof el.__data__.id === 'string' &&  el.__data__.id !== node.id);
+    }
+    console.log('collidingEls', collidingEls);
+    var otherEl = _.find(collidingEls, elOtherHasTreeNodeData);
+    if (otherEl) {
+      this.moveNodeToNewParent(node, otherEl.__data__);
+      // this.swapNodeTreePositions(node, otherEl.__data__);
     }
   }
 };
@@ -241,6 +247,52 @@ Graph.swapNodeWithSibling = function swapNodeWithSibling(node, direction) {
       this.sprigot.store.saveSprigFromTreeNode(node.parent, node.parent.doc);
     }
   }
+};
+
+Graph.swapNodeTreePositions = function swapNodeTreePositions(node1, node2) {  
+  var node1Parent = node1.parent;
+  console.log('node1Parent.children', _.pluck(node1Parent.children, 'title'));
+
+  if (typeof node2.parent == 'object') {
+    if (typeof node1Parent.children !== 'object') {
+      node1Parent.children = [];
+    }
+    node1Parent.children[node1Parent.children.indexOf(node1)] = node2;
+    // node2.parent.children.splice(node2.parent.children.indexOf(node2), 1);
+  }
+  if (typeof node1Parent === 'object') {
+    if (typeof node2.parent.children !== 'object') {
+      node2.parent.children = [];
+    }
+    node2.parent.children[node2.parent.children.indexOf(node2)] = node1;
+    // node1Parent.children.splice(node1Parent.children.indexOf(node1), 1);
+  }
+
+  console.log('node1Parent.children', _.pluck(node1Parent.children, 'title'));
+  this.treeRenderer.update(this.nodeRoot);
+};
+
+Graph.moveNodeToNewParent = function moveNodeToNewParent(child, parent) {
+  if (typeof child.parent === 'object') {
+    var childCollection = child.parent.children;
+    if (!childCollection) {
+      childCollection = child.parent._children;
+    }
+    if (typeof childCollection === 'object') {
+      childCollection.splice(childCollection.indexOf(child), 1);
+    }
+  }
+
+  var parentChildCollection = parent.children;
+  if (!parentChildCollection) {
+    parentChildCollection = parent._children;
+  }
+  if (!parentChildCollection || typeof parentChildCollection !== 'object') {
+    parent.children = [];
+    parentChildCollection = parent.children;
+  }
+  parentChildCollection.push(child);
+  this.treeRenderer.update(this.nodeRoot);
 };
 
 return Graph;
