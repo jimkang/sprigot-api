@@ -150,13 +150,13 @@ Graph.loadNodeTreeToGraph = function loadNodeTreeToGraph(nodeTree,
   }
   .bind(this),
   800);
-}
+};
 
 Graph.panToRoot = function panToRoot() {
   var focusSel = d3.select('#' + this.nodeRoot.id);
   this.setFocusEl(focusSel.node());
   this.camera.panToElement(focusSel);
-}
+};
 
 Graph.setGraphScale = function setGraphScale() {
   var actualBoardHeight = this.camera.getActualHeight(this.board.node());
@@ -165,12 +165,12 @@ Graph.setGraphScale = function setGraphScale() {
     this.camera.rootSelection.attr('transform', 'translate(0, 0) scale(0.75)');
     this.camera.zoomBehavior.scale(0.5);
   }
-}
+};
 
 Graph.setFocusEl = function setFocusEl(el) {
   this.focusEl = el;
   this.focusNode = d3.select(this.focusEl).datum();
-}
+};
 
 Graph.focusOnTreeNode = function focusOnTreeNode(treeNode, el, done) {
   this.setFocusEl(el);
@@ -181,7 +181,7 @@ Graph.focusOnTreeNode = function focusOnTreeNode(treeNode, el, done) {
   this.historian.syncURLToSprigId(treeNode.id);
   this.treeRenderer.update(this.nodeRoot);
   this.camera.panToElement(d3.select(this.focusEl), done);
-}
+};
 
 Graph.focusOnSprig = function focusOnSprig(sprigId, delay, done) {
   if (!delay) {
@@ -194,11 +194,11 @@ Graph.focusOnSprig = function focusOnSprig(sprigId, delay, done) {
   }
   .bind(this),
   delay);
-}
+};
 
 Graph.nodeHasFocus = function nodeHasFocus(treeNode) {
   return (treeNode === this.focusNode);
-}
+};
 
 Graph.noteNodeWasVisited = function noteNodeWasVisited(treeNode) {
   var visitKey = 'visited_' + treeNode.id;
