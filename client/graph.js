@@ -228,8 +228,12 @@ Graph.nodeWasDragged = function nodeWasDragged(node, nodeEl) {
     console.log('collidingEls', collidingEls);
     var otherEl = _.find(collidingEls, elOtherHasTreeNodeData);
     if (otherEl) {
-      this.moveNodeToNewParent(node, otherEl.__data__);
-      // this.swapNodeTreePositions(node, otherEl.__data__);
+      if (this.sprigot.metaPressed) {        
+        this.swapNodeTreePositions(node, otherEl.__data__);
+      }
+      else {
+        this.moveNodeToNewParent(node, otherEl.__data__);        
+      }
     }
   }
 };
@@ -251,24 +255,24 @@ Graph.swapNodeWithSibling = function swapNodeWithSibling(node, direction) {
 
 Graph.swapNodeTreePositions = function swapNodeTreePositions(node1, node2) {  
   var node1Parent = node1.parent;
-  console.log('node1Parent.children', _.pluck(node1Parent.children, 'title'));
+  // console.log('node1Parent.children', _.pluck(node1Parent.children, 'title'));
 
-  if (typeof node2.parent == 'object') {
-    if (typeof node1Parent.children !== 'object') {
-      node1Parent.children = [];
-    }
-    node1Parent.children[node1Parent.children.indexOf(node1)] = node2;
-    // node2.parent.children.splice(node2.parent.children.indexOf(node2), 1);
-  }
-  if (typeof node1Parent === 'object') {
-    if (typeof node2.parent.children !== 'object') {
-      node2.parent.children = [];
-    }
-    node2.parent.children[node2.parent.children.indexOf(node2)] = node1;
-    // node1Parent.children.splice(node1Parent.children.indexOf(node1), 1);
+  if (typeof node1Parent !== 'object' || typeof node2.parent !== 'object') {
+    // Can't swap the root node with anything.
+    return;
   }
 
-  console.log('node1Parent.children', _.pluck(node1Parent.children, 'title'));
+  if (typeof node1Parent.children !== 'object') {
+    node1Parent.children = [];
+  }
+  node1Parent.children[node1Parent.children.indexOf(node1)] = node2;
+  
+  if (typeof node2.parent.children !== 'object') {
+    node2.parent.children = [];
+  }
+  node2.parent.children[node2.parent.children.indexOf(node2)] = node1;
+
+  // console.log('node1Parent.children', _.pluck(node1Parent.children, 'title'));
   this.treeRenderer.update(this.nodeRoot);
 };
 
