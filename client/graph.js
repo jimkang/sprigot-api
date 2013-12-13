@@ -254,26 +254,25 @@ Graph.swapNodeWithSibling = function swapNodeWithSibling(node, direction) {
 };
 
 Graph.swapNodeTreePositions = function swapNodeTreePositions(node1, node2) {  
-  var node1Parent = node1.parent;
-  // console.log('node1Parent.children', _.pluck(node1Parent.children, 'title'));
-
-  if (typeof node1Parent !== 'object' || typeof node2.parent !== 'object') {
+  if (typeof node1.parent !== 'object' || typeof node2.parent !== 'object') {
     // Can't swap the root node with anything.
     return;
   }
 
-  if (typeof node1Parent.children !== 'object') {
-    node1Parent.children = [];
+  if (typeof node1.parent.children !== 'object') {
+    node1.parent.children = [];
   }
-  node1Parent.children[node1Parent.children.indexOf(node1)] = node2;
-  
+  node1.parent.children[node1.parent.children.indexOf(node1)] = node2;
+
   if (typeof node2.parent.children !== 'object') {
     node2.parent.children = [];
   }
   node2.parent.children[node2.parent.children.indexOf(node2)] = node1;
 
-  // console.log('node1Parent.children', _.pluck(node1Parent.children, 'title'));
   this.treeRenderer.update(this.nodeRoot);
+
+  this.sprigot.store.saveSprigFromTreeNode(node1.parent, node1.parent.doc);
+  this.sprigot.store.saveSprigFromTreeNode(node2.parent, node2.parent.doc);
 };
 
 Graph.moveNodeToNewParent = function moveNodeToNewParent(child, parent) {
