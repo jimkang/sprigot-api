@@ -299,11 +299,14 @@ Graph.moveNodeToNewParent = function moveNodeToNewParent(child, parent) {
     parentChildCollection = parent.children;
   }
   parentChildCollection.push(child);
-  
+
+  var oldParent = child.parent;
+  child.parent = parent;
+
   this.treeRenderer.update(this.nodeRoot);
 
   this.sprigot.store.saveSprigFromTreeNode(parent, parent.doc);
-  this.sprigot.store.saveSprigFromTreeNode(child.parent, child.parent.doc);  
+  this.sprigot.store.saveSprigFromTreeNode(oldParent, oldParent.doc);  
 };
 
 return Graph;
