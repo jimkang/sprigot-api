@@ -8,7 +8,8 @@ var Sprigot = {
   divider: null,
   camera: null,
   opts: opts,
-  controllerType: 'sprigot'
+  controllerType: 'sprigot',
+  metaPressed: false
 };
 
 Sprigot.init = function init(initDone) {
@@ -87,6 +88,9 @@ Sprigot.initDocEventResponders = function initDocEventResponders() {
 
 Sprigot.respondToDocKeyUp = function respondToDocKeyUp() {
   // CONSIDER: Disabling all of this listening when editing is going on.
+  if (TextStuff.editAvailable) {
+    this.metaPressed = d3.event.metaKey;
+  }
 
   // Esc
   if (d3.event.keyCode === 27) {
@@ -136,10 +140,11 @@ Sprigot.respondToDocKeyUp = function respondToDocKeyUp() {
 
 Sprigot.respondToDocKeyDown = function respondToDocKeyDown() {
   // cmd+delete keys
-
-  if (TextStuff.editAvailable && 
-    (d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 8) {
-    TextStuff.showDeleteSprigDialog();
+  if (TextStuff.editAvailable) {
+    this.metaPressed = d3.event.metaKey;
+    if ((this.metaPressed || d3.event.ctrlKey) && d3.event.which === 8) {
+      TextStuff.showDeleteSprigDialog();
+    }
   }
 };
 
