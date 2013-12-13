@@ -276,6 +276,10 @@ Graph.swapNodeTreePositions = function swapNodeTreePositions(node1, node2) {
 };
 
 Graph.moveNodeToNewParent = function moveNodeToNewParent(child, parent) {
+  if (child.parent.id === parent.id) {
+    return;
+  }
+
   if (typeof child.parent === 'object') {
     var childCollection = child.parent.children;
     if (!childCollection) {
