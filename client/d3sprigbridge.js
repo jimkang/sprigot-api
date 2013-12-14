@@ -153,7 +153,12 @@ function flattenTreeBreadthFirst(sprigTree, depthLimit) {
         sprigsAtNextDepth = sprigsAtNextDepth.concat(theChildren);
       }
 
-      sprigs.push(this.serializeTreedNode(sprig));
+      if (typeof sprig === 'object') {
+        sprigs.push(this.serializeTreedNode(sprig));
+      }
+      else {
+        debugger;        
+      }
     }
 
     currentDepth++;
