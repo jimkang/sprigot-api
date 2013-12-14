@@ -344,6 +344,88 @@ describe('A visitor', function getASprig() {
     );
   });
 
+  it('should post sprigs with tags and also get them back', 
+    function postAndGetSprigTags(testDone) {
+      session.tagSprigOneId = uid(4);
+      session.tagSprigTwoId = uid(4);
+
+      var testSprig1 = {
+        id: session.tagSprigOneId,
+        doc: session.firstDocId,
+        // title: 'One',
+        // body: 'First, there was one.',
+        tags: ['roottag', 'bluetag', 'hiddentag'],
+        // children: [session.tagSprigTwoId]
+      };
+
+      var testSprig2 = {
+        id: session.tagSprigTwoId,
+        doc: session.firstDocId,
+        // title: 'Two',
+        tags: ['roottag', 'secondary'],
+        // body: 'Then, there were two.',
+      };
+
+      utils.sendJSONRequest({
+        url: settings.baseURL,
+        method: 'POST',
+        jsonParams: {
+          sprig1req: {
+            op: 'saveSprig',
+            params: testSprig1
+          },
+          sprig2req: {
+            op: 'saveSprig',
+            params: testSprig2
+          }
+        },
+        done: function donePostingSprigs(error, xhr) {
+          var response = JSON.parse(xhr.responseText);
+          assert.deepEqual(response.sprig1req, {
+            status: 'saved',
+            result: {
+              id: session.tagSprigOneId
+            }
+          });
+          assert.deepEqual(response.sprig2req.result.id, 
+            session.tagSprigTwoId);
+
+          utils.sendJSONRequest({
+            url: settings.baseURL,
+            method: 'POST',
+            jsonParams: {
+              sprig1req: {
+                op: 'getSprig',
+                params: {
+                  id: testSprig1.id,
+                  doc: testSprig1.doc,
+                  childDepth: 0
+                }
+              },
+              sprig2req: {                
+                op: 'getSprig',
+                params: {
+                  id: testSprig2.id,
+                  doc: testSprig2.doc,
+                  childDepth: 0
+                }
+              }
+            },
+            done: function doneGettingSprigs(error, xhr) {
+              debugger;
+              var response = JSON.parse(xhr.responseText);
+              assert.deepEqual(response.sprig1req.result.tags,
+                ['roottag', 'bluetag', 'hiddentag']);
+              assert.deepEqual(response.sprig2req.result.tags,
+                ['roottag', 'secondary']);
+              testDone();
+            }
+          });
+        }
+      });
+    }
+  );
+
   it('should post four sprigs that are part of a hierarchy', 
     function postHierarchicalSprigs(testDone) {
 
