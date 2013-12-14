@@ -2,7 +2,7 @@ var assert = require('assert');
 var _ = require('underscore');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var caseDataSource = require('./caseData');
-var sprigTree = require('../client/d3sprigbridge')
+var sprigTree = require('../client/d3sprigbridge');
 var uid = require('../client/uid').uid;
 
 /* Utils */
@@ -31,14 +31,13 @@ utils.sendJSONRequest = function sendJSONRequest(options) {
     if (4 == xhr.readyState && 0 !== xhr.status) {
       options.done(null, xhr);
     }
-  }
+  };
   xhr.onerror = function(e) { return options.done(e, null); };
   xhr.open(options.method, options.url, true);
   // Content-Type must be capitalized exactly, or node-xmlhttprequest will 
   // overwrite it.
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.setRequestHeader("accept", "application/json");
-  var preparedParams = encodeURIComponent(JSON.stringify(options.jsonParams));
 
   if (options.authHeader) {
     xhr.setRequestHeader('Authorization', options.authHeader);
@@ -562,7 +561,6 @@ describe('A visitor', function getASprig() {
       },
       done: function doneGettingDoc(error, xhr) {
         var response = JSON.parse(xhr.responseText);
-        debugger;
         assert.deepEqual(response.sprig1req.result, session.deepDocParams);
         assert.ok(!response.sprig1req.result.sprigTree);
         testDone();
