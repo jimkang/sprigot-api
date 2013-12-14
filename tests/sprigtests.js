@@ -19,36 +19,36 @@ utils.sendJSONRequest = function sendJSONRequest(options) {
     // authHeader: 'string'
   });
 
-	if (!optionsValidated) {
-	  if (options.done) {
-	    options.done('Invalid params for sendJSONRequest.', null);
-	  }
-	  return;
-	}
+  if (!optionsValidated) {
+    if (options.done) {
+      options.done('Invalid params for sendJSONRequest.', null);
+    }
+    return;
+  }
 
-	var xhr = new XMLHttpRequest();
-	xhr.onreadystatechange = function processXHRStateChange() {
-	  if (4 == xhr.readyState && 0 !== xhr.status) {
-	    options.done(null, xhr);
-	  }
-	}
-	xhr.onerror = function(e) { return options.done(e, null); };
-	xhr.open(options.method, options.url, true);
-	// Content-Type must be capitalized exactly, or node-xmlhttprequest will 
-	// overwrite it.
-	xhr.setRequestHeader("Content-Type", "application/json");
-	xhr.setRequestHeader("accept", "application/json");
-	var preparedParams = encodeURIComponent(JSON.stringify(options.jsonParams));
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function processXHRStateChange() {
+    if (4 == xhr.readyState && 0 !== xhr.status) {
+      options.done(null, xhr);
+    }
+  }
+  xhr.onerror = function(e) { return options.done(e, null); };
+  xhr.open(options.method, options.url, true);
+  // Content-Type must be capitalized exactly, or node-xmlhttprequest will 
+  // overwrite it.
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.setRequestHeader("accept", "application/json");
+  var preparedParams = encodeURIComponent(JSON.stringify(options.jsonParams));
 
-	if (options.authHeader) {
+  if (options.authHeader) {
     xhr.setRequestHeader('Authorization', options.authHeader);
-	}
+  }
 
-	var preparedParams = JSON.stringify(options.jsonParams);
-	if (!preparedParams) {
-	  preparedParams = '{}';
-	}
-	xhr.send(preparedParams);
+  var preparedParams = JSON.stringify(options.jsonParams);
+  if (!preparedParams) {
+    preparedParams = '{}';
+  }
+  xhr.send(preparedParams);
 };
 
 utils.optionsAreValid = function optionsAreValid(options, expectedTypes) {
