@@ -36,7 +36,8 @@ D3SprigBridge.sanitizeTreeForD3 = function sanitizeTreeForD3(tree) {
       }
     }
     if (childRefs.length > 0) {
-      tree.childRefs = childRefs;
+      delete tree.children;
+      tree.childRefs = childRefs;      
     }
     if (validChildren.length > 0) {
       tree.children = validChildren;
