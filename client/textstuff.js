@@ -15,6 +15,7 @@ var TextStuff = {
   deleteButton: null,
   newSprigotButton: null,
   emphasizeCheckbox: null,
+  tagField: null,
   findUnreadLink: null,
   showGraphLink: null,
   downLink: null,
@@ -63,6 +64,12 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
 
     this.newSprigotButton = this.textpane.append('button').text('New Sprigot!')
       .classed('editcontrol', true);
+
+    this.tagField = this.textpane.append('input').attr({
+      value: 'Tags go here'
+    })
+    .on('keyup', function eatEvent() { d3.event.stopPropagation(); })
+    .on('keydown', function eatEvent() { d3.event.stopPropagation(); });
   }
 
   this.initFindUnreadLink();
@@ -106,6 +113,9 @@ TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode)
 
   if (this.editAvailable) {
     this.emphasizeCheckbox.node().checked = this.graph.focusNode.emphasize;
+    if (treeNode.tags) {
+      this.tagField.attr('value', treeNode.tags.join(' '));
+    }
   }
 
   if (this.sprigot.isMobile()) {
@@ -216,6 +226,13 @@ TextStuff.changeEditMode = function changeEditMode(editable, skipSave) {
     editedNode.title = newTitle;
     if (titleChanged) {
       d3.select('#' + editedNode.id + ' text').text(editedNode.title);
+    }
+
+    // Temp. hack.
+    var tagFieldValue = this.tagField.node().value;
+    if (tagFieldValue.length > 0) {
+      var tags = tagFieldValue.split(' ');
+      editedNode.tags = tags;
     }
 
     this.textcontent.datum(editedNode);
