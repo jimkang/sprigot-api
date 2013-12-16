@@ -507,6 +507,7 @@ describe('A visitor', function getASprig() {
                 op: 'getDoc',
                 params: {
                   id: session.formatTestDocId,
+                  filterByFormat: 'sprigot',
                   childDepth: 20
                 }
               }
@@ -515,7 +516,7 @@ describe('A visitor', function getASprig() {
               var response = JSON.parse(xhr.responseText);
               var fetchedTree = response.doc1req.result.sprigTree;
               assert.equal(fetchedTree.id, session.tagSprigThreeId);
-              // assert.deepEqual(fetchedTree.children, [testSprig5]);
+              assert.deepEqual(fetchedTree.children, [testSprig5]);
               testDone();
             }
           });

@@ -49,32 +49,34 @@ Sprigot.init = function init(initDone) {
 Sprigot.load = function load() {
   Historian.init(this.graph.treeNav, this.opts.doc.id);
 
-  this.store.getSprigTree(this.opts.doc.id, function gotTree(error, tree) {
-    if (error) {
-      this.opts.loadDone(error, null);
-    }
-
-    if (tree) {
-      tree = D3SprigBridge.sanitizeTreeForD3(tree);
-      var targetId = this.opts.initialTargetSprigId;
-      var matcher = function matchAny() { return true; };
-      if (targetId) {
-        matcher = function isTarget(sprig) { return (targetId === sprig.id); };
+  this.store.getSprigTree(this.opts.doc.id, this.opts.format, 
+    function gotTree(error, tree) {
+      if (error) {
+        this.opts.loadDone(error, null);
       }
 
-      this.graph.loadNodeTreeToGraph(tree, matcher, function onGraphLoaded() {
-        if (targetId === 'findunread') {
-          this.respondToFindUnreadCmd();
+      if (tree) {
+        tree = D3SprigBridge.sanitizeTreeForD3(tree);
+        var targetId = this.opts.initialTargetSprigId;
+        var matcher = function matchAny() { return true; };
+        if (targetId) {
+          matcher = function isTarget(sprig) { return (targetId === sprig.id); };
         }
-        this.opts.loadDone();
+
+        this.graph.loadNodeTreeToGraph(tree, matcher, function onGraphLoaded() {
+          if (targetId === 'findunread') {
+            this.respondToFindUnreadCmd();
+          }
+          this.opts.loadDone();
+        }
+        .bind(this));
       }
-      .bind(this));
+      else {
+        this.opts.loadDone('Sprig tree not found.');
+      }
     }
-    else {
-      this.opts.loadDone('Sprig tree not found.');
-    }
-  }
-  .bind(this));
+    .bind(this)
+  );
 };
 
 Sprigot.initDocEventResponders = function initDocEventResponders() {

@@ -5,7 +5,8 @@ if (typeof module === 'object') {
 
 D3SprigBridge = {
   validSprigPropertyList: [
-    'id', 'doc', 'title', 'body', 'emphasize', 'created', 'modified', 'tags'
+    'id', 'doc', 'title', 'body', 'emphasize', 'created', 'modified', 'tags',
+    'formats'
   ]
 };
 

@@ -16,6 +16,7 @@ var TextStuff = {
   newSprigotButton: null,
   emphasizeCheckbox: null,
   tagField: null,
+  formatField: null,
   findUnreadLink: null,
   showGraphLink: null,
   downLink: null,
@@ -66,7 +67,13 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
       .classed('editcontrol', true);
 
     this.tagField = this.textpane.append('input').attr({
-      value: 'Tags go here'
+      value: 'tagsgohere'
+    })
+    .on('keyup', function eatEvent() { d3.event.stopPropagation(); })
+    .on('keydown', function eatEvent() { d3.event.stopPropagation(); });
+
+    this.formatField = this.textpane.append('input').attr({
+      value: ''
     })
     .on('keyup', function eatEvent() { d3.event.stopPropagation(); })
     .on('keydown', function eatEvent() { d3.event.stopPropagation(); });
@@ -115,6 +122,9 @@ TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode)
     this.emphasizeCheckbox.node().checked = this.graph.focusNode.emphasize;
     if (treeNode.tags) {
       this.tagField.attr('value', treeNode.tags.join(' '));
+    }
+    if (treeNode.formats) {
+      this.formatField.attr('value', treeNode.formats.join(' '));
     }
   }
 
@@ -233,6 +243,11 @@ TextStuff.changeEditMode = function changeEditMode(editable, skipSave) {
     if (tagFieldValue.length > 0) {
       var tags = tagFieldValue.split(' ');
       editedNode.tags = tags;
+    }
+    var formatFieldValue = this.formatField.node().value;
+    if (formatFieldValue.length > 0) {
+      var formats = formatFieldValue.split(' ');
+      editedNode.formats = formats;
     }
 
     this.textcontent.datum(editedNode);

@@ -122,7 +122,7 @@ Store.getDoc = function getDoc(docId, outerDone) {
   );
 };
 
-Store.getSprigTree = function getSprigTree(docId, outerDone) {
+Store.getSprigTree = function getSprigTree(docId, format, outerDone) {
   var sprigRequest = {
     op: 'getDoc',
     params: {
@@ -130,6 +130,10 @@ Store.getSprigTree = function getSprigTree(docId, outerDone) {
       childDepth: 40
     }
   };
+
+  if (format) {
+    sprigRequest.params.filterByFormat = format;
+  }
 
   this.apienvoy.request({getDocReq: sprigRequest}, 
     function done(error, response) {
@@ -154,7 +158,7 @@ Store.getSprigTree = function getSprigTree(docId, outerDone) {
   );
 };
 
-Store.getSprigList = function getSprigList(docId, outerDone) {
+Store.getSprigList = function getSprigList(docId, format, outerDone) {
   var sprigRequest = {
     op: 'getDoc',
     params: {
@@ -162,6 +166,11 @@ Store.getSprigList = function getSprigList(docId, outerDone) {
       flatten: true
     }
   };
+
+  if (format) {
+    sprigRequest.params.filterByFormat = format;
+  }
+
 
   this.apienvoy.request({getDocReq: sprigRequest}, 
     function done(error, response) {

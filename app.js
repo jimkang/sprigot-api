@@ -4,6 +4,7 @@ var _ = require('underscore');
 var dbwrap = require('./dbwrap');
 var treegetting = require('./treegetting');
 var sprigBridge = require('./client/d3sprigbridge');
+// var shunt = require('../shunt/shunt').createShunt();
 var port = 3000;
 
 var packageJSON = require('./package.json');
@@ -77,7 +78,7 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
           if (typeof job.params.childDepth === 'number' && 
             job.params.childDepth > 0) {
 
-            treegetting.getTreeFromDb(job.params.id, job.params.doc, 
+            treegetting.getTreeFromDb(job.params.id, job.params.doc, null,
               job.params.childDepth, jobKey, jobComplete);
           }
           else {
@@ -124,8 +125,13 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
               jobComplete(status, jobKey, doc);
             }
             else {
+              var format = null;
+              if (typeof job.params.filterByFormat === 'string') {
+                format = job.params.filterByFormat;
+              }
+
               // TODO: Check to see if doc has limited readers.
-              treegetting.getTreeFromDb(doc.rootSprig, doc.id, 
+              treegetting.getTreeFromDb(doc.rootSprig, doc.id, format,
                 job.params.childDepth, jobKey, 
                 function gotTree(status, jobKey, tree) {
                   if (job.params.flatten) {

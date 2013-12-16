@@ -32,7 +32,7 @@ Spriglog.init = function init(initDone) {
 Spriglog.load = function load() {
   Historian.init(null, this.opts.doc.id);
 
-  this.store.getSprigList(this.opts.doc.id, 
+  this.store.getSprigList(this.opts.doc.id, this.opts.format,
     function doneGettingList(error, sprigList) {
       if (error) {
         this.opts.loadDone(error, null);
