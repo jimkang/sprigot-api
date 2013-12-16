@@ -134,7 +134,8 @@ describe('A visitor', function getASprig() {
             ],
             readers: [
               'smidgeo', 'drwily'
-            ]
+            ],
+            format: 'sprigot'
           }
         }
       },
@@ -352,18 +353,13 @@ describe('A visitor', function getASprig() {
       var testSprig1 = {
         id: session.tagSprigOneId,
         doc: session.firstDocId,
-        // title: 'One',
-        // body: 'First, there was one.',
-        tags: ['roottag', 'bluetag', 'hiddentag'],
-        // children: [session.tagSprigTwoId]
+        tags: ['roottag', 'bluetag', 'hiddentag']
       };
 
       var testSprig2 = {
         id: session.tagSprigTwoId,
         doc: session.firstDocId,
-        // title: 'Two',
-        tags: ['roottag', 'secondary'],
-        // body: 'Then, there were two.',
+        tags: ['roottag', 'secondary']
       };
 
       utils.sendJSONRequest({
@@ -412,12 +408,115 @@ describe('A visitor', function getASprig() {
               }
             },
             done: function doneGettingSprigs(error, xhr) {
-              debugger;
               var response = JSON.parse(xhr.responseText);
               assert.deepEqual(response.sprig1req.result.tags,
                 ['roottag', 'bluetag', 'hiddentag']);
               assert.deepEqual(response.sprig2req.result.tags,
                 ['roottag', 'secondary']);
+              testDone();
+            }
+          });
+        }
+      });
+    }
+  );
+
+  it('should post sprigs with formats, get back ones that match the doc format', 
+    function postAndGetSprigFormat(testDone) {
+      session.formatTestDocId = uid(4);
+      session.tagSprigThreeId = uid(4);
+      session.tagSprigFourId = uid(4);
+      session.tagSprigFiveId = uid(4);
+
+      var testSprig3 = {
+        id: session.tagSprigThreeId,
+        doc: session.formatTestDocId,
+        children: [session.tagSprigFourId, session.tagSprigFiveId],
+      };
+
+      var testSprig4 = {
+        id: session.tagSprigFourId,
+        doc: session.formatTestDocId,
+        formats: ['bloge']
+      };
+
+      var testSprig5 = {
+        id: session.tagSprigFiveId,
+        doc: session.formatTestDocId,
+        formats: ['sprigot', 'bloge']
+      };
+
+      var testDoc = {
+        id: session.formatTestDocId,
+        rootSprig: session.tagSprigThreeId,
+        authors: [
+          'smidgeo'
+        ],
+        admins: [
+          'smidgeo'
+        ],
+        readers: [
+          'smidgeo', 'drwily'
+        ],
+        format: 'sprigot'
+      };
+
+      utils.sendJSONRequest({
+        url: settings.baseURL,
+        method: 'POST',
+        jsonParams: {
+          sprig0req: {
+            op: 'saveDoc',
+            params: testDoc
+          },
+          sprig1req: {
+            op: 'saveSprig',
+            params: testSprig3
+          },
+          sprig2req: {
+            op: 'saveSprig',
+            params: testSprig4
+          },
+          sprig3req: {
+            op: 'saveSprig',
+            params: testSprig5
+          }
+        },
+        done: function donePostingSprigs(error, xhr) {
+          var response = JSON.parse(xhr.responseText);
+          assert.deepEqual(response.sprig0req, {
+            status: 'saved',
+            result: {
+              id: session.formatTestDocId
+            }
+          });
+          assert.deepEqual(response.sprig1req, {
+            status: 'saved',
+            result: {
+              id: session.tagSprigThreeId
+            }
+          });
+          assert.deepEqual(response.sprig2req.result.id, 
+            session.tagSprigFourId);
+
+          utils.sendJSONRequest({
+            url: settings.baseURL,
+            method: 'POST',
+            jsonParams: {
+              doc1req: {
+                op: 'getDoc',
+                params: {
+                  id: session.formatTestDocId,
+                  childDepth: 20
+                }
+              }
+            },
+            done: function doneGettingSprigs(error, xhr) {
+              var response = JSON.parse(xhr.responseText);
+              var fetchedTree = response.doc1req.result.sprigTree;
+              debugger;
+              assert.equal(fetchedTree.id, session.tagSprigThreeId);
+              assert.deepEqual(fetchedTree.children, [testSprig5]);
               testDone();
             }
           });
