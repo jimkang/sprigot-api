@@ -29,6 +29,12 @@ Historian.syncURLToSprigId = function syncURLToSprigId(sprigId) {
 
   var newURL = location.protocol + '//' + location.host + location.pathname +
     '#/' + this.docId + '/' + sprigId;
+
+  var hashParts = location.hash.split('?');
+  if (hashParts.length > 1) { 
+    newURL += ('?' + hashParts[1]); 
+  }
+
   window.history.pushState({
     docId: this.docId,
     sprigId: sprigId
