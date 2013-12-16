@@ -52,7 +52,7 @@ Director.direct = function direct(locationHash) {
       // be loaded before deciding which controller to use.
       this.initialTargetDocId = pathSegments[1];
       this.store.getDoc(this.initialTargetDocId, function gotDoc(error, doc) {
-        if (error) {      
+        if (error) {
           // TODO: Load error controller.
           console.log('Error', error);
         }

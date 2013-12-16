@@ -73,12 +73,9 @@ function convertChildRefsToSprigs(sprig, sprigsForIds) {
 }
 
 module.exports.getTreeFromDb = function getTreeFromDb(
-  id, docId, docFormat, childDepth, jobKey, jobComplete) {
+  id, docId, childDepth, jobKey, jobComplete) {
 
   getDocSprigsFromDb(docId, function gotSprigs(errors, sprigsForIds) {
-    if (docFormat) {
-      filterSprigDictByFormat(sprigsForIds, docFormat);
-    }
     var sprigTree = treeify(sprigsForIds, id, childDepth);
   
     var status = 'got';
@@ -92,16 +89,17 @@ module.exports.getTreeFromDb = function getTreeFromDb(
 
 };
 
-function filterSprigDictByFormat(sprigsForIds, docFormat) {
-  function filterSprig(id) {
-    var sprig = sprigsForIds[id];
-    if (typeof sprig.formats === 'object' && 
-      sprig.formats.indexOf(docFormat) === -1) {
+// function filterSprigDictByFormat(sprigsForIds, docFormat) {
+//   function filterSprig(id) {
+//     var sprig = sprigsForIds[id];
+//     if (typeof sprig.formats === 'object' && 
+//       sprig.formats.indexOf(docFormat) === -1) {
 
-      delete sprigsForIds[id];
-    }
-  }
+//       delete sprigsForIds[id];
+//     }
+//   }
 
-  var ids = Object.keys(sprigsForIds);
-  ids.forEach(filterSprig);
-}
+//   var ids = Object.keys(sprigsForIds);
+//   ids.forEach(filterSprig);
+// }
+
