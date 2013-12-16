@@ -62,19 +62,21 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
       id: 'emphasize'
     })
     .classed('editcontrol', true);
-
+    
     this.newSprigotButton = this.textpane.append('button').text('New Sprigot!')
       .classed('editcontrol', true);
 
     this.tagField = this.textpane.append('input').attr({
       value: 'tagsgohere'
     })
+    .classed('editcontrol', true)
     .on('keyup', function eatEvent() { d3.event.stopPropagation(); })
     .on('keydown', function eatEvent() { d3.event.stopPropagation(); });
 
     this.formatField = this.textpane.append('input').attr({
       value: ''
     })
+    .classed('editcontrol', true)
     .on('keyup', function eatEvent() { d3.event.stopPropagation(); })
     .on('keydown', function eatEvent() { d3.event.stopPropagation(); });
   }
@@ -295,12 +297,12 @@ TextStuff.respondTocontentZoneKeyDown = function respondTocontentZoneKeyDown() {
       this.changeEditMode(false);
     } 
   }
-}
+};
 
 TextStuff.startEditing = function startEditing() {
   d3.event.stopPropagation();
   if (!this.contentZone.classed('editing')) {
     this.changeEditMode(true);
   }
-}
+};
 
