@@ -68,13 +68,20 @@ Spriglog.render = function render(sprigList) {
 
   newSprigs.append('div').classed('title', true);
   newSprigs.append('div').classed('sprigbody', true);
-  newSprigs.append('div').classed('stamps', true);
+  if (this.opts.doc.showStamps) {
+    newSprigs.append('div').classed('stamps', true);
+  }
 
   sprigs.select('.title').text(function getTitle(d) {return d.title;});
-  sprigs.select('.stamps').text(function getStamps(d) {
-    var createdDate = new Date(d.created);
-    return createdDate.toLocaleString();
-  });
+
+  if (!this.opts.doc.showStamps) {
+    sprigs.select('.stamps').text(function getStamps(d) {
+      var createdDate = new Date(d.created);
+      stamp = createdDate.toLocaleString();
+      return stamp;
+    });
+  }
+
   sprigs.select('.sprigbody').html(function getBody(d) {return d.body;});
   
   var sprigsToRemove = sprigs.exit();
