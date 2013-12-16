@@ -52,20 +52,33 @@ function convertChildRefsToSprigs(sprig, sprigsForIds) {
   var childId = null;
   var child = null;
   if (typeof sprig.children === 'object') {
+    var childRefIndexesToRemoveInDescOrder = [];
+    function removeChildRefAtIndex(index) {
+      sprig.children.splice(index, 1);
+    }
+
     for (var i = 0; i < sprig.children.length; ++i) {
       childId = sprig.children[i];
       child = sprigsForIds[childId];
       if (child) {
         sprig.children[i] = child;
       }
+      else {
+        childRefIndexesToRemoveInDescOrder.unshift(i)
+      }
     }
+
+    childRefIndexesToRemoveInDescOrder.forEach(removeChildRefAtIndex);
   }
 }
 
 module.exports.getTreeFromDb = function getTreeFromDb(
-  id, docId, childDepth, jobKey, jobComplete) {
+  id, docId, docFormat, childDepth, jobKey, jobComplete) {
 
   getDocSprigsFromDb(docId, function gotSprigs(errors, sprigsForIds) {
+    if (docFormat) {
+      filterSprigDictByFormat(sprigsForIds, docFormat);
+    }
     var sprigTree = treeify(sprigsForIds, id, childDepth);
   
     var status = 'got';
@@ -77,4 +90,18 @@ module.exports.getTreeFromDb = function getTreeFromDb(
     jobComplete(status, jobKey, results);
   });
 
+};
+
+function filterSprigDictByFormat(sprigsForIds, docFormat) {
+  function filterSprig(id) {
+    var sprig = sprigsForIds[id];
+    if (typeof sprig.formats === 'object' && 
+      sprig.formats.indexOf(docFormat) === -1) {
+
+      delete sprigsForIds[id];
+    }
+  }
+
+  var ids = Object.keys(sprigsForIds);
+  ids.forEach(filterSprig);
 }

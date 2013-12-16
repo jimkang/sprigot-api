@@ -77,7 +77,7 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
           if (typeof job.params.childDepth === 'number' && 
             job.params.childDepth > 0) {
 
-            treegetting.getTreeFromDb(job.params.id, job.params.doc, 
+            treegetting.getTreeFromDb(job.params.id, job.params.doc, null,
               job.params.childDepth, jobKey, jobComplete);
           }
           else {
