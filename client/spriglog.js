@@ -62,9 +62,15 @@ Spriglog.render = function render(sprigList) {
   var sprigs = this.spriglogSel.selectAll('.sprig')
     .data(sprigList, function(d) { return d.id; });
 
-  var newSprigs = sprigs.enter().append('div')
-    .classed('sprig', true)
-    .classed('textpane', true);
+  var newSprigs = sprigs.enter().append('div').attr('class', 
+    function getCSSClasses(d) {
+      var cssClasses = ['sprig', 'textpane'];
+      if (d.tags) {
+        cssClasses = cssClasses.concat(d.tags);
+      }
+      return cssClasses.join(' ');
+    }
+  );
 
   newSprigs.append('div').classed('title', true);
   newSprigs.append('div').classed('sprigbody', true);
