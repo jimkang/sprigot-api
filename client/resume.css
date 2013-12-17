@@ -30,12 +30,14 @@ body {
   /*background-color: #eee;*/
 }
 
+.bloge {
+  margin-top: 0.2em;
+}
+
 .bloge .textpane {
   width: 66%;
   margin-top: 0.7em;
   margin-bottom: 0.7em;
-  padding-top: 1em;
-  padding-bottom: 1em;
 }
 
 .bloge .title {
@@ -173,6 +175,10 @@ section {
   /*border: 1px solid #e40;*/
 }
 
+.sprigbody {
+  padding-top: 0.5em;
+}
+
 .level-1 {
   margin-left: 0;
 }
@@ -180,7 +186,29 @@ section {
 .level-2 {
   margin-left: 5%;
   max-width: 60%;
-  /*padding-right: 4em;*/
+}
+
+.level-2.textpane {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+.level-2 .title {
+  font-size: 24px;
+}
+
+.click-to-display .sprigbody {
+  opacity: 0;
+  height: 0px;
+  transition: opacity 0.4s ease-in;
+  -ms-transition: opacity 0.4s ease-in;
+}
+
+.displaying-hidden .sprigbody {
+  opacity: 1;
+  height: 100%;
+  transition: opacity 0.4s ease-in;
+  -ms-transition: opacity 0.4s ease-in;
 }
 
 
