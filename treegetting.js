@@ -95,7 +95,7 @@ module.exports.getTreeFromDb = function getTreeFromDb(
 function filterSprigDictByFormat(sprigsForIds, docFormat) {
   function filterSprig(id) {
     var sprig = sprigsForIds[id];
-    if (typeof sprig.formats === 'object' && 
+    if (typeof sprig.formats === 'object' && sprig.formats.length > 0 &&
       sprig.formats.indexOf(docFormat) === -1) {
 
       delete sprigsForIds[id];
