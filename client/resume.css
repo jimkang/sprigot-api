@@ -197,12 +197,17 @@ section {
   font-size: 24px;
 }
 
+.click-to-display,.displaying-hidden {
+  cursor: pointer;
+}
+
 .click-to-display .sprigbody {
   display: none;
 }
 
 .displaying-hidden .sprigbody {
   display: block;  
+  cursor: pointer;
 }
 
 /* Firefox */
