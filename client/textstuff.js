@@ -124,9 +124,9 @@ TextStuff.syncTextpaneWithTreeNode = function syncTextpaneWithTreeNode(treeNode)
 
   if (this.editAvailable) {
     this.emphasizeCheckbox.node().checked = this.graph.focusNode.emphasize;
-    this.tagField.attr('value', treeNode.tags ? treeNode.tags.join(' ') : '');
-    this.formatField.attr('value', 
-      treeNode.formats ? treeNode.formats.join(' ') : '');
+    this.tagField.node().value = treeNode.tags ? treeNode.tags.join(' ') : '';
+    this.formatField.node().value =
+      treeNode.formats ? treeNode.formats.join(' ') : '';
   }
 
   if (this.sprigot.isMobile()) {
