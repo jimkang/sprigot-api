@@ -248,10 +248,16 @@ TextStuff.changeEditMode = function changeEditMode(editable, skipSave) {
       var tags = tagFieldValue.split(' ');
       editedNode.tags = tags;
     }
+    else {
+      editedNode.tags = [];
+    }
     var formatFieldValue = this.formatField.node().value;
     if (formatFieldValue.length > 0) {
       var formats = formatFieldValue.split(' ');
       editedNode.formats = formats;
+    }
+    else {
+      editedNode.formats = [];
     }
 
     this.textcontent.datum(editedNode);
