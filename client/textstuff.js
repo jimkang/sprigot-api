@@ -66,6 +66,7 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
     this.newSprigotButton = this.textpane.append('button').text('New Sprigot!')
       .classed('editcontrol', true);
 
+    this.textpane.append('label').text('Tags').classed('editcontrol', true);
     this.tagField = this.textpane.append('input').attr({
       value: 'tagsgohere'
     })
@@ -73,6 +74,7 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
     .on('keyup', function eatEvent() { d3.event.stopPropagation(); })
     .on('keydown', function eatEvent() { d3.event.stopPropagation(); });
 
+    this.textpane.append('label').text('Formats').classed('editcontrol', true);
     this.formatField = this.textpane.append('input').attr({
       value: ''
     })
