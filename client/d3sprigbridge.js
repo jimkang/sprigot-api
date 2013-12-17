@@ -168,8 +168,35 @@ function flattenTreeBreadthFirst(sprigTree, depthLimit) {
   }
 
   return sprigs;
-}
+};
 
+D3SprigBridge.flattenTreeDepthFirst = 
+function flattenTreeDepthFirst(sprigTree) {
+  var sprigs = [this.serializeTreedNode(sprigTree)];
+  var childArraysQueue = [];
+
+  if (sprigTree.children) {
+    childArraysQueue.push(sprigTree.children);
+  }
+
+  debugger;
+
+  while (childArraysQueue.length > 0) {
+    var children = childArraysQueue[0];
+    if (children.length > 0) {
+      var child = children.shift();
+      if (children.length < 1) {
+        childArraysQueue.shift();
+      }
+      if (child.children && child.children.length > 0) {
+        childArraysQueue.unshift(child.children);
+      }
+      sprigs.push(this.serializeTreedNode(child));
+    }
+  }
+
+  return sprigs;
+};
 
 if (typeof module === 'object') {
   // Node

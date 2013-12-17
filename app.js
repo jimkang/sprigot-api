@@ -135,9 +135,7 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
                 job.params.childDepth, jobKey, 
                 function gotTree(status, jobKey, tree) {
                   if (job.params.flatten) {
-                    doc.sprigList = sprigBridge.flattenTreeBreadthFirst(
-                      tree, job.params.childDepth
-                    );
+                    doc.sprigList = sprigBridge.flattenTreeDepthFirst(tree);
                   }
                   else {
                     doc.sprigTree = tree;
