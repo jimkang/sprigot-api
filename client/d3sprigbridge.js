@@ -179,8 +179,6 @@ function flattenTreeDepthFirst(sprigTree) {
     childArraysQueue.push(sprigTree.children);
   }
 
-  debugger;
-
   while (childArraysQueue.length > 0) {
     var children = childArraysQueue[0];
     if (children.length > 0) {
