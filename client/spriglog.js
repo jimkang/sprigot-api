@@ -15,8 +15,10 @@ Spriglog.init = function init(initDone) {
   this.opts = opts ? opts : {};
 
   var baseMixin = createSprigotBaseMixin();
-  var addedContainer = baseMixin.setUpOuterContainer('bloge.css', 'bloge', 
-    this.opts);
+  var addedContainer = baseMixin.setUpOuterContainer(
+    this.opts.doc.style ? this.opts.doc.style + '.css' : 'bloge.css', 
+    'bloge', this.opts);
+
   if (addedContainer) {
     this.spriglogSel = d3.select('.bloge');
   }
