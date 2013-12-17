@@ -197,6 +197,23 @@ section {
   font-size: 24px;
 }
 
+
+
+.level-3 {
+  margin-left: 10%;
+  max-width: 50%;
+}
+
+.level-3.textpane {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+.level-3 .title {
+  font-size: 18px;
+}
+
+
 .click-to-display,.displaying-hidden {
   cursor: pointer;
 }
