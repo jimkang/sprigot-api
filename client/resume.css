@@ -21,17 +21,15 @@ body {
 }
 
 .textpane {
-  /*font-family: adelle;*/
   font-size: 24px;
   margin-left: 8px;
   -webkit-border-radius: 0.4em;
   border-radius: 0.4em;
-
-  /*background-color: #eee;*/
 }
 
 .bloge {
   margin-top: 0.2em;
+  padding-bottom: 4em;
 }
 
 .bloge .textpane {
@@ -196,7 +194,6 @@ section {
 .level-2 .title {
   font-size: 24px;
 }
-
 
 
 .level-3 {
