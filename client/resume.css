@@ -35,7 +35,6 @@ body {
 .bloge .textpane {
   width: 66%;
   margin-top: 0.7em;
-  margin-bottom: 0.7em;
 }
 
 .bloge .title {
@@ -182,8 +181,9 @@ section {
 }
 
 .level-2 {
-  margin-left: 5%;
+  margin-left: 3%;
   max-width: 60%;
+  color: #58585c;
 }
 
 .level-2.textpane {
@@ -192,7 +192,8 @@ section {
 }
 
 .level-2 .title {
-  font-size: 24px;
+  font-size: 22px;
+  color: #98989c;  
 }
 
 
