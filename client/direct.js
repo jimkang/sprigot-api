@@ -33,7 +33,7 @@ Director.direct = function direct(locationHash) {
   var opts = this.dictFromQueryString(this.queryStringFromHash(locationHash));
 
   var pathSegments = locationHash.split('/');
-  if (pathSegments.length < 2) {
+  if (pathSegments.length < 2 || !pathSegments[1]) {
     // No docId specified.
     this.directToDefault(opts);
     return;
