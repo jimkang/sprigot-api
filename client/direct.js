@@ -56,6 +56,9 @@ Director.direct = function direct(locationHash) {
           // TODO: Load error controller.
           console.log('Error', error);
         }
+        else if (!doc) {
+          console.log('Could not find doc', this.initialTargetDocId);
+        }
         else {
           if (!opts.format) {
             opts.format = doc.format;
