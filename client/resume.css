@@ -178,6 +178,7 @@ section {
 
 .level-1 {
   margin-left: 0;
+  margin-bottom: 0.5em;
 }
 
 .level-2 {
@@ -193,12 +194,11 @@ section {
 
 .level-2 .title {
   font-size: 22px;
-  color: #98989c;  
+  color: #707074;  
 }
 
-
 .level-3 {
-  margin-left: 10%;
+  /*margin-left: %;*/
   max-width: 50%;
 }
 
@@ -211,6 +211,9 @@ section {
   font-size: 18px;
 }
 
+.aside .title {
+  font-size: 18px;
+}
 
 .click-to-display,.displaying-hidden {
   cursor: pointer;
