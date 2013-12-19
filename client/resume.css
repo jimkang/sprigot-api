@@ -23,8 +23,6 @@ body {
 .textpane {
   font-size: 24px;
   margin-left: 8px;
-  -webkit-border-radius: 0.4em;
-  border-radius: 0.4em;
 }
 
 .bloge {
@@ -182,8 +180,8 @@ section {
 }
 
 .level-2 {
-  margin-left: 3%;
-  max-width: 60%;
+  margin-left: 5%;
+  max-width: 65%;
   color: #58585c;
 }
 
@@ -193,8 +191,8 @@ section {
 }
 
 .level-2 .title {
-  font-size: 22px;
-  color: #707074;  
+  font-size: 21px;
+  color: #6c6c70;
 }
 
 .level-3 {
@@ -211,8 +209,30 @@ section {
   font-size: 18px;
 }
 
+.aside {
+  margin-left: 16px; 
+  border-left: 8px solid hsla(210, 50%, 50%, 0.1);
+  padding-left: 8px;
+}
+
 .aside .title {
   font-size: 18px;
+}
+
+.dial-back .title {
+  font-size: 22px;  
+}
+
+.aside .sprigbody {
+  padding-top: 0;
+  /*border-top: 8px solid #aaa;*/
+  /*border-bottom: 8px solid #aaa;*/
+  font-size: 20px;
+}
+
+.aside .sprigbody > * {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .click-to-display,.displaying-hidden {
