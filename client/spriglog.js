@@ -79,7 +79,7 @@ Spriglog.render = function render(sprigList) {
   if (this.opts.doc.showStamps) {
     newSprigs.append('div').classed('stamps', true);
   }
-  newSprigs.filter('.click-to-display').on('click', function displayBody(d) {
+  newSprigs.filter('.click-to-display').on('click', function displayBody() {
     var sprig = d3.select(this);
     sprig.classed('displaying-hidden', !sprig.classed('displaying-hidden'));
   });
