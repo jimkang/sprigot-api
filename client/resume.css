@@ -179,6 +179,11 @@ section {
   margin-bottom: 0.5em;
 }
 
+.level-1 {
+  margin-left: 0;
+  margin-bottom: 0.5em;
+}
+
 .level-2 {
   margin-left: 5%;
   max-width: 65%;
@@ -221,6 +226,10 @@ section {
 
 .dial-back .title {
   font-size: 22px;  
+}
+
+.dial-back-a-little .title {
+  font-size: 28px;  
 }
 
 .aside .sprigbody {
