@@ -41,6 +41,11 @@ Spriglog.load = function load() {
       }
       else if (sprigList) {
         this.sprigList = sprigList;
+
+        if (sprigList.length > 0) {
+          d3.select('title').text('Sprigot - ' + this.sprigList[0].title);          
+        }
+
         if (this.sprigList.length < this.sprigShowRange[1]) {
           this.sprigShowRange[1] = this.sprigList.length;
         }
