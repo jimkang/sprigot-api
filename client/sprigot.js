@@ -57,6 +57,9 @@ Sprigot.load = function load() {
 
       if (tree) {
         tree = D3SprigBridge.sanitizeTreeForD3(tree);
+
+        d3.select('title').text('Sprigot - ' + tree.title);          
+
         var targetId = this.opts.initialTargetSprigId;
         var matcher = function matchAny() { return true; };
         if (targetId) {
