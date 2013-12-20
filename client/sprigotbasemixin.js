@@ -16,12 +16,22 @@ baseMixin.setUpOuterContainer = function setUpOuterContainer(cssFilename,
     }
   }
 
-  if (sprigotSel.empty()) {
-    d3.select('head').append('link').attr({
+  var head = d3.select('head');
+  var cssLink = head.select('link[rel=stylesheet]');
+  if (cssLink.empty()) {
+    cssLink = head.append('link');
+    cssLink.attr({
       rel: 'stylesheet',
       type: 'text/css',
       href: cssFilename
     });
+  }
+
+  if (cssLink.attr('href') !== cssFilename) {
+    cssLink.attr('href', cssFilename);
+  }
+
+  if (sprigotSel.empty()) {
     sprigotSel = d3.select('body').append('section')
       .classed('outer-container', true).classed(containerClass, true);
 
