@@ -37,9 +37,9 @@ body {
 
 .bloge .title {
   font-family: brandon-grotesque, 'Helvetica Neue', Helvetica, sans-serif;
-  font-weight: bold;
-  font-size: 40px;
+  font-size: 42px;
   text-transform: uppercase;
+  margin-left: -2px;
 }
 
 .bloge .stamps {
@@ -191,13 +191,13 @@ section {
 }
 
 .level-2.textpane {
-  margin-top: 0.25em;
+  margin-top: 0.5em;
   margin-bottom: 0.25em;
 }
 
 .level-2 .title {
   font-size: 21px;
-  color: #6c6c70;
+  color: #404044;
 }
 
 .level-3 {
