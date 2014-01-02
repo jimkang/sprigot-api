@@ -14,6 +14,7 @@ uglifyjs \
   divider.js \
   historian.js \
   load_a_typekit.js \
+  ../node_modules/strokerouter/strokerouter.js \
   spriglog.js \
   sprigotbasemixin.js \
   sprigot.js \

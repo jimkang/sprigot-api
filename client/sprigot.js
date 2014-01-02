@@ -9,7 +9,8 @@ var Sprigot = {
   camera: null,
   opts: opts,
   controllerType: 'sprigot',
-  metaPressed: false
+  metaPressed: false,
+  docStrokeRouter: null
 };
 
 Sprigot.init = function init(initDone) {
@@ -87,70 +88,34 @@ Sprigot.initDocEventResponders = function initDocEventResponders() {
   if (TextStuff.editAvailable) {
     doc.on('click', TextStuff.endEditing.bind(TextStuff));
   }
-  doc.on('keyup', this.respondToDocKeyUp.bind(this));
-  doc.on('keydown', this.respondToDocKeyDown.bind(this));
-};
+  this.docStrokeRouter = createStrokeRouter(doc);
+  this.docStrokeRouter.stopPropIfResponderFound = false;
 
-Sprigot.respondToDocKeyUp = function respondToDocKeyUp() {
-  // CONSIDER: Disabling all of this listening when editing is going on.
-  if (TextStuff.editAvailable) {
-    this.metaPressed = d3.event.metaKey;
-  }
-
-  // Esc
-  if (d3.event.keyCode === 27) {
-    d3.event.stopPropagation();
+  this.docStrokeRouter.routeKeyUp('escape', null, function stopEditing() {
     if (TextStuff.contentZone.classed('editing')) {
       TextStuff.changeEditMode(false);
     }
-  }
-  else if (!TextStuff.contentZone.classed('editing')) {
-    switch (d3.event.which) {
-      // 'e'.
-      case 69:
-        d3.event.stopPropagation();
-        if (TextStuff.contentZone.style('display') === 'block') {
-          TextStuff.changeEditMode(true);
-        }
-        break;
-      // Down arrow.
-      case 40:
-        this.graph.treeNav.respondToDownArrow();
-        break;
-      // Up arrow.
-      case 38:
-        this.graph.treeNav.respondToUpArrow();
-        break;
-      // Left arrow.
-      case 37:
-        this.graph.treeNav.respondToLeftArrow();
-        break;
-      // Right arrow.
-      case 39:
-        this.graph.treeNav.respondToRightArrow();
-        break;
-      // equal key
-      case 187:
-        if (d3.event.shiftKey) {
-          this.respondToAddChildSprigCmd();
-        }
-        break;
-        // 'u'
-      case 85:
-        this.respondToFindUnreadCmd();
-        break;
-    }
-  }
-};
-
-Sprigot.respondToDocKeyDown = function respondToDocKeyDown() {
-  // cmd+delete keys
-  if (TextStuff.editAvailable) {
-    this.metaPressed = d3.event.metaKey;
-    if ((this.metaPressed || d3.event.ctrlKey) && d3.event.which === 8) {
-      TextStuff.showDeleteSprigDialog();
-    }
-  }
+  });
+  this.docStrokeRouter.routeKeyUp('e', null, function startEditing() {
+    if (TextStuff.contentZone.style('display') === 'block') {
+      TextStuff.changeEditMode(true);
+    }    
+  });
+  this.docStrokeRouter.routeKeyUp('downArrow', null, 
+    this.graph.treeNav.respondToDownArrow.bind(this.graph.treeNav));
+  this.docStrokeRouter.routeKeyUp('upArrow', null, 
+    this.graph.treeNav.respondToUpArrow.bind(this.graph.treeNav));
+  this.docStrokeRouter.routeKeyUp('leftArrow', null, 
+    this.graph.treeNav.respondToLeftArrow.bind(this.graph.treeNav));
+  this.docStrokeRouter.routeKeyUp('rightArrow', null, 
+    this.graph.treeNav.respondToRightArrow.bind(this.graph.treeNav));
+  // equal + shift is '+'.
+  this.docStrokeRouter.routeKeyUp('equal', ['shift'], 
+    this.respondToAddChildSprigCmd.bind(this));
+  this.docStrokeRouter.routeKeyUp('u', null, 
+    this.respondToFindUnreadCmd.bind(this));
+  this.docStrokeRouter.routeKeyDown('backspace', ['meta'], 
+    TextStuff.showDeleteSprigDialog.bind(TextStuff));
 };
 
 Sprigot.respondToAddChildSprigCmd = function respondToAddChildSprigCmd() {

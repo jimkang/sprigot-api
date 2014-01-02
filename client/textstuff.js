@@ -5,6 +5,7 @@ var TextStuff = {
   sprigot: null,
   divider: null,
   sprigot: null,
+  contentZoneStrokeRouter: null,
 
   pane: null,
   textpane: null,
@@ -67,20 +68,26 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
       .classed('editcontrol', true);
 
     this.textpane.append('label').text('Tags').classed('editcontrol', true);
+
+    function eatEvent() {
+      // d3.event will be a valid object at runtime.
+      d3.event.stopPropagation();
+    }
+
     this.tagField = this.textpane.append('input').attr({
       value: 'tagsgohere'
     })
     .classed('editcontrol', true)
-    .on('keyup', function eatEvent() { d3.event.stopPropagation(); })
-    .on('keydown', function eatEvent() { d3.event.stopPropagation(); });
+    .on('keyup', eatEvent)
+    .on('keydown', eatEvent);
 
     this.textpane.append('label').text('Formats').classed('editcontrol', true);
     this.formatField = this.textpane.append('input').attr({
       value: ''
     })
     .classed('editcontrol', true)
-    .on('keyup', function eatEvent() { d3.event.stopPropagation(); })
-    .on('keydown', function eatEvent() { d3.event.stopPropagation(); });
+    .on('keyup', eatEvent)
+    .on('keydown', eatEvent);
   }
 
   this.initFindUnreadLink();
@@ -98,7 +105,11 @@ TextStuff.init = function init(sprigotSel, graph, treeRenderer, store,
 
     this.emphasizeCheckbox.on('change', 
       this.respondToEmphasisCheckChange.bind(this));
-    this.contentZone.on('keydown', this.respondTocontentZoneKeyDown.bind(this));
+
+    this.contentZoneStrokeRouter = createStrokeRouter(this.contentZone);
+    this.contentZoneStrokeRouter.routeKeyDown('enter', ['meta'], 
+      this.endEditing.bind(this));
+    this.contentZoneStrokeRouter.absorbAllKeyUpEvents = true;
 
     this.newSprigotButton.on('click', 
       this.sprigot.respondToNewSprigotCmd.bind(this.sprigot));
@@ -294,15 +305,6 @@ TextStuff.respondToEmphasisCheckChange = function respondToEmphasisCheckChange()
     this.store.saveSprigFromTreeNode(this.graph.focusNode, this.sprigot.opts.doc.id);
   }
 }
-
-TextStuff.respondTocontentZoneKeyDown = function respondTocontentZoneKeyDown() {
-  if ((d3.event.metaKey || d3.event.ctrlKey) && d3.event.which === 13) {
-    d3.event.stopPropagation();
-    if (this.contentZone.classed('editing')) {
-      this.changeEditMode(false);
-    } 
-  }
-};
 
 TextStuff.startEditing = function startEditing() {
   d3.event.stopPropagation();
