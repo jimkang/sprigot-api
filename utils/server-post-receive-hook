@@ -3,4 +3,5 @@ sudo -u noderunner bash -c '
 git --work-tree=/var/www/sprigot --git-dir=/var/repos/sprigot.git checkout -f
 cd /var/www/sprigot
 npm install
-pm2 start app.js -i 1' --name sprigot
+pm2 start app.js -i 1 --name sprigot -f
+'
