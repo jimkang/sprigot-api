@@ -11,5 +11,8 @@
     "level": "0.10.0",
     "forever-monitor": "1.2.2",
     "strokerouter": "~0.2.0"
+  },
+  "scripts": {
+    "test": "mocha -R spec tests/sprigtests.js"
   }
 }
