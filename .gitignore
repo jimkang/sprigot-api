@@ -1,2 +1,4 @@
 .DS_Store
 db/sprigot.db
+node_modules
+
