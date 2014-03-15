@@ -4,7 +4,7 @@ var _ = require('underscore');
 var dbwrap = require('./dbwrap');
 var treegetting = require('./treegetting');
 var sprigBridge = require('./client/d3sprigbridge');
-var shunt = require('basicset-shunt').createShunt();
+//var shunt = require('basicset-shunt').createShunt();
 var port = 3000;
 
 

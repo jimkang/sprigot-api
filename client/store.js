@@ -1,8 +1,8 @@
 function createStore() {
 
 var Store = {
-  apienvoy: createAPIEnvoy('http://127.0.0.1:3000')
-  // apienvoy: createAPIEnvoy('http://192.241.250.38')
+  // apienvoy: createAPIEnvoy('http://127.0.0.1:3000')
+  apienvoy: createAPIEnvoy('http://192.241.250.38')
 };
 // serverURL: 'http://192.168.1.104:3000'
 // serverURL: 'http://sprigot-8939.onmodulus.net',
