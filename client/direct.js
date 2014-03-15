@@ -31,47 +31,47 @@ Director.setUpController = function setUpController(opts, done) {
 
 Director.direct = function direct(locationHash) {
   var opts = this.dictFromQueryString(this.queryStringFromHash(locationHash));
-
   var pathSegments = locationHash.split('/');
-  if (pathSegments.length < 2 || !pathSegments[1]) {
-    // No docId specified.
-    this.directToDefault(opts);
-    return;
-  }
 
-  switch (pathSegments[1]) {
-    case 'index':
-      break;
-    case 'new':
-      opts.format = 'newdoc';
-      opts.loadDone = this.loadDone.bind(this);
-      this.setUpController(opts, this.callLoad.bind(this));
-      break;
-    default:
-      // This branch is for routes that require that the doc (without its tree) 
-      // be loaded before deciding which controller to use.
+  if (pathSegments.length > 0 && pathSegments[1] === 'new') {
+    opts.format = 'newdoc';
+    opts.loadDone = this.loadDone.bind(this);
+    this.setUpController(opts, this.callLoad.bind(this));
+  }
+  else {    
+    // Paths other than newdoc require that the doc (without its tree) 
+    // be loaded before deciding which controller to use.
+    if (pathSegments.length < 2 || !pathSegments[1]) {
+      // No docId specified.
+      this.initialTargetDocId = Settings.defaultDoc;
+    }
+    else {
       this.initialTargetDocId = pathSegments[1];
-      this.store.getDoc(this.initialTargetDocId, function gotDoc(error, doc) {
-        if (error) {
-          // TODO: Load error controller.
-          console.log('Error', error);
-        }
-        else if (!doc) {
-          console.log('Could not find doc', this.initialTargetDocId);
-        }
-        else {
-          if (!opts.format) {
-            opts.format = doc.format;
-          }
-          opts.doc = doc;
-          if (pathSegments.length > 1) {
-            opts.initialTargetSprigId = pathSegments[2];
-          }
-          opts.loadDone = this.loadDone.bind(this);
-          this.setUpController(opts, this.callLoad.bind(this));
-        }
+    }
+
+    this.store.getDoc(this.initialTargetDocId, function gotDoc(error, doc) {
+      if (error) {
+        // TODO: Load error controller.
+        console.log('Error', error);
       }
-      .bind(this));
+      else if (!doc) {
+        console.log('Could not find doc', this.initialTargetDocId);
+      }
+      else {
+        if (!opts.format) {
+          opts.format = doc.format;
+        }
+        if (!opts.doc) {
+          opts.doc = doc;
+        }
+        if (pathSegments.length > 1) {
+          opts.initialTargetSprigId = pathSegments[2];
+        }
+        opts.loadDone = this.loadDone.bind(this);
+        this.setUpController(opts, this.callLoad.bind(this));
+      }
+    }
+    .bind(this));
   }
 };
 
@@ -83,16 +83,6 @@ Director.loadDone = function loadDone(error) {
 
 Director.callLoad = function callLoad() {
   this.sprigController.load();
-};
-
-Director.directToDefault = function directToDefault(queryOpts) {
-  queryOpts.doc = Settings.defaultDoc;
-  queryOpts.loadDone = function doneLoading(error) {
-    if (error) {
-      console.log('Error while getting sprig:', error);
-    }
-  };
-  this.setUpController(queryOpts, this.callLoad.bind(this));
 };
 
 Director.respondToHashChange = function respondToHashChange() {
