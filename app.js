@@ -4,8 +4,9 @@ var _ = require('underscore');
 var dbwrap = require('./dbwrap');
 var treegetting = require('./treegetting');
 var sprigBridge = require('./client/d3sprigbridge');
-// var shunt = require('../shunt/shunt').createShunt();
+var shunt = require('basicset-shunt').createShunt();
 var port = 3000;
+
 
 var packageJSON = require('./package.json');
 
@@ -69,6 +70,23 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
   // We'll get a response for each, then write them out when we have them all.
   // Promises? Generator? Fibers? Nah, just do 'em sequentially. If any job
   // takes particularly long, write a response now, then start doing it async.
+
+  // shunt.addOperative('getSprig', function getSprig(params, done, prevOpResult) {
+  //   if (params.id && params.doc) {
+  //     if (typeof params.childDepth === 'number' && params.childDepth > 0) {
+  //       treegetting.getTreeFromDb(params.id, params.doc, null,
+  //         params.childDepth, jobKey, jobComplete);
+  //     }
+  //     else {
+  //       dbwrap.getSprigFromDb(params.id, params.doc, 
+  //         jobKey, jobComplete);
+  //     }
+  //   }
+  //   else {
+  //     jobComplete('Not understood', jobKey, null);
+  //   }
+  // });
+
   for (var i = 0; i < jobCount; ++i) {
     var jobKey = jobKeys[i];
     var job = jobs[jobKey];

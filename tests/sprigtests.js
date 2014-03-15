@@ -92,6 +92,29 @@ var session = {
 session.rootSprig = sprigTree.serializeTreedNode(caseDataSource);
 
 describe('A visitor', function getASprig() {
+  // it('should not get a sprig using the wrong id', function getSprig(testDone) {
+  //   utils.sendJSONRequest({
+  //     url: settings.baseURL,
+  //     method: 'POST',
+  //     jsonParams: [
+  //       [
+  //         {
+  //           id: 'sprig3req',
+  //           op: 'getSprig',
+  //           params: {
+  //             id: 'sprig3',
+  //             doc: 'doc1'
+  //           }
+  //         }
+  //       ]        
+  //     ],
+  //     done: function doneGettingSprig(error, xhr) {
+  //       var response = JSON.parse(xhr.responseText);
+  //       assert.equal(response[0][0].status, 'Not found');
+  //       testDone();
+  //     }
+  //   });
+  // });
 
   it('should not get a sprig using the wrong id', function getSprig(testDone) {
     utils.sendJSONRequest({

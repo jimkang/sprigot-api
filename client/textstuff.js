@@ -22,8 +22,8 @@ var TextStuff = {
   showGraphLink: null,
   downLink: null,
   OKCancelDialog: null,
-  // editAvailable: true
-  editAvailable: false
+  editAvailable: true
+  // editAvailable: false
 };
 
 TextStuff.init = function init(sprigotSel, graph, treeRenderer, store, 
