@@ -183,13 +183,13 @@ function flattenTreeDepthFirst(sprigTree) {
     var children = childArraysQueue[0];
     if (children.length > 0) {
       var child = children.shift();
-      if (children.length < 1) {
-        childArraysQueue.shift();
-      }
       if (child.children && child.children.length > 0) {
         childArraysQueue.unshift(child.children);
       }
       sprigs.push(this.serializeTreedNode(child));
+    }
+    else {
+      childArraysQueue.shift();
     }
   }
 

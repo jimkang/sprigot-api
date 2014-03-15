@@ -855,5 +855,85 @@ describe('A visitor', function getASprig() {
     });
   });
 
+  it('should post a bloge-format doc with one child and get it without hanging', 
+    function postAndGetShlallowBloge(testDone) {
+      session.shallowBlogeTestDocId = uid(4);
+      session.blogeSprigId = uid(4);
+
+      var testBlogeSprig = {
+        id: session.blogeSprigId,
+        doc: session.shallowBlogeTestDocId,
+        children: [],
+      };
+
+      var testDoc = {
+        id: session.shallowBlogeTestDocId,
+        rootSprig: session.blogeSprigId,
+        authors: [
+          'Jim'
+        ],
+        admins: [
+          'smidgeo'
+        ],
+        readers: [
+          'Jim', 'drwily'
+        ],
+        format: 'bloge'
+      };
+
+      utils.sendJSONRequest({
+        url: settings.baseURL,
+        method: 'POST',
+        jsonParams: {
+          sprig0req: {
+            op: 'saveDoc',
+            params: testDoc
+          },
+          sprig1req: {
+            op: 'saveSprig',
+            params: testBlogeSprig
+          }
+        },
+        done: function donePostingSprigs(error, xhr) {
+          var response = JSON.parse(xhr.responseText);
+          assert.deepEqual(response.sprig0req, {
+            status: 'saved',
+            result: {
+              id: session.shallowBlogeTestDocId
+            }
+          });
+          assert.deepEqual(response.sprig1req, {
+            status: 'saved',
+            result: {
+              id: session.blogeSprigId
+            }
+          });
+
+          utils.sendJSONRequest({
+            url: settings.baseURL,
+            method: 'POST',
+            jsonParams: {
+              doc1req: {
+                op: 'getDoc',
+                params: {
+                  id: session.shallowBlogeTestDocId,
+                  flatten: true,
+                  filterByFormat: 'bloge'
+                }
+              }
+            },
+            done: function doneGettingSprigs(error, xhr) {
+              var response = JSON.parse(xhr.responseText);
+              var fetchedList = response.doc1req.result.sprigList;
+              assert.equal(fetchedList[0].id, session.blogeSprigId);
+              assert.deepEqual(fetchedList[0], testBlogeSprig);
+              testDone();
+            }
+          });
+        }
+      });
+    }
+  );
+
 });
 
