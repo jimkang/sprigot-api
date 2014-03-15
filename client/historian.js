@@ -27,8 +27,12 @@ Historian.syncURLToSprigId = function syncURLToSprigId(sprigId) {
     return;
   }
 
+  var docPath = this.docId + '/';
+  if (Settings.defaultDoc && this.docId === Settings.defaultDoc) {
+    docPath = '';
+  }
   var newURL = location.protocol + '//' + location.host + location.pathname +
-    '#/' + this.docId + '/' + sprigId;
+    '#/' + docPath + sprigId;
 
   var hashParts = location.hash.split('?');
   if (hashParts.length > 1) { 
