@@ -5,8 +5,7 @@ var dbwrap = require('./dbwrap');
 var treegetting = require('./treegetting');
 var sprigBridge = require('./client/d3sprigbridge');
 //var shunt = require('basicset-shunt').createShunt();
-var port = 3000;
-
+var port = 3003;
 
 var packageJSON = require('./package.json');
 
@@ -183,8 +182,6 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
     }
   };
 }
-
-
 
 console.log('Server running at:', port);
 
