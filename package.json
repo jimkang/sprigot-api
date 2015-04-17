@@ -7,10 +7,11 @@
     "swaptags": "~0.1.0"
   },
   "dependencies": {
-    "underscore": "1.5.1",
-    "level": "0.10.0",
     "forever-monitor": "1.2.2",
-    "strokerouter": "~0.2.0"
+    "level": "0.10.0",
+    "lodash": "^3.7.0",
+    "strokerouter": "~0.2.0",
+    "underscore": "1.5.1"
   },
   "scripts": {
     "test": "mocha -R spec tests/sprigtests.js"

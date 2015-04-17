@@ -1,4 +1,0 @@
-var Settings = {
-  defaultDoc: 'About'
-};
-
