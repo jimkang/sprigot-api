@@ -2,8 +2,8 @@ var assert = require('assert');
 var _ = require('underscore');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var caseDataSource = require('./caseData');
-var sprigTree = require('../client/d3sprigbridge');
-var uid = require('../client/uid').uid;
+var sprigTree = require('../d3sprigbridge');
+var uid = require('idmaker').randomId;
 
 /* Utils */
 
@@ -74,7 +74,7 @@ utils.addDocRefToNodesInTree = function addDocRefToNodesInTree(tree, docId) {
 /* Settings */
 
 var settings = {
-  baseURL: 'http://localhost:3000'
+  baseURL: 'http://localhost:3003'
   // baseURL: 'http://sprigot-8939.onmodulus.net'
   // baseURL: 'http://192.241.250.38'
 };

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "forever-monitor": "1.2.2",
+    "idmaker": "^0.1.1",
     "level": "0.10.0",
     "lodash": "^3.7.0",
     "strokerouter": "~0.2.0",
