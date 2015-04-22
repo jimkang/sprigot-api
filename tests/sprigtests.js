@@ -318,7 +318,7 @@ describe('A visitor', function getASprig() {
 
       var testSprig1 = {
         id: session.orphanSprigOneId,
-        doc: session.firstDocId,
+        doc: session.firstDocId, // Should be docs
         title: 'One',
         body: 'First, there was one.',
         children: [session.orphanSprigTwoId]
