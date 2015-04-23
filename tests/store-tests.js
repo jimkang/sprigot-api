@@ -1,6 +1,7 @@
 var test = require('tape');
 var createStore = require('../store');
 var fixtures = require('./store-tests-fixtures');
+var _ = require('lodash');
 
 test('Basic sprig', function basicSprig(t) {
   t.plan(4);
@@ -43,7 +44,7 @@ test('Basic body', function basicBody(t) {
 });
 
 test('Sprigs with two levels of children', function getTwoLevels(t) {
-  t.plan(2)
+  t.plan(4)
   var store = createStore('tests/store-tests.db');
 
   fixtures.saveAllSprigs(store, getTree);
@@ -51,6 +52,14 @@ test('Sprigs with two levels of children', function getTwoLevels(t) {
   function getTree(error) {
     t.ok(!error, 'Sprigs are saved without error.');
 
+    store.getSprigsUnderRoot('test_sprig_1', checkSprigs);
+  }
+
+  function checkSprigs(error, sprigDict) {
+    t.ok(!error, 'Completes without error.');
+    // test_sprig_2 never connects to test_sprig_1.
+    var expectedSprigs = _.omit(fixtures.sprigs.toJS(), 'test_sprig_2');
+    t.deepEqual(sprigDict, expectedSprigs);
     fixtures.cleanUp(store, t);
   }
 });

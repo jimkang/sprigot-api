@@ -1,6 +1,8 @@
 var exportMethods = require('export-methods');
 var level = require('level');
 var sublevel = require('level-sublevel');
+var queue = require('queue-async');
+var _ = require('lodash');
 
 var levelOpts = {
   valueEncoding: 'json'
@@ -28,8 +30,51 @@ function createStore(dbPath) {
     bodies.get(id, done);
   }
 
+  function getSprigsUnderRoot(rootId, done) {
+    var sprigDict = {};
+
+    getSprigs([rootId], processNextGen);
+
+    function processNextGen(error, currentGenSprigs) {
+      if (error) {
+        done(error);
+      }
+      else {
+        currentGenSprigs.forEach(saveToDict);
+        var nextGenIds = getAllChildIdsFromSprigs(currentGenSprigs);
+
+        if (nextGenIds.length > 0) {
+          var visitedIds = Object.keys(sprigDict);
+          nextGenIds = _.without.apply(_, [nextGenIds].concat(visitedIds));
+          getSprigs(nextGenIds, processNextGen);
+        }
+        else {
+          done(error, sprigDict);
+        }
+      }
+    }
+
+    function saveToDict(sprig) {
+      sprigDict[sprig.id] = sprig;
+    }
+  }
+
+  function getSprigs(ids, done) {
+    var q = queue(4);
+    ids.forEach(queueChildGet);
+    q.awaitAll(done);
+
+    function queueChildGet(childId) {
+      q.defer(getSprig, childId);
+    }
+  }
+
+  function getAllChildIdsFromSprigs(sprigs) {
+    return _.compact(_.flatten(_.pluck(sprigs, 'children')));
+  }
+
   function close(done) {
-    sprigs.close(closeBodies)
+    sprigs.close(closeBodies);
 
     function closeBodies(error) {
       if (error) {
@@ -57,12 +102,12 @@ function createStore(dbPath) {
     }
   }
 
-
   return exportMethods(
     saveSprig,
     getSprig,
     saveBody,
     getBody,
+    getSprigsUnderRoot,
     close
   );
 }
