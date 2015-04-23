@@ -2,8 +2,9 @@ HOMEDIR = $(shell pwd)
 GITDIR = /var/repos/sprigot-api.git
 PM2 = pm2
 
-test: start
-	mocha -R spec tests/sprigtests.js
+test:
+	node tests/store-tests.js
+	# mocha -R spec tests/sprigtests.js
 
 start:
 	$(PM2) start app.js --name sprigot-api || echo "Process already started."

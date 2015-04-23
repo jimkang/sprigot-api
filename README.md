@@ -32,48 +32,45 @@ Installation
 Data Schema
 -----------
 
-Document:
+
+Sharing a tree vs. sharing a body:
+  - You share a tree in order to move entire hierarchies.
+  - You share a body in order to share content without having it to bring its hierarchy with it.
+  - So what is a document? Contains authors and other data that isn't used yet.
+    - If we drop it, then a node can just be a document. sprigot.com/#/root-node/node
+
+Sprig:
 
   - Has an id.
-  - Has a title.
-  - Has root ids.
-  - Has a default root id.
-  - Has a pool of head references.
-    - This is important for providing non-tree views of the document.
-    - Could be retrieved by searching references for document tag.
-
-Head:
-
-  - Has an id.
-  - Has a urlName.
+  - Has a urlName (Maybe later).
   - Has a title.
   - Has tags.
   - Has a body id.
+  - Has child ids.
 
 Body:
 
   - Has an id.
   - Has a fragment (probably html or text).
-  - Has child head ids.
 
 Tag:
 
-  - Can correspond to a document. ('_d_documentname')
-    - Multiple tags on one head can reference several documents.
-  - Can be anything else.
+  - Is a string.
 
-**Store**
+**Store API**
 
-  - getDocument/setDocument
-  - getHead/setHead
-  - getBody/setBody
+  - getNode/saveNode
+  - getBody/saveBody
+  - getNodesByTag
+  - getTree
 
   Implementation details:
 
   - Each kind of thing gets its own namespace/sublevel in the DB.
-  - Each head gets stored under heads|head-id, but under every other property it has except body id, e.g. urlNames|urlName, titles|title.
+  - Each node gets stored under nodes|node-id, but also under tags, e.g. tags|tagName|node-id.
 
   - Putting together trees is not the responsibility of the store.
+
 
 Tests
 -----

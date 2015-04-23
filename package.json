@@ -7,11 +7,15 @@
     "swaptags": "~0.1.0"
   },
   "dependencies": {
+    "export-methods": "^1.1.0",
     "forever-monitor": "1.2.2",
     "idmaker": "^0.1.1",
-    "level": "0.10.0",
+    "immutable": "^3.7.2",
+    "level": "^0.10.0",
+    "level-sublevel": "^6.4.6",
     "lodash": "^3.7.0",
     "strokerouter": "~0.2.0",
+    "tape": "^4.0.0",
     "underscore": "1.5.1"
   },
   "scripts": {
