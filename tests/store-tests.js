@@ -63,3 +63,47 @@ test('Sprigs with two levels of children', function getTwoLevels(t) {
     fixtures.cleanUp(store, t);
   }
 });
+
+test('Sprigs with one level of children', function getOneLevel(t) {
+  t.plan(4)
+  var store = createStore('tests/store-tests.db');
+
+  fixtures.saveAllSprigs(store, getTree);
+
+  function getTree(error) {
+    t.ok(!error, 'Sprigs are saved without error.');
+
+    store.getSprigsUnderRoot('test_sprig_3', checkSprigs);
+  }
+
+  function checkSprigs(error, sprigDict) {
+    t.ok(!error, 'Completes without error.');
+    // test_sprig_2 never connects to test_sprig_1.
+    var expectedSprigs = _.pick(
+      fixtures.sprigs.toJS(), 'test_sprig_3', 'demo_sprig_5'
+    );
+    t.deepEqual(sprigDict, expectedSprigs);
+    fixtures.cleanUp(store, t);
+  }
+});
+
+test('Orphan trees', function orphanTrees(t) {
+  t.plan(4)
+  var store = createStore('tests/store-tests.db');
+
+  fixtures.saveAllSprigs(store, getTree);
+
+  function getTree(error) {
+    t.ok(!error, 'Sprigs are saved without error.');
+
+    store.getSprigsUnderRoot('test_sprig_2', checkSprigs);
+  }
+
+  function checkSprigs(error, sprigDict) {
+    t.ok(!error, 'Completes without error.');
+    // test_sprig_2 never connects to test_sprig_1.
+    var expectedSprigs = _.pick(fixtures.sprigs.toJS(), 'test_sprig_2');
+    t.deepEqual(sprigDict, expectedSprigs);
+    fixtures.cleanUp(store, t);
+  }
+});
