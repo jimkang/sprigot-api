@@ -59,10 +59,10 @@ Tag:
 
 **Store API**
 
-  - getNode/saveNode
+  - getSprig/saveSprig
   - getBody/saveBody
-  - getNodesByTag
-  - getTree
+  - getSprigsByTag - Later
+  - getSprigsUnderRoot
 
   Implementation details:
 
@@ -75,7 +75,9 @@ Tag:
 Tests
 -----
 
-There are none. Dant dant dah!
+Run with:
+
+    make test
 
 License
 -------

@@ -85,6 +85,14 @@ var testBodies = Immutable.Map({
   }
 });
 
+function cleanUp(store, t) {
+  store.close(assertDbClosed);
+
+  function assertDbClosed(error) {
+    t.ok(!error, 'Database closed without error.');
+  }
+}
+
 test('Basic sprig', function basicSprig(t) {
   t.plan(4);
 
@@ -100,11 +108,7 @@ test('Basic sprig', function basicSprig(t) {
   function checkGetResult(error, sprig) {
     t.ok(!error, 'Gets without error.');
     t.deepEqual(sprig, testSprigs.get('test_sprig_1'));
-    store.close(assertDbClosed);
-  }
-
-  function assertDbClosed(error) {
-    t.ok(!error, 'Database closed without error.');
+    cleanUp(store, t);
   }
 });
 
@@ -125,10 +129,10 @@ test('Basic body', function basicBody(t) {
     t.deepEqual(
       body, testBodies.get('test_body_a'), 'Correct body is retrieved.'
     );
-    store.close(assertDbClosed);
-  }
-
-  function assertDbClosed(error) {
-    t.ok(!error, 'Database closed without error.');
+    cleanUp(store, t);
   }
 });
+
+// test('Sprigs with two levels of children', function getTwoLevels(t) {
+
+// });
