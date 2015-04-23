@@ -107,6 +107,20 @@ function saveAllSprigs(store, done) {
   q.awaitAll(done);
 }
 
-module.exports = exportMethods(cleanUp, saveAllSprigs);
+function saveAllBodies(store, done) {
+  var allBodies = _.values(testBodies.toJS());
+
+  var q = queue();
+
+  allBodies.forEach(queueSave);
+
+  function queueSave(body) {
+    q.defer(store.saveBody, body);
+  }
+
+  q.awaitAll(done);
+}
+
+module.exports = exportMethods(cleanUp, saveAllSprigs, saveAllBodies);
 module.exports.sprigs = testSprigs;
 module.exports.bodies = testBodies;

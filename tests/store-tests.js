@@ -43,6 +43,31 @@ test('Basic body', function basicBody(t) {
   }
 });
 
+test('Multiple bodies', function bodies(t) {
+  t.plan(4);
+
+  var store = createStore('tests/store-tests.db');
+  fixtures.saveAllBodies(store, getBodies);
+
+  function getBodies(error) {
+    t.ok(!error, 'Saves without error.');
+
+    store.getBodies(
+      ['test_body_a', 'test_body_c', 'test_body_d'], checkGetResult
+    );
+  }
+
+  function checkGetResult(error, bodies) {
+    t.ok(!error, 'Gets without error.');
+    t.deepEqual(
+      bodies,
+      _.pick(fixtures.bodies.toJS(), 'test_body_a', 'test_body_c', 'test_body_d'),
+      'Correct bodies are retrieved.'
+    );
+    fixtures.cleanUp(store, t);
+  }
+});
+
 test('Sprigs with two levels of children', function getTwoLevels(t) {
   t.plan(4)
   var store = createStore('tests/store-tests.db');

@@ -30,6 +30,37 @@ function createStore(dbPath) {
     bodies.get(id, done);
   }
 
+  function getBodies(ids, done) {
+    var dict = {};
+    var q = queue(4);
+    ids.forEach(queueGet);
+    q.awaitAll(bodiesToDict);
+
+    function queueGet(id) {
+      q.defer(getBody, id);
+    }
+
+    function bodiesToDict(error, bodies) {
+      if (error) {
+        done(error);
+      }
+      else {
+        done(error, arrayToDict(bodies, 'id'));
+      }
+    }
+  }
+
+  function arrayToDict(array, idProperty) {
+    var dict = {};
+    array.forEach(addItemToDict);
+
+    function addItemToDict(item) {
+      dict[item[idProperty]] = item;
+    }
+
+    return dict;
+  }
+
   function getSprigsUnderRoot(rootId, done) {
     var sprigDict = {};
 
@@ -107,6 +138,7 @@ function createStore(dbPath) {
     getSprig,
     saveBody,
     getBody,
+    getBodies,
     getSprigsUnderRoot,
     close
   );

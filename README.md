@@ -63,6 +63,8 @@ Tag:
   - getBody/saveBody
   - getSprigsByTag - Later
   - getSprigsUnderRoot
+  - getBodies
+  - getTree (getSprigsUnderRoot and getBodies of those sprigs)
 
   Implementation details:
 
