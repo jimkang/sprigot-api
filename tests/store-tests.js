@@ -86,9 +86,9 @@ var testBodies = Immutable.Map({
 });
 
 test('Basic sprig', function basicSprig(t) {
-  t.plan(3);
+  t.plan(4);
 
-  var store = createStore('store-tests.db');
+  var store = createStore('tests/store-tests.db');
   store.saveSprig(testSprigs.get('test_sprig_1'), checkSaveResult);
 
   function checkSaveResult(error) {
@@ -100,5 +100,35 @@ test('Basic sprig', function basicSprig(t) {
   function checkGetResult(error, sprig) {
     t.ok(!error, 'Gets without error.');
     t.deepEqual(sprig, testSprigs.get('test_sprig_1'));
+    store.close(assertDbClosed);
+  }
+
+  function assertDbClosed(error) {
+    t.ok(!error, 'Database closed without error.');
+  }
+});
+
+test('Basic body', function basicBody(t) {
+  t.plan(4);
+
+  var store = createStore('tests/store-tests.db');
+  store.saveBody(testBodies.get('test_body_a'), checkSaveResult);
+
+  function checkSaveResult(error) {
+    t.ok(!error, 'Saves without error.');
+
+    store.getBody('test_body_a', checkGetResult);
+  }
+
+  function checkGetResult(error, body) {
+    t.ok(!error, 'Gets without error.');
+    t.deepEqual(
+      body, testBodies.get('test_body_a'), 'Correct body is retrieved.'
+    );
+    store.close(assertDbClosed);
+  }
+
+  function assertDbClosed(error) {
+    t.ok(!error, 'Database closed without error.');
   }
 });
