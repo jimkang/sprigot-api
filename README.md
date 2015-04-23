@@ -64,7 +64,7 @@ Tag:
   - getSprigsByTag - Later
   - getSprigsUnderRoot
   - getBodies
-  - getTree (getSprigsUnderRoot and getBodies of those sprigs)
+  - getTreeKit (getSprigsUnderRoot and getBodies of those sprigs)
 
   Implementation details:
 

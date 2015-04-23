@@ -104,6 +104,33 @@ function createStore(dbPath) {
     return _.compact(_.flatten(_.pluck(sprigs, 'children')));
   }
 
+  function getTreeKit(rootId, done) {
+    getSprigsUnderRoot(rootId, getBodiesForSprigs);
+
+    function getBodiesForSprigs(error, sprigs) {
+      if (error) {
+        done(error);
+      }
+      else {
+        var bodyIds = _.pluck(_.values(sprigs), 'body');
+        getBodies(bodyIds, packageKit);
+      }
+
+      function packageKit(error, bodies) {
+        if (error) {
+          done(error);
+        }
+        else {
+          var kit = {
+            sprigs: sprigs,
+            bodies: bodies
+          };
+          done(error, kit);
+        }
+      }
+    }
+  }
+
   function close(done) {
     sprigs.close(closeBodies);
 
@@ -140,6 +167,7 @@ function createStore(dbPath) {
     getBody,
     getBodies,
     getSprigsUnderRoot,
+    getTreeKit,
     close
   );
 }
