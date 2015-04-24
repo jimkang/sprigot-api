@@ -6,6 +6,12 @@ test:
 	node tests/store-tests.js
 	# mocha -R spec tests/sprigtests.js
 
+test-integration: start-raw
+	node tests/integration/server-tests.js
+
+start-raw:
+	node server.js &
+
 start:
 	$(PM2) start app.js --name sprigot-api || echo "Process already started."
 

@@ -1,4 +1,4 @@
 .DS_Store
-db/sprigot.db
+db/sprigot*.db
 node_modules
 tests/*.db
