@@ -1,12 +1,13 @@
 var test = require('tape');
 var request = require('request');
+var fixtures = require('./server-tests-fixtures');
 
 // Tests depend on the server running. Use the test-integration make target to run this test.
 
 var baseURL = 'http://localhost:2000';
 
 test('Just save', function justSave(t) {
-  t.plan(1);
+  t.plan(2);
 
   var requestOpts = {
     url: baseURL,
@@ -15,38 +16,31 @@ test('Just save', function justSave(t) {
     body: [
       [
         {
-          id: 'save-1',
+          id: 'save_1',
           op: 'saveSprig',
-          params: {
-            id: 'server-sprig-1',
-            title: 'Server Sprig 1',
-            tags: [
-              'server',
-              'one'
-            ],
-            body: 'This is the body of sprig 1.',
-            children: [
-              'demo_sprig_5'
-            ]
-          }
+          params: fixtures.sprigs.get('server_sprig_1')
         }
       ]
     ]
   };
 
-  request(requestOpts, checkResponse);
+  var checkStream = fixtures.createCheckStream({
+    t: t,
+    expectedResults: [
+      {
+        id: 'save_1',
+        error: null
+      }
+    ]
+  });
 
-  function checkResponse(error, response, body) {
-    t.ok(!error, 'Request completes without error');
-    if (error) {
-      console.log(error);
-    }
-    console.log(body);
-  }
+  request(requestOpts)
+    .on('error', fixtures.failOnError)
+    .pipe(checkStream);  
 });
 
-test('Just save, then get', function justSave(t) {
-  t.plan(1);
+test('Just save, then get', function saveThenGet(t) {
+  t.plan(3);
 
   var requestOpts = {
     url: baseURL,
@@ -55,38 +49,36 @@ test('Just save, then get', function justSave(t) {
     body: [
       [
         {
-          id: 'save-2',
+          id: 'save_2',
           op: 'saveSprig',
-          params: {
-            id: 'server-sprig-2',
-            title: 'Server Sprig 2',
-            tags: [
-              'server',
-              'one'
-            ],
-            body: 'This is the body of sprig 2!',
-            children: [
-              'demo_sprig_4'
-            ]
-          }
+          params: fixtures.sprigs.get('server_sprig_2')
         },
         {
-          id: 'get-2',
+          id: 'get_2',
           op: 'getSprig',
-          params:'server-sprig-2'
+          params:'server_sprig_2'
         },
       ]
     ]
   };
 
-  request(requestOpts, checkResponse);
+  var checkStream = fixtures.createCheckStream({
+    t: t,
+    expectedResults: [
+      {
+        id: 'save_2',
+        error: null
+      },
+      {
+        id: 'get_2',
+        error: null,
+        value: fixtures.sprigs.get('server_sprig_2')
+      }      
+    ]
+  });
 
-  function checkResponse(error, response, body) {
-    t.ok(!error, 'Request completes without error');
-    if (error) {
-      console.log(error);
-    }
-    console.log(body);
-  }
+  request(requestOpts)
+    .on('error', fixtures.failOnError)
+    .pipe(checkStream);
+
 });
-

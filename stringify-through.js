@@ -1,12 +1,19 @@
 var through2 = require('through2');
 
 function createStream(opts) {
+  var indentString = null;
+  var followupString = '';
   if (opts) {
-    var indentString = opts.indentString ? opts.indentString : null;
-    var followupString = opts.followupString ? opts.followupString : '';
+    if (opts.indentString) {
+      indentString = opts.indentString;
+    }
+    if (opts.followupString) {
+      followupString = opts.followupString;
+    }
   }
 
-  var stringifyThroughStream = through2({
+  var stringifyThroughStream = through2(
+    {
       objectMode: true
     },
     function stringifyChunk(chunk, enc, callback) {

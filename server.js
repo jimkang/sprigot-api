@@ -14,7 +14,8 @@ var shunt;
 var defaultHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET,POST',
-  'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+  'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+  'Transfer-Encoding': 'chunked'
 };
 
 function init() {
@@ -79,14 +80,12 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
   var headers = _.clone(defaultHeaders);
   headers['Content-Type'] = 'text/json';
   res.writeHead(200, headers);
-
+  
   // Start JSON array.
   // res.write('[\n');
 
 
-  var stringifyThrough = createStringifyThrough({
-    followupString: '\n'
-  });
+  var stringifyThrough = createStringifyThrough();
 
   stringifyThrough.pipe(res);
 
