@@ -43,6 +43,59 @@ test('Basic body', function basicBody(t) {
   }
 });
 
+
+test('Bad params', function badParams(t) {
+  t.plan(9);
+
+  var store = createStore('tests/store-tests.db');
+  store.saveBody({}, checkSaveBodyResult);
+
+  function checkSaveBodyResult(error) {
+    t.ok(error, 'Error is passed back.');
+    t.equal(
+      error.message,
+      'Bad body given to saveBody.',
+      'The error message describes the problem.'
+    );
+
+    store.saveSprig(undefined, checkSaveSprigResult);
+  }
+
+  function checkSaveSprigResult(error) {
+    t.ok(error, 'Error is passed back.');
+    t.equal(
+      error.message,
+      'Bad sprig given to saveSprig.',
+      'The error message describes the problem.'
+    );
+
+    store.getBody(undefined, checkGetBodyResult);
+  }
+
+  function checkGetBodyResult(error) {
+    t.ok(error, 'Error is passed back.');
+    t.equal(
+      error.message,
+      'Key not found in database',
+      'The error message describes the problem.'
+    );
+
+    store.getSprig(undefined, checkGetSprigResult);
+  }
+
+  function checkGetSprigResult(error) {
+    t.ok(error, 'Error is passed back.');
+    t.equal(
+      error.message,
+      'Key not found in database',
+      'The error message describes the problem.'
+    );
+
+    fixtures.cleanUp(store, t);
+  }
+  
+});
+
 test('Multiple bodies', function bodies(t) {
   t.plan(4);
 

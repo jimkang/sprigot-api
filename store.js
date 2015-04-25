@@ -3,6 +3,7 @@ var level = require('level');
 var sublevel = require('level-sublevel');
 var queue = require('queue-async');
 var _ = require('lodash');
+var callBackOnNextTick = require('conform-async').callBackOnNextTick;
 
 var levelOpts = {
   valueEncoding: 'json'
@@ -15,20 +16,47 @@ function createStore(dbPath) {
   var bodies = db.sublevel('b');  
 
   function saveSprig(sprig, done) {
-    sprigs.put(sprig.id, sprig, done);
+    if (!sprig || !sprig.id) {
+      callBackOnNextTick(done, new Error('Bad sprig given to saveSprig.'));
+    }
+    else {
+      sprigs.put(sprig.id, sprig, done);
+    }
   }
 
   function getSprig(id, done) {
-    sprigs.get(id, done);
+    sprigs.get(id, getDone);
+
+    function getDone(error, sprig) {
+      if (error) {
+        error.detail = {
+          key_id: id
+        };
+      }
+      done(error, sprig);
+    }
   }
 
   function saveBody(body, done) {
-    bodies.put(body.id, body, done);
+    if (!body || !body.id) {
+      callBackOnNextTick(done, new Error('Bad body given to saveBody.'));
+    }
+    else {
+      bodies.put(body.id, body, done);
+    }
   }
 
   function getBody(id, done) {
-    bodies.get(id, done);
-  }
+    bodies.get(id, getDone);
+  
+    function getDone(error, body) {
+      if (error) {
+        error.detail = {
+          key_id: id
+        };
+      }
+      done(error, body);
+    }}
 
   function getBodies(ids, done) {
     var dict = {};

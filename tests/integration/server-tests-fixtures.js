@@ -9,9 +9,9 @@ var testSprigs = Immutable.Map({
       'server',
       'one'
     ],
-    body: 'This is the body of sprig 1.',
+    body: 'tree_body_a',
     children: [
-      'demo_sprig_5'
+      'tree_sprig_5'
     ]
   },
   server_sprig_2: {
@@ -21,29 +21,83 @@ var testSprigs = Immutable.Map({
       'server',
       'one'
     ],
-    body: 'This is the body of sprig 2!',
+    body: 'tree_body_b',
     children: [
       'demo_sprig_4'
     ]
+  },
+
+  tree: {
+    // Has two children.
+    tree_sprig_1: {
+      id: 'tree_sprig_1',
+      title: 'Tree Sprig 1',
+      tags: [
+        'test',
+        'one'
+      ],
+      body: 'tree_body_a',
+      children: [
+        'tree_sprig_3',
+        'tree_sprig_4'
+      ]
+    },
+    // Has one child.
+    tree_sprig_3: {
+      id: 'tree_sprig_3',
+      title: 'Tree Sprig 1',
+      tags: [
+        'test',
+        'three'
+      ],
+      body: 'tree_body_c',
+      children: [
+        'tree_sprig_5'
+      ]
+    },
+    // Has no children.
+    tree_sprig_4: {
+      id: 'tree_sprig_4',
+      title: 'Tree Sprig 4',
+      tags: [
+        'test',
+        'four'
+      ],
+      body: 'tree_body_d',
+      children: []
+    },
+    // Does not have the 'test' tag; shares a body with tree_sprig_2.
+    tree_sprig_5: {
+      id: 'tree_sprig_5',
+      title: 'Tree Sprig 5',
+      tags: [
+        'demo',
+        'five'
+      ],
+      body: 'tree_body_b',
+      children: []
+    }
   }
 });
 
 var testBodies = Immutable.Map({
-  test_body_a: {
-    id: 'test_body_a',
-    fragment: '<i>This</i> is a body labeled "a".'
-  },
-  test_body_b: {
-    id: 'test_body_b',
-    fragment: 'Body B!'
-  },
-  test_body_c: {
-    id: 'test_body_c',
-    fragment: '<p>This is test body C.</p>'
-  },
-  test_body_d: {
-    id: 'test_body_d',
-    fragment: '<h2>D!</h2>'
+  tree: {
+    tree_body_a: {
+      id: 'tree_body_a',
+      fragment: '<i>This</i> is a body labeled "a". It\'s the root of the tree.'
+    },
+    tree_body_b: {
+      id: 'tree_body_b',
+      fragment: 'Body B!'
+    },
+    tree_body_c: {
+      id: 'tree_body_c',
+      fragment: '<p>This is test body C.</p>'
+    },
+    tree_body_d: {
+      id: 'tree_body_d',
+      fragment: '<h2>D!</h2>'
+    }
   }
 });
 

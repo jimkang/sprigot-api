@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "basicset-shunt": "^1.0.0",
+    "conform-async": "^1.1.1",
     "export-methods": "^1.1.0",
     "forever-monitor": "1.2.2",
     "idmaker": "^0.1.1",

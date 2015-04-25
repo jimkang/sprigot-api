@@ -99,7 +99,6 @@ function respondToRequestWithBody(req, body, res, baseHeaders) {
     // End JSON array.
     // res.write(']');
     // res.end();
-    debugger;
   }
 
   // var jobKeys = _.keys(jobs);

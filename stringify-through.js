@@ -1,4 +1,5 @@
 var through2 = require('through2');
+var _ = require('lodash');
 
 function createStream(opts) {
   var indentString = null;
@@ -16,8 +17,15 @@ function createStream(opts) {
     {
       objectMode: true
     },
-    function stringifyChunk(chunk, enc, callback) {
-      this.push(JSON.stringify(chunk, null, indentString) + followupString);
+    function stringifyChunk(result, enc, callback) {
+      var adaptedResult = result;
+      if (result.error) {
+        var adaptedResult = _.cloneDeep(result);
+        adaptedResult.error = summarizeError(result.error);
+      }
+      this.push(
+        JSON.stringify(adaptedResult, null, indentString) + followupString
+      );
       callback();
     }
   );
@@ -25,4 +33,12 @@ function createStream(opts) {
   return stringifyThroughStream;  
 }
 
+function summarizeError(error) {
+  // TODO: Consider logging the stack.
+  return {
+    message: error.message,
+    detail: error.detail
+    // stack: error.stack
+  };
+}
 module.exports = createStream;
