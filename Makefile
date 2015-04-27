@@ -4,7 +4,6 @@ PM2 = pm2
 
 test:
 	node tests/store-tests.js
-	# mocha -R spec tests/sprigtests.js
 
 test-integration: stop start
 	node tests/integration/server-tests.js
@@ -17,9 +16,6 @@ start:
 
 stop:
 	$(PM2) stop sprigot-api || echo "Didn't need to stop process."
-
-list:
-	$(PM2) list
 
 sync-worktree-to-git:
 	git --work-tree=$(HOMEDIR) --git-dir=$(GITDIR) checkout -f
