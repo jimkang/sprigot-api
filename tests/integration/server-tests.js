@@ -1,6 +1,7 @@
 var test = require('tape');
 var request = require('request');
 var fixtures = require('./server-tests-fixtures');
+var _ = require('lodash');
 
 // Tests depend on the server running. Use the test-integration make target to run this test.
 
@@ -35,7 +36,7 @@ test('Just save', function justSave(t) {
   });
 
   request(requestOpts)
-    .on('error', fixtures.failOnError)
+    .on('error', _.curry(fixtures.failOnError)(t))
     .pipe(checkStream);  
 });
 
@@ -78,7 +79,7 @@ test('Just save, then get', function saveThenGet(t) {
   });
 
   request(requestOpts)
-    .on('error', fixtures.failOnError)
+    .on('error', _.curry(fixtures.failOnError)(t))
     .pipe(checkStream);
 
 });
@@ -229,6 +230,6 @@ test('Get a tree', function getATree(t) {
   });
 
   request(requestOpts)
-    .on('error', fixtures.failOnError)
+    .on('error', _.curry(fixtures.failOnError)(t))
     .pipe(checkStream);
 });

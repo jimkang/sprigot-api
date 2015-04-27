@@ -129,7 +129,7 @@ function createCheckStream(opts) {
   return checkStream;
 }
 
-function failOnError(error) {
+function failOnError(t, error) {
   if (error) {
     console.log(error);
   }
