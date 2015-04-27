@@ -132,6 +132,7 @@ function createStore(dbPath) {
     return _.compact(_.flatten(_.pluck(sprigs, 'children')));
   }
 
+  // TODO: This should stream its findings.
   function getTreeKit(rootId, done) {
     getSprigsUnderRoot(rootId, getBodiesForSprigs);
 
